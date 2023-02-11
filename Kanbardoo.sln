@@ -3,16 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kanbardoo.WebAPI", "Kanbardoo.WebAPI\Kanbardoo.WebAPI.csproj", "{7C5752FB-8345-4D8B-B7CC-12BC2418A8FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kanbardoo.WebAPI", "Kanbardoo.WebAPI\Kanbardoo.WebAPI.csproj", "{7C5752FB-8345-4D8B-B7CC-12BC2418A8FA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{422B9089-A7A3-4A32-8804-82DFD18F9A9A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documentation", "documentation", "{16348DA0-AA68-4AE2-8589-16BDBCA2B144}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{09AABF5B-6D36-4237-9310-0C61C9A9A561}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documentation", "documentation", "{FFC36A59-0B71-4863-9C57-814DFCAD5EA1}"
 	ProjectSection(SolutionItems) = preProject
-		BoardDefinition.txt = BoardDefinition.txt
+		documentation\BoardActions.md = documentation\BoardActions.md
+		documentation\BoardDefinition.md = documentation\BoardDefinition.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{09AABF5B-6D36-4237-9310-0C61C9A9A561}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kanbardoo.Domain", "Kanbardoo.Domain\Kanbardoo.Domain.csproj", "{C38CB019-D187-475F-9DF6-4698B17FD454}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kanbardoo.Application", "Kanbardoo.Application\Kanbardoo.Application.csproj", "{41A84630-3AF1-491E-A97F-552AEA1F7A5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kanbardoo.Infrastructure", "Kanbardoo.Infrastructure\Kanbardoo.Infrastructure.csproj", "{B424CC57-97B9-4C27-B504-71007ED91848}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,12 +31,27 @@ Global
 		{7C5752FB-8345-4D8B-B7CC-12BC2418A8FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C5752FB-8345-4D8B-B7CC-12BC2418A8FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C5752FB-8345-4D8B-B7CC-12BC2418A8FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C38CB019-D187-475F-9DF6-4698B17FD454}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C38CB019-D187-475F-9DF6-4698B17FD454}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C38CB019-D187-475F-9DF6-4698B17FD454}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C38CB019-D187-475F-9DF6-4698B17FD454}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41A84630-3AF1-491E-A97F-552AEA1F7A5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41A84630-3AF1-491E-A97F-552AEA1F7A5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41A84630-3AF1-491E-A97F-552AEA1F7A5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41A84630-3AF1-491E-A97F-552AEA1F7A5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B424CC57-97B9-4C27-B504-71007ED91848}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B424CC57-97B9-4C27-B504-71007ED91848}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B424CC57-97B9-4C27-B504-71007ED91848}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B424CC57-97B9-4C27-B504-71007ED91848}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7C5752FB-8345-4D8B-B7CC-12BC2418A8FA} = {422B9089-A7A3-4A32-8804-82DFD18F9A9A}
+		{C38CB019-D187-475F-9DF6-4698B17FD454} = {422B9089-A7A3-4A32-8804-82DFD18F9A9A}
+		{41A84630-3AF1-491E-A97F-552AEA1F7A5C} = {422B9089-A7A3-4A32-8804-82DFD18F9A9A}
+		{B424CC57-97B9-4C27-B504-71007ED91848} = {422B9089-A7A3-4A32-8804-82DFD18F9A9A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AD0C6484-59C4-4CA0-9C45-9EDB846C0F38}
