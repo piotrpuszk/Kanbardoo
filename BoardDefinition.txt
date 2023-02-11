@@ -1,0 +1,4 @@
+The board is a container for tables defined by a user. 
+Each table can be empty or it can contain tasks.
+The board has a backgroud of user's choice. He can import
+it from the internet only.
