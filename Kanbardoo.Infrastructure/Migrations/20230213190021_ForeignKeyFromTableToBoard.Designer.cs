@@ -3,6 +3,7 @@ using System;
 using Kanbardoo.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kanbardoo.Infrastructure.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20230213190021_ForeignKeyFromTableToBoard")]
+    partial class ForeignKeyFromTableToBoard
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.2");
@@ -141,9 +144,6 @@ namespace Kanbardoo.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Priority")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("ID");
 
                     b.HasIndex("BoardID");
@@ -206,7 +206,7 @@ namespace Kanbardoo.Infrastructure.Migrations
                         new
                         {
                             ID = 46920,
-                            CreationDate = new DateTime(2023, 2, 13, 19, 8, 27, 360, DateTimeKind.Utc).AddTicks(9352),
+                            CreationDate = new DateTime(2023, 2, 13, 19, 0, 21, 532, DateTimeKind.Utc).AddTicks(3288),
                             Name = "piotrpuszk"
                         });
                 });

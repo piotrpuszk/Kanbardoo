@@ -21,7 +21,9 @@ public class BoardRepository : IBoardRepository
 
     public async Task DeleteAsync(int id)
     {
-        await _dbContext.Boards.Where(e => e.ID == id).ExecuteDeleteAsync();
+        await _dbContext.Boards
+            .Where(e => e.ID == id)
+            .ExecuteDeleteAsync();
     }
 
     public async Task<IEnumerable<Board>> GetAsync()
@@ -55,6 +57,12 @@ public class BoardRepository : IBoardRepository
         var found = await _dbContext.Boards
             .Include(e => e.Owner)
             .Include(e => e.Status)
+            .Include(e => e.Tables.OrderBy(e => e.Priority))
+            .ThenInclude(e => e.Tasks)
+            //.ThenInclude(e => e.Status)
+            //.Include(e => e.Tables)
+            //.ThenInclude(e => e.Tasks)
+            //.ThenInclude(e => e.Assignee)
             .FirstOrDefaultAsync(e => e.ID == id);
 
         if (found is null)

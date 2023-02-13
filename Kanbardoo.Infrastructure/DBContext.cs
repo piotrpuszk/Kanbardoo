@@ -27,6 +27,11 @@ public class DBContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<Table>()
+            .HasOne(e => e.Board)
+            .WithMany(e => e.Tables);
+
+
         modelBuilder.Entity<BoardStatus>()
         .HasData
         (

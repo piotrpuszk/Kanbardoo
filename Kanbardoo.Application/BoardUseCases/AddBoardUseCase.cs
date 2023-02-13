@@ -2,15 +2,19 @@
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
+using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.BoardUseCases;
 public sealed class AddBoardUseCase : IAddBoardUseCase
 {
+    private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
 
-    public AddBoardUseCase(IUnitOfWork unitOfWork)
+    public AddBoardUseCase(IUnitOfWork unitOfWork,
+                           ILogger logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task HandleAsync(NewBoard newBoard)
