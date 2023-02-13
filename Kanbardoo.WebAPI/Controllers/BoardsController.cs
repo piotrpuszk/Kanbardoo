@@ -6,20 +6,22 @@ using Kanbardoo.Domain.Models;
 using Kanbardoo.WebAPI.DTOs;
 using Kanbardoo.WebAPI.FilterDTOs;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.WebAPI.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public sealed class BoardsController : ControllerBase
 {
-    private readonly ILogger<BoardsController> _logger;
+    private readonly ILogger _logger;
     private readonly IAddBoardUseCase _addBoardUseCase;
     private readonly IGetBoardUseCase _getBoardUseCase;
     private readonly IUpdateBoardUseCase _updateBoardUseCase;
     private readonly IDeleteBoardUseCase _deleteBoardUseCase;
     private readonly IMapper _mapper;
 
-    public BoardsController(ILogger<BoardsController> logger,
+    public BoardsController(ILogger logger,
                            IAddBoardUseCase addBoardUseCase,
                            IGetBoardUseCase getBoardUseCase,
                            IUpdateBoardUseCase updateBoardUseCase,
