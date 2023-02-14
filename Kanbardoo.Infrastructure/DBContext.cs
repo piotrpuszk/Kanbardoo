@@ -14,11 +14,6 @@ public class DBContext : DbContext
     public DbSet<KanTask> Tasks { get; set; }
     public DbSet<User> Users { get; set; }
 
-    public DBContext()
-    {
-
-    }
-
     public DBContext(DbContextOptions<DBContext> options) : base(options)
     {
     }
