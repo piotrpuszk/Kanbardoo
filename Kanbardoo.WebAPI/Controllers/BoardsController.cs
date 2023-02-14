@@ -50,6 +50,12 @@ public sealed class BoardsController : ControllerBase
     {
         var boardFilters = _mapper.Map<BoardFilters>(boardFiltersDTO);
         var result = await _getBoardUseCase.HandleAsync(boardFilters);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result);
+        }
+
         var boardDTOs = _mapper.Map<IEnumerable<BoardDTO>>(result.Content);
         return Ok(Result<IEnumerable<BoardDTO>>.SuccessResult(boardDTOs));
     }
@@ -58,6 +64,12 @@ public sealed class BoardsController : ControllerBase
     public async Task<IActionResult> Get(int id)
     {
         var result = await _getBoardUseCase.HandleAsync(id);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result);
+        }
+
         var boardDTO = _mapper.Map<BoardDTO>(result.Content);
         return Ok(Result<BoardDTO>.SuccessResult(boardDTO));
     }
@@ -66,8 +78,8 @@ public sealed class BoardsController : ControllerBase
     public async Task<IActionResult> Put(BoardDTO boardDTO)
     {
         Board board = _mapper.Map<Board>(boardDTO);
-        await _updateBoardUseCase.HandleAsync(board);
-        return Ok();
+        var result = await _updateBoardUseCase.HandleAsync(board);
+        return Ok(result);
     }
 
     [HttpDelete]
