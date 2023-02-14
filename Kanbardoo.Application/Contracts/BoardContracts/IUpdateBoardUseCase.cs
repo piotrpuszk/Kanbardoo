@@ -1,7 +1,8 @@
-﻿using Kanbardoo.Domain.Entities;
+﻿using Kanbardoo.Application.Results;
+using Kanbardoo.Domain.Entities;
 
 namespace Kanbardoo.Application.Contracts.BoardContracts;
 public interface IUpdateBoardUseCase
 {
-    Task HandleAsync(Board board);
+    Task<Result> HandleAsync(Board board);
 }

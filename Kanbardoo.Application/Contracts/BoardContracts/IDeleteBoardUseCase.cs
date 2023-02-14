@@ -1,5 +1,7 @@
-﻿namespace Kanbardoo.Application.Contracts.BoardContracts;
+﻿using Kanbardoo.Application.Results;
+
+namespace Kanbardoo.Application.Contracts.BoardContracts;
 public interface IDeleteBoardUseCase
 {
-    Task HandleAsync(int id);
+    Task<Result> HandleAsync(int id);
 }
