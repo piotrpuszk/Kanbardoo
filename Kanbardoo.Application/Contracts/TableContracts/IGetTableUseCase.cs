@@ -4,6 +4,6 @@ namespace Kanbardoo.Application.Contracts.TableContracts;
 
 public interface IGetTableUseCase
 {
-    Task<IEnumerable<Table>> HandleAsync(); 
-    Task<Table> HandleAsync(int id); 
+    Task<Result<IEnumerable<Table>>> HandleAsync();
+    Task<Result<Table>> HandleAsync(int id); 
 }

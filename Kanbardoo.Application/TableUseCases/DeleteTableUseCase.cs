@@ -1,4 +1,6 @@
 ﻿using Kanbardoo.Application.Contracts.TableContracts;
+using Kanbardoo.Application.Results;
+using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
 using ILogger = Serilog.ILogger;
 
@@ -16,9 +18,28 @@ public class DeleteTableUseCase : IDeleteTableUseCase
         _unitOfWork = unitOfWork;
     }
 
-    public async Task HandleAsync(int id)
+    public async Task<Result> HandleAsync(int id)
     {
-        await _unitOfWork.TableRepository.DeleteAsync(id);
-        await _unitOfWork.SaveChangesAsync();
+        Table table = await _unitOfWork.TableRepository.GetAsync(id);
+
+        if (!table.Exists())
+        {
+            _logger.Error($"A table with the given id ({id}) does not exist");
+            return Result.ErrorResult("A table with the given id does not exist");
+        }
+
+        try
+        {
+            await _unitOfWork.TableRepository.DeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+
+            return Result.SuccessResult();
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Internal server error: {id} \n\n {ex}");
+            return Result.ErrorResult("Internal server error");
+        }
+        
     }
 }

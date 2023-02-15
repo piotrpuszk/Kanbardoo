@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Kanbardoo.Domain.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kanbardoo.Domain.Entities;
@@ -19,4 +20,15 @@ public class Board : Entity
     [MaxLength(1024)]
     public string BackgroundImageUrl { get; set; } = string.Empty;
     public virtual ICollection<Table> Tables { get; set; } = new List<Table>();
+
+    public static Board CreateFromNewBoard(NewBoard newBoard)
+    {
+        return new()
+        {
+            Name = newBoard.Name,
+            CreationDate = DateTime.UtcNow,
+            StatusID = BoardStatusId.Active,
+            OwnerID = 46920,
+        };
+    }
 }

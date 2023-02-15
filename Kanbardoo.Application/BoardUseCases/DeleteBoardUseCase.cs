@@ -1,4 +1,5 @@
 ﻿using Kanbardoo.Application.Contracts.BoardContracts;
+using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Repositories;
 using ILogger = Serilog.ILogger;  
 
@@ -15,10 +16,32 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
         _logger = logger;
     }
 
-    public async Task HandleAsync(int id)
+    public async Task<Result> HandleAsync(int id)
+    {
+        var board = await _unitOfWork.BoardRepository.GetAsync(id);
+
+        if (!board.Exists())
+        {
+            _logger.Error($"A board with given ID does not exist: {id}");
+            return Result.ErrorResult("A board with given ID does not exist");
+        }
+
+        try
+        {
+            return await DeleteFromDatabase(id);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Error during delete from database: {id}");
+            return Result.ErrorResult("Internal server error");
+        }
+    }
+
+    private async Task<Result> DeleteFromDatabase(int id)
     {
         await _unitOfWork.BoardRepository.DeleteAsync(id);
-
         await _unitOfWork.SaveChangesAsync();
+
+        return Result.SuccessResult();
     }
 }

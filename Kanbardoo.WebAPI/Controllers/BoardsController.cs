@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Kanbardoo.Application.Contracts.BoardContracts;
+using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Filters;
 using Kanbardoo.Domain.Models;
@@ -40,38 +41,51 @@ public sealed class BoardsController : ControllerBase
     public async Task<IActionResult> Post(NewBoardDTO newBoardDTO)
     {
         NewBoard newBoard = _mapper.Map<NewBoard>(newBoardDTO);
-        await _addBoardUseCase.HandleAsync(newBoard);
-        return Ok();
+        var result = await _addBoardUseCase.HandleAsync(newBoard);
+        return Ok(result);
     }
 
     [HttpPost]
     public async Task<IActionResult> Get(BoardFiltersDTO boardFiltersDTO)
     {
         var boardFilters = _mapper.Map<BoardFilters>(boardFiltersDTO);
-        IEnumerable<Board> boards = await _getBoardUseCase.HandleAsync(boardFilters);
-        return Ok(boards);
+        var result = await _getBoardUseCase.HandleAsync(boardFilters);
+
+        if (!result.IsSuccess)
+        {
+            return Ok(Result<IEnumerable<BoardDTO>>.ErrorResult(result.Errors!));
+        }
+
+        var boardDTOs = _mapper.Map<IEnumerable<BoardDTO>>(result.Content);
+        return Ok(Result<IEnumerable<BoardDTO>>.SuccessResult(boardDTOs));
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
-        Board board = await _getBoardUseCase.HandleAsync(id);
-        var boardDTO = _mapper.Map<BoardDTO>(board);
-        return Ok(boardDTO);
+        var result = await _getBoardUseCase.HandleAsync(id);
+
+        if (!result.IsSuccess)
+        {
+            return Ok(Result<BoardDTO>.ErrorResult(result.Errors!));
+        }
+
+        var boardDTO = _mapper.Map<BoardDTO>(result.Content);
+        return Ok(Result<BoardDTO>.SuccessResult(boardDTO));
     }
 
     [HttpPut]
     public async Task<IActionResult> Put(BoardDTO boardDTO)
     {
         Board board = _mapper.Map<Board>(boardDTO);
-        await _updateBoardUseCase.HandleAsync(board);
-        return Ok();
+        var result = await _updateBoardUseCase.HandleAsync(board);
+        return Ok(result);
     }
 
     [HttpDelete]
     public async Task<IActionResult> Delete(int id)
     {
-        await _deleteBoardUseCase.HandleAsync(id);
-        return Ok();
+        var result = await _deleteBoardUseCase.HandleAsync(id);
+        return Ok(result);
     }
 }

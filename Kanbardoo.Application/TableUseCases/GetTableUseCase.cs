@@ -16,13 +16,39 @@ public class GetTableUseCase : IGetTableUseCase
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IEnumerable<Table>> HandleAsync()
+    public async Task<Result<IEnumerable<Table>>> HandleAsync()
     {
-        return await _unitOfWork.TableRepository.GetAsync();
+        try
+        {
+            var tables = await _unitOfWork.TableRepository.GetAsync();
+            return Result<IEnumerable<Table>>.SuccessResult(tables);
+        }
+        catch(Exception ex)
+        {
+            _logger.Error($"{nameof(GetTableUseCase)}.{nameof(HandleAsync)} \n\n {ex}");
+            return Result<IEnumerable<Table>>.ErrorResult("Internal server error");
+        }
     }
 
-    public async Task<Table> HandleAsync(int id)
+    public async Task<Result<Table>> HandleAsync(int id)
     {
-        return await _unitOfWork.TableRepository.GetAsync(id);
+        Table table = new Table();
+        try
+        {
+            table = await _unitOfWork.TableRepository.GetAsync(id);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Internal server error {id} \n\n {ex}");
+            return ErrorResult<Table>.ErrorResult($"Internal server error");
+        }
+
+        if (!table.Exists())
+        {
+            _logger.Error($"A table with the give id {id} does not exist");
+            return ErrorResult<Table>.ErrorResult($"A table with the give id {id} does not exist");
+        }
+
+        return Result<Table>.SuccessResult(table);
     }
 }
