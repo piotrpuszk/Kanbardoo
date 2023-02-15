@@ -1,6 +1,8 @@
-﻿namespace Kanbardoo.Application.Contracts.TableContracts;
+﻿using Kanbardoo.Application.Results;
+
+namespace Kanbardoo.Application.Contracts.TableContracts;
 
 public interface IDeleteTableUseCase
 {
-    Task HandleAsync(int id);
+    Task<Result> HandleAsync(int id);
 }

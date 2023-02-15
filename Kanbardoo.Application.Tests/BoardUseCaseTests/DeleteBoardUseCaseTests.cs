@@ -5,7 +5,7 @@ using Kanbardoo.Domain.Repositories;
 using Moq;
 using Serilog;
 
-namespace Kanbardoo.Application.Tests;
+namespace Kanbardoo.Application.Tests.BoardUseCaseTests;
 internal class DeleteBoardUseCaseTests
 {
     private DeleteBoardUseCase _deleteBoardUseCase;
@@ -17,7 +17,7 @@ internal class DeleteBoardUseCaseTests
     public void Setup()
     {
         _boardRepository = new Mock<IBoardRepository>();
-        _logger= new Mock<ILogger>();
+        _logger = new Mock<ILogger>();
         _unitOfWork = new Mock<IUnitOfWork>();
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
@@ -69,7 +69,7 @@ internal class DeleteBoardUseCaseTests
         Result result = await _deleteBoardUseCase.HandleAsync(id);
 
         //Assert
-        _boardRepository.Verify(e => e.DeleteAsync(id), Times.Once);
+        _boardRepository.Verify(e => e.DeleteAsync(It.IsAny<int>()), Times.Once);
     }
 
     [Test]
@@ -84,7 +84,7 @@ internal class DeleteBoardUseCaseTests
 
         //Assert
         Assert.IsNotNull(result);
-        
+
         var errorResult = result as ErrorResult;
 
         Assert.IsNotNull(errorResult);

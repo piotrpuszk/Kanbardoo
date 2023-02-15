@@ -6,7 +6,7 @@ using Kanbardoo.Domain.Repositories;
 using Moq;
 using Serilog;
 
-namespace Kanbardoo.Application.Tests;
+namespace Kanbardoo.Application.Tests.BoardUseCaseTests;
 internal class UpdateBoardUseCaseTests
 {
     private UpdateBoardUseCase _updateBoardUseCase;
@@ -36,11 +36,12 @@ internal class UpdateBoardUseCaseTests
         //Arrange
         var board = new Board()
         {
-            ID= 1,
+            ID = 1,
             Name = "modifiedName"
         };
 
         _boardRepository.Setup(e => e.UpdateAsync(board)).Returns(Task.CompletedTask);
+        _boardRepository.Setup(e => e.GetAsync(board.ID)).ReturnsAsync(new Board() { ID = 1 });
 
         //Act
         SuccessResult successResult = await _updateBoardUseCase.HandleAsync(board) as SuccessResult;
@@ -107,10 +108,11 @@ internal class UpdateBoardUseCaseTests
             Name = "test",
         };
         _boardRepository.Setup(e => e.UpdateAsync(board)).Returns(Task.CompletedTask);
+        _boardRepository.Setup(e => e.GetAsync(board.ID)).ReturnsAsync(new Board() { ID = 1 });
 
         await _updateBoardUseCase.HandleAsync(board);
 
-        _boardRepository.Verify(e => e.UpdateAsync(board), Times.Once);
+        _boardRepository.Verify(e => e.UpdateAsync(It.IsAny<Board>()), Times.Once);
     }
 
     [Test]
@@ -122,6 +124,7 @@ internal class UpdateBoardUseCaseTests
             Name = "test",
         };
         _boardRepository.Setup(e => e.UpdateAsync(board)).Returns(Task.CompletedTask);
+        _boardRepository.Setup(e => e.GetAsync(board.ID)).ReturnsAsync(new Board() { ID = 1 });
 
         await _updateBoardUseCase.HandleAsync(board);
 

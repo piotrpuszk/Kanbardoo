@@ -53,7 +53,7 @@ public sealed class BoardsController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return BadRequest(result);
+            return Ok(Result<IEnumerable<BoardDTO>>.ErrorResult(result.Errors!));
         }
 
         var boardDTOs = _mapper.Map<IEnumerable<BoardDTO>>(result.Content);
@@ -67,7 +67,7 @@ public sealed class BoardsController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return BadRequest(result);
+            return Ok(Result<BoardDTO>.ErrorResult(result.Errors!));
         }
 
         var boardDTO = _mapper.Map<BoardDTO>(result.Content);

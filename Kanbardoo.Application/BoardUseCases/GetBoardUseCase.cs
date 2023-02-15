@@ -58,7 +58,7 @@ public class GetBoardUseCase : IGetBoardUseCase
             return Result<Board>.ErrorResult($"Internal server error");
         }
 
-        if (board.ID == default)
+        if (!board.Exists())
         {
             _logger.Error("A board with ID {id} does not exist");
             return Result<Board>.ErrorResult($"A board with ID {id} does not exist");

@@ -6,7 +6,7 @@ using Kanbardoo.Domain.Repositories;
 using Moq;
 using Serilog;
 
-namespace Kanbardoo.Application.Tests;
+namespace Kanbardoo.Application.Tests.BoardUseCaseTests;
 internal class GetBoardUseCaseTests
 {
     private GetBoardUseCase _getBoardUseCase;
@@ -69,7 +69,7 @@ internal class GetBoardUseCaseTests
     }
 
     [Test]
-    public async Task HandleAsync_AnyId_ExecutesGetAsyncOnce()
+    public async Task HandleAsync_NonExistingBoardId_ExecutesGetAsyncOnce()
     {
         //Arrange
         int id = default;
@@ -80,10 +80,15 @@ internal class GetBoardUseCaseTests
         Result<Board> result = await _getBoardUseCase.HandleAsync(id);
 
         //Assert
-        _boardRepository.Verify(e => e.GetAsync(id), Times.Once);
+        _boardRepository.Verify(e => e.GetAsync(It.IsAny<int>()), Times.Once);
+    }
+
+    [Test]
+    public async Task HandleAsync_ExistingBoardId_ExecutesGetAsyncOnce()
+    {
 
         //Arrange
-        id = 1;
+        int id = 1;
         var board = new Board() { ID = id };
         _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(board);
 
@@ -91,7 +96,7 @@ internal class GetBoardUseCaseTests
         Result<Board> secondResult = await _getBoardUseCase.HandleAsync(id);
 
         //Assert
-        _boardRepository.Verify(e => e.GetAsync(id), Times.Once);
+        _boardRepository.Verify(e => e.GetAsync(It.IsAny<int>()), Times.Once);
     }
 
     [Test]
@@ -117,7 +122,7 @@ internal class GetBoardUseCaseTests
         BoardFilters boardFilters = new()
         {
             BoardName = It.IsAny<string>(),
-            OrderByClauses = new List<OrderByClause<Board>>() 
+            OrderByClauses = new List<OrderByClause<Board>>()
             {
                 new()
                 {

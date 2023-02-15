@@ -20,7 +20,7 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
     {
         var board = await _unitOfWork.BoardRepository.GetAsync(id);
 
-        if (board.ID == default)
+        if (!board.Exists())
         {
             _logger.Error($"A board with given ID does not exist: {id}");
             return Result.ErrorResult("A board with given ID does not exist");

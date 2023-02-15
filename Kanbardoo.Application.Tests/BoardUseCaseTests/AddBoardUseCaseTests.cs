@@ -6,7 +6,7 @@ using Kanbardoo.Domain.Repositories;
 using Moq;
 using Serilog;
 
-namespace Kanbardoo.Application.Tests;
+namespace Kanbardoo.Application.Tests.BoardUseCaseTests;
 internal class AddBoardUseCaseTests
 {
     private AddBoardUseCase _addBoardUseCase;
@@ -38,7 +38,7 @@ internal class AddBoardUseCaseTests
         var boardName = "Test";
         _newBoard = new()
         {
-            Name= boardName,
+            Name = boardName,
         };
 
         //Act
@@ -91,9 +91,9 @@ internal class AddBoardUseCaseTests
 
         var errorResult = result as ErrorResult;
 
-        Assert.IsNotNull(errorResult);  
+        Assert.IsNotNull(errorResult);
         Assert.IsNotNull(errorResult.Errors);
-        Assert.IsNotEmpty(errorResult.Errors); 
+        Assert.IsNotEmpty(errorResult.Errors);
         Assert.IsFalse(errorResult.IsSuccess);
     }
 
@@ -123,7 +123,7 @@ internal class AddBoardUseCaseTests
 
         Assert.IsNotNull(errorResult);
         Assert.IsNotNull(errorResult.Errors);
-        Assert.IsNotEmpty(errorResult.Errors); 
+        Assert.IsNotEmpty(errorResult.Errors);
         Assert.IsFalse(errorResult.IsSuccess);
         Assert.That(errorResult.Errors.First(), Is.EqualTo("A new board is null"));
     }

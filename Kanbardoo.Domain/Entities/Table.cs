@@ -13,4 +13,11 @@ public class Table : Entity
     public DateTime CreationDate { get; set; }
     public int Priority { get; set; }
     public ICollection<KanTask> Tasks { get; set; } = new List<KanTask>();
+
+    public bool IsValid()
+    {
+        return BoardID != default
+            && !string.IsNullOrWhiteSpace(Name)
+            && CreationDate != default;
+    }
 }

@@ -26,9 +26,9 @@ public class UpdateBoardUseCase : IUpdateBoardUseCase
             return Result.ErrorResult("Board is null");
         }
 
-        var found = _unitOfWork.BoardRepository.GetAsync(board.ID);
+        var found = await _unitOfWork.BoardRepository.GetAsync(board.ID);
 
-        if (found.Id == default)
+        if (!found.Exists())
         {
             _logger.Error($"Board with the ID {board.ID} does not exist in the db");
             return Result.ErrorResult("The board does not exist");
