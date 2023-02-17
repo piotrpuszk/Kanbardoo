@@ -2,6 +2,7 @@
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
+using Kanbardoo.Domain.Validators;
 using Newtonsoft.Json;
 using ILogger = Serilog.ILogger;
 
@@ -11,17 +12,20 @@ public class UpdateTableUseCase : IUpdateTableUseCase
 {
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly TableToUpdateValidator _tableToUpdateValidator;
 
     public UpdateTableUseCase(ILogger logger,
-                           IUnitOfWork unitOfWork)
+                           IUnitOfWork unitOfWork,
+                           TableToUpdateValidator tableToUpdateValidator)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
+        _tableToUpdateValidator = tableToUpdateValidator;
     }
     public async Task<Result> HandleAsync(Table table)
     {
-
-        if (table is null || !table.IsValid())
+        var validationResult = await _tableToUpdateValidator.ValidateAsync(table);
+        if (!validationResult.IsValid)
         {
             _logger.Error($"Invalid table to update: {JsonConvert.SerializeObject(table is not null ? table : "null")}");
             return Result.ErrorResult("The table is invalid");

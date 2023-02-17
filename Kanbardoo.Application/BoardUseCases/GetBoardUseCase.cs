@@ -1,8 +1,10 @@
-﻿using Kanbardoo.Application.Contracts.BoardContracts;
+﻿using FluentValidation;
+using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Filters;
 using Kanbardoo.Domain.Repositories;
+using Kanbardoo.Domain.Validators;
 using Newtonsoft.Json;
 using ILogger = Serilog.ILogger;
 
@@ -11,12 +13,15 @@ public class GetBoardUseCase : IGetBoardUseCase
 {
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly BoardFiltersValidator _boardFiltersValidator;
 
     public GetBoardUseCase(IUnitOfWork unitOfWork,
-                           ILogger logger)
+                           ILogger logger,
+                           BoardFiltersValidator boardFiltersValidator)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _boardFiltersValidator = boardFiltersValidator;
     }
 
     public async Task<Result<IEnumerable<Board>>> HandleAsync()
@@ -27,7 +32,8 @@ public class GetBoardUseCase : IGetBoardUseCase
 
     public async Task<Result<IEnumerable<Board>>> HandleAsync(BoardFilters boardFilters)
     {
-        if (!boardFilters?.IsValid() ?? true)
+        var validationResult = _boardFiltersValidator.Validate(boardFilters);
+        if (!validationResult.IsValid)
         {
             _logger.Error($"Board filters are invalid: {JsonConvert.SerializeObject(boardFilters)}");
             return Result<IEnumerable<Board>>.ErrorResult($"Board filters are invalid");

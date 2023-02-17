@@ -16,6 +16,9 @@ public class BoardRepository : IBoardRepository
 
     public async Task AddAsync(Board board)
     {
+        board.Owner = null!;
+        board.Status = null!;
+        board.Tables = null!;
         await _dbContext.Boards.AddAsync(board);
     }
 
@@ -59,10 +62,10 @@ public class BoardRepository : IBoardRepository
             .Include(e => e.Status)
             .Include(e => e.Tables.OrderBy(e => e.Priority))
             .ThenInclude(e => e.Tasks)
-            //.ThenInclude(e => e.Status)
-            //.Include(e => e.Tables)
-            //.ThenInclude(e => e.Tasks)
-            //.ThenInclude(e => e.Assignee)
+            .ThenInclude(e => e.Status)
+            .Include(e => e.Tables)
+            .ThenInclude(e => e.Tasks)
+            .ThenInclude(e => e.Assignee)
             .FirstOrDefaultAsync(e => e.ID == id);
 
         if (found is null)
@@ -77,6 +80,7 @@ public class BoardRepository : IBoardRepository
     {
         board.Status = null;
         board.Owner = null;
+        board.Tables = null;
         _dbContext.Boards.Update(board);
     }
 }

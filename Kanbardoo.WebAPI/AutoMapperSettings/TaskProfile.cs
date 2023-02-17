@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Kanbardoo.Domain.Entities;
 using Kanbardoo.WebAPI.DTOs;
-using KanTask = Kanbardoo.Domain.Entities.KanTask;
 
 namespace Kanbardoo.WebAPI.AutoMapperSettings;
 

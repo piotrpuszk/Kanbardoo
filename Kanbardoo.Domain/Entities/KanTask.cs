@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Kanbardoo.Domain.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kanbardoo.Domain.Entities;
@@ -18,4 +19,7 @@ public class KanTask : Entity
 
     [ForeignKey(nameof(AssigneeID))]
     public User Assignee { get; set; } = new User();
+    public int TableID { get; set; }
+    [ForeignKey(nameof(TableID))]
+    public Table Table { get; set; } = new Table();
 }

@@ -17,6 +17,9 @@ public class TableRepository : ITableRepository
 
     public async Task AddAsync(Table table)
     {
+        table.Board = null!;
+        table.Tasks = null!;
+
         await _dbContext.Tables.AddAsync(table);
     }
 
@@ -37,6 +40,9 @@ public class TableRepository : ITableRepository
     {
         var found = await _dbContext.Tables
             .Include(e => e.Tasks)
+            .ThenInclude(e => e.Status)
+            .Include(e => e.Tasks)
+            .ThenInclude(e => e.Assignee)
             .FirstOrDefaultAsync(e => e.ID == id);
 
         if (found is null)
@@ -49,6 +55,8 @@ public class TableRepository : ITableRepository
 
     public async Task UpdateAsync(Table table)
     {
+        table.Board = null!;
+        table.Tasks= null!;
         _dbContext.Tables.Update(table);
     }
 }

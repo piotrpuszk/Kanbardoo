@@ -3,6 +3,7 @@ using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
+using Kanbardoo.Domain.Validators;
 using Moq;
 using Serilog;
 
@@ -14,17 +15,19 @@ internal class AddBoardUseCaseTests
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
     private NewBoard _newBoard;
+    private NewBoardValidator _newBoardValidator;
 
     [SetUp]
     public void Setup()
     {
+        _newBoardValidator = new NewBoardValidator();
         _boardRepository = new Mock<IBoardRepository>();
         _unitOfWork = new Mock<IUnitOfWork>();
         _logger = new Mock<ILogger>();
 
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
 
-        _addBoardUseCase = new AddBoardUseCase(_unitOfWork.Object, _logger.Object);
+        _addBoardUseCase = new AddBoardUseCase(_unitOfWork.Object, _logger.Object, _newBoardValidator);
 
         _newBoard = new NewBoard();
     }
@@ -117,14 +120,29 @@ internal class AddBoardUseCaseTests
     [Test]
     public async Task HandleAsync_NewBoardIsNull_ReturnsErrorResult()
     {
-        _newBoard = null;
+        _newBoard = null!;
 
-        ErrorResult errorResult = await _addBoardUseCase.HandleAsync(_newBoard) as ErrorResult;
+        ErrorResult errorResult = (await _addBoardUseCase.HandleAsync(_newBoard) as ErrorResult)!;
 
         Assert.IsNotNull(errorResult);
         Assert.IsNotNull(errorResult.Errors);
         Assert.IsNotEmpty(errorResult.Errors);
         Assert.IsFalse(errorResult.IsSuccess);
-        Assert.That(errorResult.Errors.First(), Is.EqualTo("A new board is null"));
+        Assert.That(errorResult.Errors.First(), Is.EqualTo("A new board is invalid"));
+    }
+
+    [Test]
+    public async Task HandleAsync_NameIsNull_ReturnsErrorResult()
+    {
+        _newBoard = new NewBoard()
+        {
+            Name = null!,
+        };
+        ErrorResult errorResult = (await _addBoardUseCase.HandleAsync(_newBoard) as ErrorResult)!;
+
+        Assert.IsNotNull(errorResult);
+        Assert.IsNotNull(errorResult.Errors);
+        Assert.IsNotEmpty(errorResult.Errors);
+        Assert.IsFalse(errorResult.IsSuccess);
     }
 }

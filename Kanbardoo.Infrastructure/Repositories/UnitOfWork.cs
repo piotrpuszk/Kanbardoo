@@ -12,14 +12,23 @@ public class UnitOfWork : IUnitOfWork
 
     public IBoardRepository BoardRepository { get; init; }
     public ITableRepository TableRepository { get; init; }
+    public ITaskRepository TaskRepository { get; init; }
+    public ITaskStatusRepository TaskStatusRepository { get; init; }
+    public IUserRepository UserRepository { get; init; }
 
     public UnitOfWork(DBContext dbContext,
                       IBoardRepository boardRepository,
-                      ITableRepository tableRepository)
+                      ITableRepository tableRepository,
+                      ITaskRepository taskRepository,
+                      ITaskStatusRepository taskStatusRepository,
+                      IUserRepository userRepository)
     {
         BoardRepository = boardRepository;
         TableRepository = tableRepository;
         _dbContext = dbContext;
+        TaskRepository = taskRepository;
+        TaskStatusRepository = taskStatusRepository;
+        UserRepository = userRepository;
     }
 
     public async Task<int> SaveChangesAsync()

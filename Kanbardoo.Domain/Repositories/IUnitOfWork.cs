@@ -9,6 +9,9 @@ public interface IUnitOfWork
 {
     public IBoardRepository BoardRepository { get; init; }
     public ITableRepository TableRepository { get; init; }
+    public ITaskRepository TaskRepository { get; init; }
+    public ITaskStatusRepository TaskStatusRepository { get; init; }
+    public IUserRepository UserRepository { get; init; }
 
     public Task<int> SaveChangesAsync();
 }

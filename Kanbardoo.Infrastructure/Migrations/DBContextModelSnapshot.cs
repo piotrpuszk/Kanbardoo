@@ -110,7 +110,7 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.Property<int>("StatusID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("TableID")
+                    b.Property<int>("TableID")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
@@ -206,7 +206,7 @@ namespace Kanbardoo.Infrastructure.Migrations
                         new
                         {
                             ID = 46920,
-                            CreationDate = new DateTime(2023, 2, 13, 19, 8, 27, 360, DateTimeKind.Utc).AddTicks(9352),
+                            CreationDate = new DateTime(2023, 2, 16, 5, 24, 7, 391, DateTimeKind.Utc).AddTicks(2619),
                             Name = "piotrpuszk"
                         });
                 });
@@ -244,13 +244,17 @@ namespace Kanbardoo.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Kanbardoo.Domain.Entities.Table", null)
+                    b.HasOne("Kanbardoo.Domain.Entities.Table", "Table")
                         .WithMany("Tasks")
-                        .HasForeignKey("TableID");
+                        .HasForeignKey("TableID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Assignee");
 
                     b.Navigation("Status");
+
+                    b.Navigation("Table");
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.Table", b =>
