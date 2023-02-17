@@ -2,6 +2,7 @@
 using Kanbardoo.Application.TableUseCases;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
+using Kanbardoo.Domain.Validators;
 using Moq;
 using Serilog;
 using System;
@@ -18,6 +19,7 @@ internal class DeleteTableUseCaseTests
     private Mock<ITableRepository> _tableRepository;
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
+    private TableIDToDelete _tableIDToDelete;
 
     [SetUp]
     public void Setup()
@@ -29,8 +31,9 @@ internal class DeleteTableUseCaseTests
 
         _unitOfWork.Setup(e => e.TableRepository).Returns(_tableRepository.Object);
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
+        _tableIDToDelete = new TableIDToDelete(_unitOfWork.Object);
 
-        _deleteTableUseCase = new DeleteTableUseCase(_logger.Object, _unitOfWork.Object);
+        _deleteTableUseCase = new DeleteTableUseCase(_logger.Object, _unitOfWork.Object, _tableIDToDelete);
     }
 
     [Test]
@@ -46,7 +49,7 @@ internal class DeleteTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(table);
 
         //Act
-        SuccessResult successResult = await _deleteTableUseCase.HandleAsync(id) as SuccessResult;
+        SuccessResult successResult = (await _deleteTableUseCase.HandleAsync(id) as SuccessResult)!;
 
         //Assert
         Assert.IsNotNull(successResult);
@@ -66,7 +69,7 @@ internal class DeleteTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(table);
 
         //Act
-        SuccessResult successResult = await _deleteTableUseCase.HandleAsync(id) as SuccessResult;
+        SuccessResult successResult = (await _deleteTableUseCase.HandleAsync(id) as SuccessResult)!;
 
         //Assert
         _unitOfWork.Verify(e => e.SaveChangesAsync(), Times.AtLeastOnce);
@@ -85,7 +88,7 @@ internal class DeleteTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(table);
 
         //Act
-        SuccessResult successResult = await _deleteTableUseCase.HandleAsync(id) as SuccessResult;
+        SuccessResult successResult = (await _deleteTableUseCase.HandleAsync(id) as SuccessResult)!;
 
         //Assert
         _tableRepository.Verify(e => e.DeleteAsync(It.IsAny<int>()), Times.Once);
@@ -99,7 +102,7 @@ internal class DeleteTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync(nonExistingId)).ReturnsAsync(new Table());
 
         //Act
-        ErrorResult errorResult = await _deleteTableUseCase.HandleAsync(nonExistingId) as ErrorResult;
+        ErrorResult errorResult = (await _deleteTableUseCase.HandleAsync(nonExistingId) as ErrorResult)!;
 
         //Assert
         Assert.IsNotNull(errorResult);
@@ -116,7 +119,7 @@ internal class DeleteTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync(nonExistingId)).ReturnsAsync(new Table());
 
         //Act
-        ErrorResult errorResult = await _deleteTableUseCase.HandleAsync(nonExistingId) as ErrorResult;
+        ErrorResult errorResult = (await _deleteTableUseCase.HandleAsync(nonExistingId) as ErrorResult)!;
 
         //Assert
         _unitOfWork.Verify(e => e.SaveChangesAsync(), Times.Never);
@@ -130,7 +133,7 @@ internal class DeleteTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync(nonExistingId)).ReturnsAsync(new Table());
 
         //Act
-        ErrorResult errorResult = await _deleteTableUseCase.HandleAsync(nonExistingId) as ErrorResult;
+        ErrorResult errorResult = (await _deleteTableUseCase.HandleAsync(nonExistingId) as ErrorResult)!;
 
         //Assert
         _tableRepository.Verify(e => e.DeleteAsync(It.IsAny<int>()), Times.Never);
@@ -149,7 +152,7 @@ internal class DeleteTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync(It.IsAny<int>())).ReturnsAsync(table);
 
         //Act
-        ErrorResult errorResult = await _deleteTableUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult;
+        ErrorResult errorResult = (await _deleteTableUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult)!;
 
         //Assert
         Assert.IsNotNull(errorResult);
@@ -171,7 +174,7 @@ internal class DeleteTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync(It.IsAny<int>())).ReturnsAsync(table);
 
         //Act
-        ErrorResult errorResult = await _deleteTableUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult;
+        ErrorResult errorResult = (await _deleteTableUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult)!;
 
         //Assert
         Assert.IsNotNull(errorResult);

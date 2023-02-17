@@ -3,6 +3,7 @@ using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
+using Kanbardoo.Domain.Validators;
 using Newtonsoft.Json;
 using System.Text.Json.Nodes;
 using ILogger = Serilog.ILogger;
@@ -12,28 +13,24 @@ public class AddTableUseCase : IAddTableUseCase
 {
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly NewTableValidator _newTableValidator;
 
     public AddTableUseCase(ILogger logger,
-                           IUnitOfWork unitOfWork)
+                           IUnitOfWork unitOfWork,
+                           NewTableValidator newTableValidator)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
+        _newTableValidator = newTableValidator;
     }
 
     public async Task<Result> HandleAsync(NewTable newTable)
     {
-        if (newTable is null)
+        var validationResult = await _newTableValidator.ValidateAsync(newTable);
+        if (!validationResult.IsValid)
         {
-            _logger.Error("tried to add a newTable = null");
-            return Result.ErrorResult("The given table is null");
-        }
-
-        Board board = await _unitOfWork.BoardRepository.GetAsync(newTable.BoardID);
-
-        if (!board.Exists())
-        {
-            _logger.Error($"A new table tried to add to a non-existing board: {JsonConvert.SerializeObject(newTable)}");
-            return Result.ErrorResult("A new table tried to add to a non-existing board");
+            _logger.Error($"newTable is invalid");
+            return Result.ErrorResult("The given table is invalid");
         }
 
         Table table = new()
@@ -53,7 +50,7 @@ public class AddTableUseCase : IAddTableUseCase
         }
         catch(Exception ex)
         {
-            _logger.Error($"Internal server error: \n\n {nameof(AddTableUseCase)}.{nameof(HandleAsync)}({JsonConvert.SerializeObject(newTable)})");
+            _logger.Error($"Internal server error: \n\n {nameof(AddTableUseCase)}.{nameof(HandleAsync)}({JsonConvert.SerializeObject(newTable)}) \n\n {ex}");
             return Result.ErrorResult("Internal server error");
         }
         

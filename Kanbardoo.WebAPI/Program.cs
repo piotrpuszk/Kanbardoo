@@ -1,8 +1,11 @@
 using Kanbardoo.Application.BoardUseCases;
 using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Contracts.TableContracts;
+using Kanbardoo.Application.Contracts.TaskContracts;
 using Kanbardoo.Application.TableUseCases;
+using Kanbardoo.Application.TaskUseCases;
 using Kanbardoo.Domain.Repositories;
+using Kanbardoo.Domain.Validators;
 using Kanbardoo.Infrastructure;
 using Kanbardoo.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -32,9 +35,30 @@ builder.Services.AddScoped<IGetTableUseCase, GetTableUseCase>();
 builder.Services.AddScoped<IDeleteTableUseCase, DeleteTableUseCase>();
 builder.Services.AddScoped<IUpdateTableUseCase, UpdateTableUseCase>();
 
+builder.Services.AddScoped<IAddTaskUseCase, AddTaskUseCase>();
+builder.Services.AddScoped<IGetTaskUseCase, GetTaskUseCase>();
+builder.Services.AddScoped<IDeleteTaskUseCase, DeleteTaskUseCase>();
+builder.Services.AddScoped<IUpdateTaskUseCase, UpdateTaskUseCase>();
+
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 builder.Services.AddScoped<ITableRepository, TableRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<ITaskStatusRepository, TaskStatusRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<BoardFiltersValidator>();
+builder.Services.AddScoped<BoardToUpdateValidator>();
+builder.Services.AddScoped<BoardIdToDeleteValidator>();
+builder.Services.AddScoped<NewBoardValidator>();
+
+builder.Services.AddScoped<TableToUpdateValidator>();
+builder.Services.AddScoped<TableIDToDelete>();
+builder.Services.AddScoped<NewTableValidator>();
+
+builder.Services.AddScoped<KanTaskValidator>();
+builder.Services.AddScoped<NewTaskValidator>();
+builder.Services.AddScoped<KanTaskIdToDeleteValidator>();
 
 builder.Services.AddDbContext<DBContext>(options =>
 {

@@ -2,6 +2,7 @@
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
+using Kanbardoo.Domain.Validators;
 using Moq;
 using Serilog;
 
@@ -12,6 +13,7 @@ internal class DeleteBoardUseCaseTests
     private Mock<IUnitOfWork> _unitOfWork;
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
+    private BoardIdToDeleteValidator _boardIdToDeleteValidator;
 
     [SetUp]
     public void Setup()
@@ -21,8 +23,9 @@ internal class DeleteBoardUseCaseTests
         _unitOfWork = new Mock<IUnitOfWork>();
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
+        _boardIdToDeleteValidator = new BoardIdToDeleteValidator(_unitOfWork.Object);
 
-        _deleteBoardUseCase = new DeleteBoardUseCase(_unitOfWork.Object, _logger.Object);
+        _deleteBoardUseCase = new DeleteBoardUseCase(_unitOfWork.Object, _logger.Object, _boardIdToDeleteValidator);
     }
 
     [Test]

@@ -2,6 +2,7 @@
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
+using Kanbardoo.Domain.Validators;
 using Newtonsoft.Json;
 using ILogger = Serilog.ILogger;
 
@@ -10,28 +11,24 @@ public class UpdateBoardUseCase : IUpdateBoardUseCase
 {
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly BoardToUpdateValidator _boardToUpdateValidator;
 
     public UpdateBoardUseCase(IUnitOfWork unitOfWork,
-                              ILogger logger)
+                              ILogger logger,
+                              BoardToUpdateValidator boardToUpdateValidator)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _boardToUpdateValidator = boardToUpdateValidator;
     }
 
     public async Task<Result> HandleAsync(Board board)
     {
-        if (board is null)
+        var validationResult = await _boardToUpdateValidator.ValidateAsync(board);
+        if (!validationResult.IsValid)
         {
-            _logger.Error($"{nameof(UpdateBoardUseCase)}.{nameof(HandleAsync)} board is null");
-            return Result.ErrorResult("Board is null");
-        }
-
-        var found = await _unitOfWork.BoardRepository.GetAsync(board.ID);
-
-        if (!found.Exists())
-        {
-            _logger.Error($"Board with the ID {board.ID} does not exist in the db");
-            return Result.ErrorResult("The board does not exist");
+            _logger.Error($"{nameof(UpdateBoardUseCase)}.{nameof(HandleAsync)} board is invalid");
+            return Result.ErrorResult("Board is invalid");
         }
 
         try

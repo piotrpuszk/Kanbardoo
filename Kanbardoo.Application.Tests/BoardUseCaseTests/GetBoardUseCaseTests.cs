@@ -3,6 +3,7 @@ using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Filters;
 using Kanbardoo.Domain.Repositories;
+using Kanbardoo.Domain.Validators;
 using Moq;
 using Serilog;
 
@@ -13,16 +14,18 @@ internal class GetBoardUseCaseTests
     private Mock<IUnitOfWork> _unitOfWork;
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
+    private BoardFiltersValidator _boardFiltersValidator;
 
     [SetUp]
     public void Setup()
     {
+        _boardFiltersValidator = new BoardFiltersValidator();
         _boardRepository = new Mock<IBoardRepository>();
         _logger = new Mock<ILogger>();
         _unitOfWork = new Mock<IUnitOfWork>();
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
 
-        _getBoardUseCase = new GetBoardUseCase(_unitOfWork.Object, _logger.Object);
+        _getBoardUseCase = new GetBoardUseCase(_unitOfWork.Object, _logger.Object, _boardFiltersValidator);
     }
 
     [Test]
@@ -106,7 +109,7 @@ internal class GetBoardUseCaseTests
         _boardRepository.Setup(e => e.GetAsync(It.IsAny<int>())).Throws<Exception>();
 
         //Act
-        ErrorResult<Board> result = await _getBoardUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult<Board>;
+        ErrorResult<Board> result = (await _getBoardUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult<Board>)!;
 
         //Assert
         Assert.IsNotNull(result);
@@ -159,7 +162,7 @@ internal class GetBoardUseCaseTests
         _boardRepository.Setup(e => e.GetAsync(boardFilters)).ReturnsAsync(returnValue);
 
         //Act
-        SuccessResult<IEnumerable<Board>> result = await _getBoardUseCase.HandleAsync(boardFilters) as SuccessResult<IEnumerable<Board>>;
+        SuccessResult<IEnumerable<Board>> result = (await _getBoardUseCase.HandleAsync(boardFilters) as SuccessResult<IEnumerable<Board>>)!;
 
         //Assert
         Assert.IsNotNull(result);
@@ -184,7 +187,7 @@ internal class GetBoardUseCaseTests
         };
 
         //Act
-        ErrorResult<IEnumerable<Board>> result = await _getBoardUseCase.HandleAsync(boardFilters) as ErrorResult<IEnumerable<Board>>;
+        ErrorResult<IEnumerable<Board>> result = (await _getBoardUseCase.HandleAsync(boardFilters) as ErrorResult<IEnumerable<Board>>)!;
 
         //Assert
         Assert.IsNotNull(result);
@@ -211,7 +214,7 @@ internal class GetBoardUseCaseTests
         _boardRepository.Setup(e => e.GetAsync(boardFilters)).Throws<Exception>();
 
         //Act
-        ErrorResult<IEnumerable<Board>> result = await _getBoardUseCase.HandleAsync(boardFilters) as ErrorResult<IEnumerable<Board>>;
+        ErrorResult<IEnumerable<Board>> result = (await _getBoardUseCase.HandleAsync(boardFilters) as ErrorResult<IEnumerable<Board>>)!;
 
         //Assert
         Assert.IsNotNull(result);

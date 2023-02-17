@@ -3,6 +3,7 @@ using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
+using Kanbardoo.Domain.Validators;
 using Newtonsoft.Json;
 using ILogger = Serilog.ILogger;
 
@@ -11,20 +12,24 @@ public sealed class AddBoardUseCase : IAddBoardUseCase
 {
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly NewBoardValidator _newBoardValidator;
 
     public AddBoardUseCase(IUnitOfWork unitOfWork,
-                           ILogger logger)
+                           ILogger logger,
+                           NewBoardValidator newBoardValidator)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _newBoardValidator = newBoardValidator;
     }
 
     public async Task<Result> HandleAsync(NewBoard newBoard)
     {
-        if (newBoard is null)
+        var validationResult = _newBoardValidator.Validate(newBoard);
+        if (!validationResult.IsValid)
         {
-            _logger.Error($"{nameof(AddBoardUseCase)}.{nameof(HandleAsync)} => newBoard is null");
-            return Result.ErrorResult("A new board is null");
+            _logger.Error($"{nameof(AddBoardUseCase)}.{nameof(HandleAsync)} => newBoard is invalid");
+            return Result.ErrorResult("A new board is invalid");
         }
 
         try

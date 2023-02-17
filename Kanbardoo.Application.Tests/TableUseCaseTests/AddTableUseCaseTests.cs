@@ -3,6 +3,7 @@ using Kanbardoo.Application.TableUseCases;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
+using Kanbardoo.Domain.Validators;
 using Moq;
 using Serilog;
 
@@ -14,6 +15,7 @@ internal class AddTableUseCaseTests
     private Mock<ITableRepository> _tableRepository;
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
+    private NewTableValidator _newTableValidator;
 
     [SetUp]
     public void Setup()
@@ -25,8 +27,9 @@ internal class AddTableUseCaseTests
 
         _unitOfWork.Setup(e => e.TableRepository).Returns(_tableRepository.Object);
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
+        _newTableValidator = new NewTableValidator(_unitOfWork.Object);
 
-        _addTableUseCase = new AddTableUseCase(_logger.Object, _unitOfWork.Object);
+        _addTableUseCase = new AddTableUseCase(_logger.Object, _unitOfWork.Object, _newTableValidator);
     }
 
     [Test]
@@ -36,13 +39,13 @@ internal class AddTableUseCaseTests
         var boardId = 1;
         NewTable newTable = new()
         {
-            Name= "Test",
+            Name = "Test",
             BoardID = boardId,
         };
 
         Board board = new()
         {
-            ID= boardId,
+            ID = boardId,
         };
 
         _boardRepository.Setup(e => e.GetAsync(boardId)).ReturnsAsync(board);
@@ -139,6 +142,5 @@ internal class AddTableUseCaseTests
         Assert.IsNotNull(errorResult.Errors);
         Assert.IsNotEmpty(errorResult.Errors);
         Assert.IsFalse(errorResult.IsSuccess);
-        Assert.That(errorResult.Errors.Where(e => e == "The given table is null").Count(), Is.EqualTo(1));
     }
 }

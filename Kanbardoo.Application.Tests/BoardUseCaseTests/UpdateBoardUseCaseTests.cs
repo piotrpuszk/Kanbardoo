@@ -3,6 +3,7 @@ using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
+using Kanbardoo.Domain.Validators;
 using Moq;
 using Serilog;
 
@@ -14,6 +15,7 @@ internal class UpdateBoardUseCaseTests
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
     private NewBoard _newBoard;
+    private BoardToUpdateValidator _boardToUpdateValidator;
 
     [SetUp]
     public void Setup()
@@ -24,8 +26,9 @@ internal class UpdateBoardUseCaseTests
 
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
+        _boardToUpdateValidator = new BoardToUpdateValidator(_unitOfWork.Object);
 
-        _updateBoardUseCase = new UpdateBoardUseCase(_unitOfWork.Object, _logger.Object);
+        _updateBoardUseCase = new UpdateBoardUseCase(_unitOfWork.Object, _logger.Object, _boardToUpdateValidator);
 
         _newBoard = new NewBoard();
     }
@@ -37,14 +40,17 @@ internal class UpdateBoardUseCaseTests
         var board = new Board()
         {
             ID = 1,
-            Name = "modifiedName"
+            Name = "modifiedName",
+            StatusID = 1,
+            OwnerID = 1,
+            CreationDate = new DateTime(2000, 1, 1, 0, 0, 0),
         };
 
         _boardRepository.Setup(e => e.UpdateAsync(board)).Returns(Task.CompletedTask);
         _boardRepository.Setup(e => e.GetAsync(board.ID)).ReturnsAsync(new Board() { ID = 1 });
 
         //Act
-        SuccessResult successResult = await _updateBoardUseCase.HandleAsync(board) as SuccessResult;
+        SuccessResult successResult = (await _updateBoardUseCase.HandleAsync(board) as SuccessResult)!;
 
         //Assert
         Assert.IsNotNull(successResult);
@@ -55,10 +61,10 @@ internal class UpdateBoardUseCaseTests
     public async Task HandleAsync_BoardIsNull_ReturnsErrorResult()
     {
         //Arrange
-        Board board = null;
+        Board board = null!;
 
         //Act
-        ErrorResult errorResult = await _updateBoardUseCase.HandleAsync(board) as ErrorResult;
+        ErrorResult errorResult = (await _updateBoardUseCase.HandleAsync(board) as ErrorResult)!;
 
         //Assert
         Assert.IsNotNull(errorResult);
@@ -74,7 +80,7 @@ internal class UpdateBoardUseCaseTests
         _boardRepository.Setup(e => e.UpdateAsync(It.IsAny<Board>())).Throws<Exception>();
 
         //Act
-        ErrorResult errorResult = await _updateBoardUseCase.HandleAsync(It.IsAny<Board>()) as ErrorResult;
+        ErrorResult errorResult = (await _updateBoardUseCase.HandleAsync(It.IsAny<Board>()) as ErrorResult)!;
 
         //Assert
         Assert.IsNotNull(errorResult);
@@ -90,7 +96,7 @@ internal class UpdateBoardUseCaseTests
         _unitOfWork.Setup(e => e.SaveChangesAsync()).Throws<Exception>();
 
         //Act
-        ErrorResult errorResult = await _updateBoardUseCase.HandleAsync(It.IsAny<Board>()) as ErrorResult;
+        ErrorResult errorResult = (await _updateBoardUseCase.HandleAsync(It.IsAny<Board>()) as ErrorResult)!;
 
         //Assert
         Assert.IsNotNull(errorResult);
@@ -106,6 +112,9 @@ internal class UpdateBoardUseCaseTests
         {
             ID = 1,
             Name = "test",
+            StatusID = 1,
+            OwnerID = 1,
+            CreationDate = new DateTime(2000, 1, 1, 0, 0, 0),
         };
         _boardRepository.Setup(e => e.UpdateAsync(board)).Returns(Task.CompletedTask);
         _boardRepository.Setup(e => e.GetAsync(board.ID)).ReturnsAsync(new Board() { ID = 1 });
@@ -122,6 +131,9 @@ internal class UpdateBoardUseCaseTests
         {
             ID = 1,
             Name = "test",
+            StatusID = 1,
+            OwnerID = 1,
+            CreationDate = new DateTime(2000, 1, 1, 0, 0, 0),
         };
         _boardRepository.Setup(e => e.UpdateAsync(board)).Returns(Task.CompletedTask);
         _boardRepository.Setup(e => e.GetAsync(board.ID)).ReturnsAsync(new Board() { ID = 1 });
