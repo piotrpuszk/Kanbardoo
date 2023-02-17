@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
 using Kanbardoo.Application.Contracts.BoardContracts;
-using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Filters;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.WebAPI.DTOs;
 using Kanbardoo.WebAPI.FilterDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.WebAPI.Controllers;
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public sealed class BoardsController : ControllerBase

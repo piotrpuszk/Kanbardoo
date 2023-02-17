@@ -3,6 +3,7 @@ using System;
 using Kanbardoo.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kanbardoo.Infrastructure.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20230217145231_AddedHashAndSalt")]
+    partial class AddedHashAndSalt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.2");
@@ -193,18 +196,20 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Hash")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
-                    b.Property<byte[]>("PasswordHash")
+                    b.Property<string>("Salt")
                         .IsRequired()
-                        .HasColumnType("BLOB");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
-                        .HasColumnType("BLOB");
+                        .HasMaxLength(1024)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
@@ -214,10 +219,10 @@ namespace Kanbardoo.Infrastructure.Migrations
                         new
                         {
                             ID = 46920,
-                            CreationDate = new DateTime(2023, 2, 17, 16, 16, 31, 983, DateTimeKind.Utc).AddTicks(4052),
+                            CreationDate = new DateTime(2023, 2, 17, 14, 52, 30, 898, DateTimeKind.Utc).AddTicks(8299),
+                            Hash = "",
                             Name = "piotrpuszk",
-                            PasswordHash = new byte[0],
-                            PasswordSalt = new byte[0]
+                            Salt = ""
                         });
                 });
 
