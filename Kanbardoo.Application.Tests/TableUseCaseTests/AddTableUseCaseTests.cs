@@ -37,13 +37,13 @@ internal class AddTableUseCaseTests
     {
         //Arrange
         var boardId = 1;
-        NewTable newTable = new()
+        NewKanTable newTable = new()
         {
             Name = "Test",
             BoardID = boardId,
         };
 
-        Board board = new()
+        KanBoard board = new()
         {
             ID = boardId,
         };
@@ -63,13 +63,13 @@ internal class AddTableUseCaseTests
     {
         //Arrange
         var boardId = 1;
-        NewTable newTable = new()
+        NewKanTable newTable = new()
         {
             Name = "Test",
             BoardID = boardId,
         };
 
-        _boardRepository.Setup(e => e.GetAsync(boardId)).ReturnsAsync(new Board());
+        _boardRepository.Setup(e => e.GetAsync(boardId)).ReturnsAsync(new KanBoard());
 
         //Act
         ErrorResult errorResult = (await _addTableUseCase.HandleAsync(newTable) as ErrorResult)!;
@@ -86,13 +86,13 @@ internal class AddTableUseCaseTests
     {
         //Arrange
         var boardId = 1;
-        NewTable newTable = new()
+        NewKanTable newTable = new()
         {
             Name = "Test",
             BoardID = boardId,
         };
 
-        Board board = new()
+        KanBoard board = new()
         {
             ID = boardId,
         };
@@ -111,13 +111,13 @@ internal class AddTableUseCaseTests
     {
         //Arrange
         var boardId = 1;
-        NewTable newTable = new()
+        NewKanTable newTable = new()
         {
             Name = "Test",
             BoardID = boardId,
         };
 
-        Board board = new()
+        KanBoard board = new()
         {
             ID = boardId,
         };
@@ -128,7 +128,7 @@ internal class AddTableUseCaseTests
         SuccessResult successResult = (await _addTableUseCase.HandleAsync(newTable) as SuccessResult)!;
 
         //Arrange
-        _tableRepository.Verify(e => e.AddAsync(It.IsAny<Table>()), Times.Once);
+        _tableRepository.Verify(e => e.AddAsync(It.IsAny<KanTable>()), Times.Once);
     }
 
     [Test]

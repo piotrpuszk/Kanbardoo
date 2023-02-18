@@ -14,12 +14,12 @@ public class KanTask : Entity
     public int StatusID { get; set; }
 
     [ForeignKey(nameof(StatusID))]
-    public TaskStatus Status { get; set; } = new TaskStatus();
+    public KanTaskStatus Status { get; set; } = new KanTaskStatus();
     public int AssigneeID { get; set; }
 
     [ForeignKey(nameof(AssigneeID))]
-    public User Assignee { get; set; } = new User();
+    public KanUser Assignee { get; set; } = new KanUser();
     public int TableID { get; set; }
     [ForeignKey(nameof(TableID))]
-    public Table Table { get; set; } = new Table();
+    public KanTable Table { get; set; } = new KanTable();
 }

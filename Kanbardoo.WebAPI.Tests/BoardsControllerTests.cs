@@ -46,17 +46,17 @@ internal class BoardsControllerTests
     [Test]
     public async Task Post_ValidNewBoardDTO_ReturnsOkWithSuccessResult()
     {
-        NewBoardDTO newBoardDTO = new NewBoardDTO()
+        NewKanBoardDTO newBoardDTO = new NewKanBoardDTO()
         {
             Name = "Test",
         };
 
-        NewBoard newBoard = new NewBoard()
+        NewKanBoard newBoard = new NewKanBoard()
         {
             Name = newBoardDTO.Name,
         };
 
-        _mapper.Setup(e => e.Map<NewBoard>(newBoardDTO)).Returns(newBoard);
+        _mapper.Setup(e => e.Map<NewKanBoard>(newBoardDTO)).Returns(newBoard);
         _addBoardUseCase.Setup(e => e.HandleAsync(newBoard)).ReturnsAsync(Result.SuccessResult());
 
         OkObjectResult result = (await _boardsController.Post(newBoardDTO) as OkObjectResult)!;
@@ -72,17 +72,17 @@ internal class BoardsControllerTests
     [Test]
     public async Task Post_EmptyNewBoardName_ReturnsBadRequestWithErrorResult()
     {
-        NewBoardDTO newBoardDTO = new NewBoardDTO()
+        NewKanBoardDTO newBoardDTO = new NewKanBoardDTO()
         {
             Name = string.Empty,
         };
 
-        NewBoard newBoard = new NewBoard()
+        NewKanBoard newBoard = new NewKanBoard()
         {
             Name = newBoardDTO.Name,
         };
 
-        _mapper.Setup(e => e.Map<NewBoard>(newBoardDTO)).Returns(newBoard);
+        _mapper.Setup(e => e.Map<NewKanBoard>(newBoardDTO)).Returns(newBoard);
         _addBoardUseCase.Setup(e => e.HandleAsync(newBoard)).ReturnsAsync(Result.ErrorResult(""));
 
         var result = await _boardsController.Post(newBoardDTO) as BadRequestObjectResult;
@@ -101,7 +101,7 @@ internal class BoardsControllerTests
     [Test]
     public async Task Get_ValidBoardFilters_ReturnsSuccessResult()
     {
-        BoardFiltersDTO boardFiltersDTO = new()
+        KanBoardFiltersDTO boardFiltersDTO = new()
         {
             BoardName = string.Empty,
             OrderByClauses = new[]
@@ -114,10 +114,10 @@ internal class BoardsControllerTests
             }
         };
 
-        BoardFilters boardFilters = new()
+        KanBoardFilters boardFilters = new()
         {
             BoardName = boardFiltersDTO.BoardName,
-            OrderByClauses = new List<OrderByClause<Board>>()
+            OrderByClauses = new List<OrderByClause<KanBoard>>()
             {
                 new()
                 {
@@ -127,42 +127,42 @@ internal class BoardsControllerTests
             },
         };
 
-        var boards = new List<Board>()
+        var boards = new List<KanBoard>()
         {
-            new Board()
+            new KanBoard()
             {
                 Name = "Test1",
                 ID = 1,
             },
-            new Board()
+            new KanBoard()
             {
                 Name = "Test2",
                 ID = 2,
             }
         };
 
-        var boardsDTO = new List<BoardDTO>()
+        var boardsDTO = new List<KanBoardDTO>()
         {
-            new BoardDTO()
+            new KanBoardDTO()
             {
                 Name = "Test1",
                 ID = 1,
             },
-            new BoardDTO()
+            new KanBoardDTO()
             {
                 Name = "Test2",
                 ID = 2,
             }
         };
-        _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<BoardFilters>())).ReturnsAsync(Result<IEnumerable<Board>>.SuccessResult(boards));
-        _mapper.Setup(e => e.Map<IEnumerable<BoardDTO>>(boards)).Returns(boardsDTO);
+        _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<KanBoardFilters>())).ReturnsAsync(Result<IEnumerable<KanBoard>>.SuccessResult(boards));
+        _mapper.Setup(e => e.Map<IEnumerable<KanBoardDTO>>(boards)).Returns(boardsDTO);
 
         var result = await _boardsController.Get(boardFiltersDTO) as OkObjectResult;
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.Value);
 
-        var successResult = result.Value as SuccessResult<IEnumerable<BoardDTO>>;
+        var successResult = result.Value as SuccessResult<IEnumerable<KanBoardDTO>>;
 
         Assert.IsNotNull(successResult);
         Assert.IsNotNull(successResult.Content);
@@ -173,17 +173,17 @@ internal class BoardsControllerTests
     [Test]
     public async Task Get_InvalidBoardFilters_ReturnsBadRequestWithErrorResult()
     {
-        BoardFiltersDTO boardFiltersDTO = null!;
+        KanBoardFiltersDTO boardFiltersDTO = null!;
 
-        _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<BoardFilters>())).ReturnsAsync(Result<IEnumerable<Board>>.ErrorResult(""));
-        _mapper.Setup(e => e.Map<BoardFilters>(boardFiltersDTO)).Returns(() => null!);
+        _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<KanBoardFilters>())).ReturnsAsync(Result<IEnumerable<KanBoard>>.ErrorResult(""));
+        _mapper.Setup(e => e.Map<KanBoardFilters>(boardFiltersDTO)).Returns(() => null!);
 
         var result = await _boardsController.Get(boardFiltersDTO) as BadRequestObjectResult;
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.Value);
 
-        var errorResult = result.Value as ErrorResult<IEnumerable<BoardDTO>>;
+        var errorResult = result.Value as ErrorResult<IEnumerable<KanBoardDTO>>;
 
         Assert.IsNotNull(errorResult);
         Assert.IsNotNull(errorResult.Errors);
@@ -194,37 +194,37 @@ internal class BoardsControllerTests
     [Test]
     public async Task Put_ValidBoardDTO_ReturnsOkWithSuccessResult()
     {
-        BoardDTO boardDTO = new()
+        KanBoardDTO boardDTO = new()
         {
             ID = 1,
             Name= "Test",
-            Status = new BoardStatusDTO()
+            Status = new KanBoardStatusDTO()
             {
                 ID = 1,
             },
-            Owner = new UserDTO()
+            Owner = new KanUserDTO()
             {
                 ID = 1,
             },
             CreationDate = new DateTime(2000, 1, 1, 12, 0, 0),
         };
 
-        Board board = new()
+        KanBoard board = new()
         {
             ID = 1,
             Name = "Test",
-            Status = new BoardStatus()
+            Status = new KanBoardStatus()
             {
                 ID = 1,
             },
-            Owner = new User()
+            Owner = new KanUser()
             {
                 ID = 1,
             },
             CreationDate = new DateTime(2000, 1, 1, 12, 0, 0),
         };
 
-        _mapper.Setup(e => e.Map<Board>(boardDTO)).Returns(board);
+        _mapper.Setup(e => e.Map<KanBoard>(boardDTO)).Returns(board);
 
         _updateBoardUseCase.Setup(e => e.HandleAsync(board)).ReturnsAsync(Result.SuccessResult());
 
@@ -242,17 +242,17 @@ internal class BoardsControllerTests
     [Test]
     public async Task Put_InvalidBoardDTO_ReturnsBadRequestWithErrorResult()
     {
-        BoardDTO boardDTO = new()
+        KanBoardDTO boardDTO = new()
         {
             ID = default,
         };
 
-        Board board = new()
+        KanBoard board = new()
         {
             ID = boardDTO.ID,
         };
 
-        _mapper.Setup(e => e.Map<Board>(boardDTO)).Returns(board);
+        _mapper.Setup(e => e.Map<KanBoard>(boardDTO)).Returns(board);
         _updateBoardUseCase.Setup(e => e.HandleAsync(board)).ReturnsAsync(Result.ErrorResult("error"));
 
         var result = await _boardsController.Put(boardDTO) as BadRequestObjectResult;
@@ -306,10 +306,10 @@ internal class BoardsControllerTests
     public async Task Post_HandleAsyncReturnsInternalServerError_ReturnsInternalServerErrorWithErrorResult()
     {
         //Arrange
-        _addBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<NewBoard>())).ReturnsAsync(Result.ErrorResult("", HttpStatusCode.InternalServerError));
+        _addBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<NewKanBoard>())).ReturnsAsync(Result.ErrorResult("", HttpStatusCode.InternalServerError));
 
         //Act
-        var result = await _boardsController.Post(It.IsAny<NewBoardDTO>()) as ObjectResult;
+        var result = await _boardsController.Post(It.IsAny<NewKanBoardDTO>()) as ObjectResult;
 
         //Assert
         Assert.IsNotNull(result);
@@ -325,17 +325,17 @@ internal class BoardsControllerTests
     public async Task Get_HandleAsyncReturnsInternalServerError_ReturnsInternalServerErrorWithErrorResult()
     {
         //Arrange
-        _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<BoardFilters>())).ReturnsAsync(Result<IEnumerable<Board>>.ErrorResult("", HttpStatusCode.InternalServerError));
+        _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<KanBoardFilters>())).ReturnsAsync(Result<IEnumerable<KanBoard>>.ErrorResult("", HttpStatusCode.InternalServerError));
 
         //Act
-        var result = await _boardsController.Get(It.IsAny<BoardFiltersDTO>()) as ObjectResult;
+        var result = await _boardsController.Get(It.IsAny<KanBoardFiltersDTO>()) as ObjectResult;
 
         //Assert
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.Value);
         Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
 
-        var errorResult = result.Value as ErrorResult<IEnumerable<BoardDTO>>;
+        var errorResult = result.Value as ErrorResult<IEnumerable<KanBoardDTO>>;
 
         Assert.NotNull(errorResult);
     }
@@ -344,7 +344,7 @@ internal class BoardsControllerTests
     public async Task GetById_HandleAsyncReturnsInternalServerError_ReturnsInternalServerErrorWithErrorResult()
     {
         //Arrange
-        _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<int>())).ReturnsAsync(Result<Board>.ErrorResult("", HttpStatusCode.InternalServerError));
+        _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<int>())).ReturnsAsync(Result<KanBoard>.ErrorResult("", HttpStatusCode.InternalServerError));
 
         //Act
         var result = await _boardsController.Get(It.IsAny<int>()) as ObjectResult;
@@ -354,7 +354,7 @@ internal class BoardsControllerTests
         Assert.IsNotNull(result.Value);
         Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
 
-        var errorResult = result.Value as ErrorResult<BoardDTO>;
+        var errorResult = result.Value as ErrorResult<KanBoardDTO>;
 
         Assert.NotNull(errorResult);
     }
@@ -363,10 +363,10 @@ internal class BoardsControllerTests
     public async Task Put_HandleAsyncReturnsInternalServerError_ReturnsInternalServerErrorWithErrorResult()
     {
         //Arrange
-        _updateBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<Board>())).ReturnsAsync(Result.ErrorResult("", HttpStatusCode.InternalServerError));
+        _updateBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<KanBoard>())).ReturnsAsync(Result.ErrorResult("", HttpStatusCode.InternalServerError));
 
         //Act
-        var result = await _boardsController.Put(It.IsAny<BoardDTO>()) as ObjectResult;
+        var result = await _boardsController.Put(It.IsAny<KanBoardDTO>()) as ObjectResult;
 
         //Assert
         Assert.IsNotNull(result);

@@ -4,5 +4,5 @@ using Kanbardoo.Domain.Entities;
 namespace Kanbardoo.Application.Contracts.BoardContracts;
 public interface IUpdateBoardUseCase
 {
-    Task<Result> HandleAsync(Board board);
+    Task<Result> HandleAsync(KanBoard board);
 }

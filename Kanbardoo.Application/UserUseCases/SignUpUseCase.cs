@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using Serilog;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json.Nodes;
 
 namespace Kanbardoo.Application.UserContracts;
 public class SignUpUseCase : ISignUpUseCase
@@ -39,9 +38,9 @@ public class SignUpUseCase : ISignUpUseCase
 
         using var hmac = new HMACSHA512();
 
-        var user = new User()
+        var user = new KanUser()
         {
-            Name = signUp.Name,
+            UserName = signUp.Name,
             PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(signUp.Password)),
             PasswordSalt = hmac.Key,
         };

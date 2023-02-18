@@ -50,9 +50,9 @@ public class TasksController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(NewTaskDTO newTaskDTO)
+    public async Task<IActionResult> Post(NewKanTaskDTO newTaskDTO)
     {
-        var newTask = _mapper.Map<NewTask>(newTaskDTO);
+        var newTask = _mapper.Map<NewKanTask>(newTaskDTO);
 
         var result = await _addTaskUseCase.HandleAsync(newTask);
 

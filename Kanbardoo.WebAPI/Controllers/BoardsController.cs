@@ -38,26 +38,26 @@ public sealed class BoardsController : ControllerBase
     }
 
     [HttpPost("add")]
-    public async Task<IActionResult> Post(NewBoardDTO newBoardDTO)
+    public async Task<IActionResult> Post(NewKanBoardDTO newBoardDTO)
     {
-        NewBoard newBoard = _mapper.Map<NewBoard>(newBoardDTO);
+        NewKanBoard newBoard = _mapper.Map<NewKanBoard>(newBoardDTO);
         var result = await _addBoardUseCase.HandleAsync(newBoard);
         return result.GetActionResult();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Get(BoardFiltersDTO boardFiltersDTO)
+    public async Task<IActionResult> Get(KanBoardFiltersDTO boardFiltersDTO)
     {
-        var boardFilters = _mapper.Map<BoardFilters>(boardFiltersDTO);
+        var boardFilters = _mapper.Map<KanBoardFilters>(boardFiltersDTO);
         var result = await _getBoardUseCase.HandleAsync(boardFilters);
 
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<BoardDTO>>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
+            return Result<IEnumerable<KanBoardDTO>>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
         }
 
-        var boardDTOs = _mapper.Map<IEnumerable<BoardDTO>>(result.Content);
-        return Result<IEnumerable<BoardDTO>>.SuccessResult(boardDTOs).GetActionResult();
+        var boardDTOs = _mapper.Map<IEnumerable<KanBoardDTO>>(result.Content);
+        return Result<IEnumerable<KanBoardDTO>>.SuccessResult(boardDTOs).GetActionResult();
     }
 
     [HttpGet("{id}")]
@@ -67,17 +67,17 @@ public sealed class BoardsController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return Result<BoardDTO>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
+            return Result<KanBoardDTO>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
         }
 
-        var boardDTO = _mapper.Map<BoardDTO>(result.Content);
-        return Result<BoardDTO>.SuccessResult(boardDTO).GetActionResult();
+        var boardDTO = _mapper.Map<KanBoardDTO>(result.Content);
+        return Result<KanBoardDTO>.SuccessResult(boardDTO).GetActionResult();
     }
 
     [HttpPut]
-    public async Task<IActionResult> Put(BoardDTO boardDTO)
+    public async Task<IActionResult> Put(KanBoardDTO boardDTO)
     {
-        Board board = _mapper.Map<Board>(boardDTO);
+        KanBoard board = _mapper.Map<KanBoard>(boardDTO);
         var result = await _updateBoardUseCase.HandleAsync(board);
         return result.GetActionResult();
     }

@@ -26,7 +26,7 @@ public class AddTableUseCase : IAddTableUseCase
         _newTableValidator = newTableValidator;
     }
 
-    public async Task<Result> HandleAsync(NewTable newTable)
+    public async Task<Result> HandleAsync(NewKanTable newTable)
     {
         var validationResult = await _newTableValidator.ValidateAsync(newTable);
         if (!validationResult.IsValid)
@@ -35,7 +35,7 @@ public class AddTableUseCase : IAddTableUseCase
             return Result.ErrorResult(ErrorMessage.GivenTableInvalid);
         }
 
-        Table table = new()
+        KanTable table = new()
         {
             BoardID= newTable.BoardID,
             Name= newTable.Name,

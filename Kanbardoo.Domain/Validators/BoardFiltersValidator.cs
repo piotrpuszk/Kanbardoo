@@ -5,14 +5,14 @@ using Kanbardoo.Domain.Filters;
 using Kanbardoo.Domain.Models;
 
 namespace Kanbardoo.Domain.Validators;
-public class BoardFiltersValidator : AbstractValidator<BoardFilters>
+public class BoardFiltersValidator : AbstractValidator<KanBoardFilters>
 {
 	public BoardFiltersValidator()
 	{
-		RuleFor(e => e.OrderByClauses).ForEach(e => e.Must(e => Entity.ColumnExists<Board>(e.ColumnName)));
+		RuleFor(e => e.OrderByClauses).ForEach(e => e.Must(e => Entity.ColumnExists<KanBoard>(e.ColumnName)));
 	}
 
-    public override ValidationResult Validate(ValidationContext<BoardFilters> context)
+    public override ValidationResult Validate(ValidationContext<KanBoardFilters> context)
     {
         if (context.InstanceToValidate is null)
         {
@@ -22,7 +22,7 @@ public class BoardFiltersValidator : AbstractValidator<BoardFilters>
         return base.Validate(context);
     }
 
-    public override Task<ValidationResult> ValidateAsync(ValidationContext<BoardFilters> context, CancellationToken cancellation = default)
+    public override Task<ValidationResult> ValidateAsync(ValidationContext<KanBoardFilters> context, CancellationToken cancellation = default)
     {
         if (context.InstanceToValidate is null)
         {

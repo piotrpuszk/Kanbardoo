@@ -4,14 +4,14 @@ using Kanbardoo.Domain.Filters;
 using Kanbardoo.Domain.Models;
 
 namespace Kanbardoo.Domain.Validators;
-public class NewBoardValidator : AbstractValidator<NewBoard>
+public class NewBoardValidator : AbstractValidator<NewKanBoard>
 {
 	public NewBoardValidator()
 	{
 		RuleFor(e => e.Name).Must(e => !string.IsNullOrWhiteSpace(e));
     }
 
-    public override ValidationResult Validate(ValidationContext<NewBoard> context)
+    public override ValidationResult Validate(ValidationContext<NewKanBoard> context)
     {
 		if (context.InstanceToValidate is null)
 		{
@@ -21,7 +21,7 @@ public class NewBoardValidator : AbstractValidator<NewBoard>
         return base.Validate(context);
     }
 
-    public override Task<ValidationResult> ValidateAsync(ValidationContext<NewBoard> context, CancellationToken cancellation = default)
+    public override Task<ValidationResult> ValidateAsync(ValidationContext<NewKanBoard> context, CancellationToken cancellation = default)
     {
         if (context.InstanceToValidate is null)
         {

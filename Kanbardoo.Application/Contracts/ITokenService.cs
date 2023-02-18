@@ -3,5 +3,5 @@
 namespace Kanbardoo.Application.Contracts;
 public interface ICreateToken
 {
-    string Create(User user);
+    string Create(KanUser user);
 }

@@ -24,7 +24,7 @@ public class UpdateBoardUseCase : IUpdateBoardUseCase
         _boardToUpdateValidator = boardToUpdateValidator;
     }
 
-    public async Task<Result> HandleAsync(Board board)
+    public async Task<Result> HandleAsync(KanBoard board)
     {
         var validationResult = await _boardToUpdateValidator.ValidateAsync(board);
         if (!validationResult.IsValid)

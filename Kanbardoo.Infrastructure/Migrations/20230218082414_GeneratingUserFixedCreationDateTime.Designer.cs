@@ -3,6 +3,7 @@ using System;
 using Kanbardoo.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kanbardoo.Infrastructure.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20230218082414_GeneratingUserFixedCreationDateTime")]
+    partial class GeneratingUserFixedCreationDateTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.2");
@@ -54,7 +57,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("StatusID");
 
-                    b.ToTable("Boards", (string)null);
+                    b.ToTable("Boards");
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanBoardStatus", b =>
@@ -70,7 +73,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("BoardStatuses", (string)null);
+                    b.ToTable("BoardStatuses");
 
                     b.HasData(
                         new
@@ -109,7 +112,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("BoardID");
 
-                    b.ToTable("Tables", (string)null);
+                    b.ToTable("Tables");
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTask", b =>
@@ -148,7 +151,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("TableID");
 
-                    b.ToTable("Tasks", (string)null);
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTaskStatus", b =>
@@ -164,7 +167,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("TaskStatuses", (string)null);
+                    b.ToTable("TaskStatuses");
 
                     b.HasData(
                         new
@@ -208,7 +211,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasData(
                         new

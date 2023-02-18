@@ -1,6 +1,6 @@
-﻿using Kanbardoo.Domain.Repositories;
+﻿using Kanbardoo.Domain.Entities;
+using Kanbardoo.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
-using TaskStatus = Kanbardoo.Domain.Entities.TaskStatus;
 
 namespace Kanbardoo.Infrastructure.Repositories;
 public class TaskStatusRepository : ITaskStatusRepository
@@ -12,7 +12,7 @@ public class TaskStatusRepository : ITaskStatusRepository
         _dbContext = dbContext;
     }
 
-    public async Task AddAsync(TaskStatus taskStatus)
+    public async Task AddAsync(KanTaskStatus taskStatus)
     {
         await _dbContext.TaskStatuses.AddAsync(taskStatus);
     }
@@ -24,26 +24,26 @@ public class TaskStatusRepository : ITaskStatusRepository
             .ExecuteDeleteAsync();
     }
 
-    public async Task<IEnumerable<TaskStatus>> GetAsync()
+    public async Task<IEnumerable<KanTaskStatus>> GetAsync()
     {
         return await _dbContext.TaskStatuses
             .ToListAsync();
     }
 
-    public async Task<TaskStatus> GetAsync(int id)
+    public async Task<KanTaskStatus> GetAsync(int id)
     {
         var found = await _dbContext.TaskStatuses
             .FirstOrDefaultAsync(e => e.ID == id);
 
         if (found is null)
         {
-            return new TaskStatus();
+            return new KanTaskStatus();
         }
 
         return found;
     }
 
-    public async Task UpdateAsync(TaskStatus taskStatus)
+    public async Task UpdateAsync(KanTaskStatus taskStatus)
     {
         _dbContext.TaskStatuses.Update(taskStatus);
     }

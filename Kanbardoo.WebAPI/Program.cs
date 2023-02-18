@@ -14,7 +14,6 @@ using Kanbardoo.Infrastructure.Repositories;
 using Kanbardoo.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -113,6 +112,9 @@ builder.Services.AddScoped<NewTableValidator>();
 builder.Services.AddScoped<KanTaskValidator>();
 builder.Services.AddScoped<NewTaskValidator>();
 builder.Services.AddScoped<KanTaskIdToDeleteValidator>();
+
+builder.Services.AddScoped<SignInValidator>();
+builder.Services.AddScoped<SignUpValidator>();
 
 builder.Services.AddScoped<ICreateToken, TokenService>();
 

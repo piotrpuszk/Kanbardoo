@@ -44,17 +44,17 @@ internal class TasksControllerTests
     [Test]
     public async Task Post_ValidNewTaskDTO_ReturnsOkWithSuccessResult()
     {
-        NewTaskDTO newTaskDTO = new NewTaskDTO()
+        NewKanTaskDTO newTaskDTO = new NewKanTaskDTO()
         {
             Name = "Test",
         };
 
-        NewTask newTask = new NewTask()
+        NewKanTask newTask = new NewKanTask()
         {
             Name = newTaskDTO.Name,
         };
 
-        _mapper.Setup(e => e.Map<NewTask>(newTaskDTO)).Returns(newTask);
+        _mapper.Setup(e => e.Map<NewKanTask>(newTaskDTO)).Returns(newTask);
         _addTaskUseCase.Setup(e => e.HandleAsync(newTask)).ReturnsAsync(Result.SuccessResult());
 
         var result = await _tasksController.Post(newTaskDTO) as OkObjectResult;
@@ -70,17 +70,17 @@ internal class TasksControllerTests
     [Test]
     public async Task Post_EmptyNewTaskName_ReturnsBadRequestWithErrorResult()
     {
-        NewTaskDTO newTaskDTO = new NewTaskDTO()
+        NewKanTaskDTO newTaskDTO = new NewKanTaskDTO()
         {
             Name = string.Empty,
         };
 
-        NewTask newTask = new NewTask()
+        NewKanTask newTask = new NewKanTask()
         {
             Name = newTaskDTO.Name,
         };
 
-        _mapper.Setup(e => e.Map<NewTask>(newTaskDTO)).Returns(newTask);
+        _mapper.Setup(e => e.Map<NewKanTask>(newTaskDTO)).Returns(newTask);
         _addTaskUseCase.Setup(e => e.HandleAsync(newTask)).ReturnsAsync(Result.ErrorResult(""));
 
         var result = await _tasksController.Post(newTaskDTO) as BadRequestObjectResult;
@@ -211,9 +211,9 @@ internal class TasksControllerTests
     [Test]
     public async Task Post_GettingFromDBError_ReturnsInternalServerErrorWithErrorResult()
     {
-        _addTaskUseCase.Setup(e => e.HandleAsync(It.IsAny<NewTask>())).ReturnsAsync(Result.ErrorResult("", HttpStatusCode.InternalServerError));
+        _addTaskUseCase.Setup(e => e.HandleAsync(It.IsAny<NewKanTask>())).ReturnsAsync(Result.ErrorResult("", HttpStatusCode.InternalServerError));
 
-        var result = await _tasksController.Post(It.IsAny<NewTaskDTO>()) as ObjectResult;
+        var result = await _tasksController.Post(It.IsAny<NewKanTaskDTO>()) as ObjectResult;
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.Value);

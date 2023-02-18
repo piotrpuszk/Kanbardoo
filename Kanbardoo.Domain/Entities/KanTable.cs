@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kanbardoo.Domain.Entities;
 
-public class Table : Entity
+public class KanTable : Entity
 {
     public int BoardID { get; set; }
     [ForeignKey(nameof(BoardID))]
-    public Board Board { get; set; } = new Board();
+    public KanBoard Board { get; set; } = new KanBoard();
     [MaxLength(256)]
     public string Name { get; set; } = string.Empty;
     public DateTime CreationDate { get; set; }

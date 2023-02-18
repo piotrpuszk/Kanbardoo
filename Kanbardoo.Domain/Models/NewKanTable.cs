@@ -1,5 +1,5 @@
 ﻿namespace Kanbardoo.Domain.Models;
-public class NewTable
+public class NewKanTable
 {
     public int BoardID { get; set; }
     public string Name { get; set; } = string.Empty;

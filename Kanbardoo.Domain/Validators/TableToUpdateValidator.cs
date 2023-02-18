@@ -5,7 +5,7 @@ using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 
 namespace Kanbardoo.Domain.Validators;
-public class TableToUpdateValidator : AbstractValidator<Table>
+public class TableToUpdateValidator : AbstractValidator<KanTable>
 {
 	public TableToUpdateValidator(IUnitOfWork unitOfWork)
 	{
@@ -25,7 +25,7 @@ public class TableToUpdateValidator : AbstractValidator<Table>
 		RuleFor(e => e.CreationDate).Must(e => e != default);
 	}
 
-    public override ValidationResult Validate(ValidationContext<Table> context)
+    public override ValidationResult Validate(ValidationContext<KanTable> context)
     {
         if (context.InstanceToValidate is null)
         {
@@ -35,7 +35,7 @@ public class TableToUpdateValidator : AbstractValidator<Table>
         return base.Validate(context);
     }
 
-    public override Task<ValidationResult> ValidateAsync(ValidationContext<Table> context, CancellationToken cancellation = default)
+    public override Task<ValidationResult> ValidateAsync(ValidationContext<KanTable> context, CancellationToken cancellation = default)
     {
         if (context.InstanceToValidate is null)
         {

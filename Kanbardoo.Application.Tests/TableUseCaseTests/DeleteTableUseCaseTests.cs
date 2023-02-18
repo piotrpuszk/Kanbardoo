@@ -41,7 +41,7 @@ internal class DeleteTableUseCaseTests
     {
         //Arrange
         int id = 1;
-        Table table = new()
+        KanTable table = new()
         {
             ID = id,
         };
@@ -61,7 +61,7 @@ internal class DeleteTableUseCaseTests
     {
         //Arrange
         int id = 1;
-        Table table = new()
+        KanTable table = new()
         {
             ID = id,
         };
@@ -80,7 +80,7 @@ internal class DeleteTableUseCaseTests
     {
         //Arrange
         int id = 1;
-        Table table = new()
+        KanTable table = new()
         {
             ID = id,
         };
@@ -99,7 +99,7 @@ internal class DeleteTableUseCaseTests
     {
         //Arrange
         int nonExistingId = 2;
-        _tableRepository.Setup(e => e.GetAsync(nonExistingId)).ReturnsAsync(new Table());
+        _tableRepository.Setup(e => e.GetAsync(nonExistingId)).ReturnsAsync(new KanTable());
 
         //Act
         ErrorResult errorResult = (await _deleteTableUseCase.HandleAsync(nonExistingId) as ErrorResult)!;
@@ -116,7 +116,7 @@ internal class DeleteTableUseCaseTests
     {
         //Arrange
         int nonExistingId = 2;
-        _tableRepository.Setup(e => e.GetAsync(nonExistingId)).ReturnsAsync(new Table());
+        _tableRepository.Setup(e => e.GetAsync(nonExistingId)).ReturnsAsync(new KanTable());
 
         //Act
         ErrorResult errorResult = (await _deleteTableUseCase.HandleAsync(nonExistingId) as ErrorResult)!;
@@ -130,7 +130,7 @@ internal class DeleteTableUseCaseTests
     {
         //Arrange
         int nonExistingId = 2;
-        _tableRepository.Setup(e => e.GetAsync(nonExistingId)).ReturnsAsync(new Table());
+        _tableRepository.Setup(e => e.GetAsync(nonExistingId)).ReturnsAsync(new KanTable());
 
         //Act
         ErrorResult errorResult = (await _deleteTableUseCase.HandleAsync(nonExistingId) as ErrorResult)!;
@@ -143,7 +143,7 @@ internal class DeleteTableUseCaseTests
     public async Task HandleAsync_DeleteAsyncThrowsException_ReturnsErrorResult()
     {
         //Arrange
-        Table table = new()
+        KanTable table = new()
         {
             ID = 1,
         };
@@ -165,7 +165,7 @@ internal class DeleteTableUseCaseTests
     public async Task HandleAsync_SaveChangesAsyncThrowsException_ReturnsErrorResult()
     {
         //Arrange
-        Table table = new()
+        KanTable table = new()
         {
             ID = 1,
         };

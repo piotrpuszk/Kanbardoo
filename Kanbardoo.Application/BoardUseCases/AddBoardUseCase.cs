@@ -25,7 +25,7 @@ public sealed class AddBoardUseCase : IAddBoardUseCase
         _newBoardValidator = newBoardValidator;
     }
 
-    public async Task<Result> HandleAsync(NewBoard newBoard)
+    public async Task<Result> HandleAsync(NewKanBoard newBoard)
     {
         var validationResult = _newBoardValidator.Validate(newBoard);
         if (!validationResult.IsValid)
@@ -45,9 +45,9 @@ public sealed class AddBoardUseCase : IAddBoardUseCase
         }
     }
 
-    private async Task<Result> SaveBoardInDatabase(NewBoard newBoard)
+    private async Task<Result> SaveBoardInDatabase(NewKanBoard newBoard)
     {
-        Board board = Board.CreateFromNewBoard(newBoard);
+        KanBoard board = KanBoard.CreateFromNewBoard(newBoard);
 
         await _unitOfWork.BoardRepository.AddAsync(board);
 

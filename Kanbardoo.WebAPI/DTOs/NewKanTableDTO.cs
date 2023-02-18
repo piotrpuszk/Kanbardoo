@@ -2,11 +2,12 @@
 
 namespace Kanbardoo.WebAPI.DTOs;
 
-public sealed class BoardStatusDTO
+public class NewKanTableDTO
 {
     [Required]
-    public int ID { get; set; }
+    public int BoardID { get; set; }
     [Required]
     [MaxLength(256)]
     public string Name { get; set; } = string.Empty;
+    public int Priority { get; set; }
 }

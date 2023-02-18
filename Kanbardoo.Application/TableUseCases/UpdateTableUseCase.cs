@@ -24,7 +24,7 @@ public class UpdateTableUseCase : IUpdateTableUseCase
         _unitOfWork = unitOfWork;
         _tableToUpdateValidator = tableToUpdateValidator;
     }
-    public async Task<Result> HandleAsync(Table table)
+    public async Task<Result> HandleAsync(KanTable table)
     {
         var validationResult = await _tableToUpdateValidator.ValidateAsync(table);
         if (!validationResult.IsValid)

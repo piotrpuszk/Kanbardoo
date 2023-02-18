@@ -4,30 +4,30 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kanbardoo.Domain.Entities;
 
-public class Board : Entity
+public class KanBoard : Entity
 {
     [MaxLength(256)]
     public string Name { get; set; } = string.Empty;
     public int OwnerID { get; set; }
     [ForeignKey(nameof(OwnerID))]
-    public User? Owner { get; set; }
+    public KanUser? Owner { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime FinishDate { get; set; }
     public int StatusID { get; set; }
     [ForeignKey(nameof(StatusID))]
-    public BoardStatus? Status { get; set; }
+    public KanBoardStatus? Status { get; set; }
     [MaxLength(1024)]
     public string BackgroundImageUrl { get; set; } = string.Empty;
-    public virtual ICollection<Table> Tables { get; set; } = new List<Table>();
+    public virtual ICollection<KanTable> Tables { get; set; } = new List<KanTable>();
 
-    public static Board CreateFromNewBoard(NewBoard newBoard)
+    public static KanBoard CreateFromNewBoard(NewKanBoard newBoard)
     {
         return new()
         {
             Name = newBoard.Name,
             CreationDate = DateTime.UtcNow,
-            StatusID = BoardStatusId.Active,
+            StatusID = KanBoardStatusId.Active,
             OwnerID = 46920,
         };
     }

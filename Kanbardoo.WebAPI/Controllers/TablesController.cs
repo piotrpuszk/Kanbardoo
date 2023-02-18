@@ -40,11 +40,11 @@ public class TablesController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<TableDTO>>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
+            return Result<IEnumerable<KanTableDTO>>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
         }
 
-        var tableDTOs = _mapper.Map<IEnumerable<TableDTO>>(result.Content);
-        return Result<IEnumerable<TableDTO>>.SuccessResult(tableDTOs).GetActionResult();
+        var tableDTOs = _mapper.Map<IEnumerable<KanTableDTO>>(result.Content);
+        return Result<IEnumerable<KanTableDTO>>.SuccessResult(tableDTOs).GetActionResult();
     }
 
     [HttpGet("{id}")]
@@ -54,25 +54,25 @@ public class TablesController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return Result<TableDTO>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
+            return Result<KanTableDTO>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
         }
 
-        var tableDTO = _mapper.Map<TableDTO>(result.Content);
-        return Result<TableDTO>.SuccessResult(tableDTO).GetActionResult();
+        var tableDTO = _mapper.Map<KanTableDTO>(result.Content);
+        return Result<KanTableDTO>.SuccessResult(tableDTO).GetActionResult();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(NewTableDTO newTableDTO)
+    public async Task<IActionResult> Post(NewKanTableDTO newTableDTO)
     {
-        var newTable = _mapper.Map<NewTable>(newTableDTO);
+        var newTable = _mapper.Map<NewKanTable>(newTableDTO);
         var result = await _addTableUseCase.HandleAsync(newTable);
         return result.GetActionResult();
     }
 
     [HttpPut]
-    public async Task<IActionResult> Put(TableDTO tableDTO)
+    public async Task<IActionResult> Put(KanTableDTO tableDTO)
     {
-        var table = _mapper.Map<Table>(tableDTO);
+        var table = _mapper.Map<KanTable>(tableDTO);
         var result = await _updateTableUseCase.HandleAsync(table);
         return result.GetActionResult();
     }

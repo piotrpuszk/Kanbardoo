@@ -15,7 +15,7 @@ public class TableRepository : ITableRepository
         _dbContext = dbContext;
     }
 
-    public async Task AddAsync(Table table)
+    public async Task AddAsync(KanTable table)
     {
         table.Board = null!;
         table.Tasks = null!;
@@ -30,13 +30,13 @@ public class TableRepository : ITableRepository
             .ExecuteDeleteAsync();
     }
 
-    public async Task<IEnumerable<Table>> GetAsync()
+    public async Task<IEnumerable<KanTable>> GetAsync()
     {
         return await _dbContext.Tables
             .ToListAsync();
     }
 
-    public async Task<Table> GetAsync(int id)
+    public async Task<KanTable> GetAsync(int id)
     {
         var found = await _dbContext.Tables
             .Include(e => e.Tasks)
@@ -47,13 +47,13 @@ public class TableRepository : ITableRepository
 
         if (found is null)
         {
-            return new Table();
+            return new KanTable();
         }
 
         return found;
     }
 
-    public async Task UpdateAsync(Table table)
+    public async Task UpdateAsync(KanTable table)
     {
         table.Board = null!;
         table.Tasks= null!;

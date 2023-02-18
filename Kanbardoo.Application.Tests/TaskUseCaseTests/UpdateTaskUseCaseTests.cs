@@ -5,7 +5,6 @@ using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
 using Moq;
 using Serilog;
-using TaskStatus = Kanbardoo.Domain.Entities.TaskStatus;
 
 namespace Kanbardoo.Application.Tests.TaskUseCaseTests;
 internal class UpdateTaskUseCaseTests
@@ -55,8 +54,8 @@ internal class UpdateTaskUseCaseTests
         };
 
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
-        _userRepository.Setup(e => e.GetAsync(task.AssigneeID)).ReturnsAsync(new User { ID = task.AssigneeID });
-        _taskStatusRepository.Setup(e => e.GetAsync(task.StatusID)).ReturnsAsync(new TaskStatus { ID = task.StatusID });
+        _userRepository.Setup(e => e.GetAsync(task.AssigneeID)).ReturnsAsync(new KanUser { ID = task.AssigneeID });
+        _taskStatusRepository.Setup(e => e.GetAsync(task.StatusID)).ReturnsAsync(new KanTaskStatus { ID = task.StatusID });
         _taskRepository.Setup(e => e.UpdateAsync(It.IsAny<KanTask>())).Returns(Task.CompletedTask);
 
         //Act
@@ -80,8 +79,8 @@ internal class UpdateTaskUseCaseTests
             AssigneeID = 1,
         };
 
-        _userRepository.Setup(e => e.GetAsync(task.AssigneeID)).ReturnsAsync(new User { ID = task.AssigneeID });
-        _taskStatusRepository.Setup(e => e.GetAsync(task.StatusID)).ReturnsAsync(new TaskStatus { ID = task.StatusID });
+        _userRepository.Setup(e => e.GetAsync(task.AssigneeID)).ReturnsAsync(new KanUser { ID = task.AssigneeID });
+        _taskStatusRepository.Setup(e => e.GetAsync(task.StatusID)).ReturnsAsync(new KanTaskStatus { ID = task.StatusID });
         _taskRepository.Setup(e => e.UpdateAsync(It.IsAny<KanTask>())).Returns(Task.CompletedTask);
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
 
@@ -125,8 +124,8 @@ internal class UpdateTaskUseCaseTests
         };
 
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
-        _userRepository.Setup(e => e.GetAsync(task.AssigneeID)).ReturnsAsync(new User { ID = task.AssigneeID });
-        _taskStatusRepository.Setup(e => e.GetAsync(task.StatusID)).ReturnsAsync(new TaskStatus { ID = task.StatusID });
+        _userRepository.Setup(e => e.GetAsync(task.AssigneeID)).ReturnsAsync(new KanUser { ID = task.AssigneeID });
+        _taskStatusRepository.Setup(e => e.GetAsync(task.StatusID)).ReturnsAsync(new KanTaskStatus { ID = task.StatusID });
         _taskRepository.Setup(e => e.UpdateAsync(It.IsAny<KanTask>())).Returns(Task.CompletedTask);
 
         //Act
@@ -151,8 +150,8 @@ internal class UpdateTaskUseCaseTests
         };
 
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
-        _userRepository.Setup(e => e.GetAsync(task.AssigneeID)).ReturnsAsync(new User { ID = task.AssigneeID });
-        _taskStatusRepository.Setup(e => e.GetAsync(task.StatusID)).ReturnsAsync(new TaskStatus { ID = task.StatusID });
+        _userRepository.Setup(e => e.GetAsync(task.AssigneeID)).ReturnsAsync(new KanUser { ID = task.AssigneeID });
+        _taskStatusRepository.Setup(e => e.GetAsync(task.StatusID)).ReturnsAsync(new KanTaskStatus { ID = task.StatusID });
         _taskRepository.Setup(e => e.UpdateAsync(It.IsAny<KanTask>())).Returns(Task.CompletedTask);
 
         //Act

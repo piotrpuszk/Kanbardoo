@@ -2,10 +2,8 @@
 
 namespace Kanbardoo.WebAPI.DTOs;
 
-public sealed class KanTaskDTO
+public sealed class NewKanTaskDTO
 {
-    [Required]
-    public int ID { get; set; }
     [Required]
     [MaxLength(256)]
     public string Name { get; set; } = string.Empty;
@@ -13,6 +11,8 @@ public sealed class KanTaskDTO
     public string Description { get; set; } = string.Empty;
     public DateTime DueDate { get; set; }
     [Required]
-    public TaskStatusDTO Status { get; set; } = new TaskStatusDTO();
-    public UserDTO Assignee { get; set; } = new UserDTO();
+    public KanTaskStatusDTO Status { get; set; } = new KanTaskStatusDTO();
+    public KanUserDTO Assignee { get; set; } = new KanUserDTO();
+    [Required]
+    public int TableID { get; set; }
 }

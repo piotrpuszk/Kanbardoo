@@ -8,7 +8,7 @@ public class BoardProfile : Profile
 {
 	public BoardProfile()
 	{
-		CreateMap<Board, BoardDTO>()
+		CreateMap<KanBoard, KanBoardDTO>()
 			.ForPath(e => e.Status.ID, e => e.MapFrom(e => e.StatusID))
 			.ForPath(e => e.Owner.ID, e => e.MapFrom(e => e.OwnerID))
 			.ForMember(e => e.Status, e => e.MapFrom(e => e.Status))

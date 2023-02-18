@@ -1,10 +1,7 @@
-﻿using Kanbardoo.Domain.Filters;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Kanbardoo.WebAPI.FilterDTOs;
-public class BoardFiltersDTO
+public class KanBoardFiltersDTO
 {
     [MaxLength(256)]
     public string BoardName { get; set; } = string.Empty;

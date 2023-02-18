@@ -1,6 +1,6 @@
 ﻿namespace Kanbardoo.Domain.Models;
 
-public class NewBoard 
+public class NewKanBoard 
 {
     public string Name { get; set; } = string.Empty;
 }

@@ -6,5 +6,5 @@ namespace Kanbardoo.Application.Contracts.UserContracts;
 
 public interface ISignInUseCase
 {
-    Task<Result<User>> HandleAsync(SignIn signIn);
+    Task<Result<KanUser>> HandleAsync(SignIn signIn);
 }

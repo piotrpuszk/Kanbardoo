@@ -28,14 +28,14 @@ public class SignInUseCase : ISignInUseCase
         _signInValidator = signInValidator;
     }
 
-    public async Task<Result<User>> HandleAsync(SignIn signIn)
+    public async Task<Result<KanUser>> HandleAsync(SignIn signIn)
     {
         var validationResult = _signInValidator.Validate(signIn);
         if (!validationResult.IsValid)
         {
             if (signIn is not null) _logger.Error($"The sign in data are invalid {JsonConvert.SerializeObject(signIn)}");
             else _logger.Error("The sign in data are null");
-            return Result<User>.ErrorResult(ErrorMessage.SignInDataInvalid);
+            return Result<KanUser>.ErrorResult(ErrorMessage.SignInDataInvalid);
         }
 
         var user = await _unitOfWork.UserRepository.GetAsync(signIn.Name);
@@ -46,9 +46,9 @@ public class SignInUseCase : ISignInUseCase
 
         if (Convert.ToBase64String(hash) != Convert.ToBase64String(user.PasswordHash))
         {
-            return Result<User>.ErrorResult(ErrorMessage.Unauthenticated, HttpStatusCode.Unauthorized);
+            return Result<KanUser>.ErrorResult(ErrorMessage.Unauthenticated, HttpStatusCode.Unauthorized);
         }
 
-        return Result<User>.SuccessResult(user);
+        return Result<KanUser>.SuccessResult(user);
     }
 }

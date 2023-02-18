@@ -25,7 +25,7 @@ public class AddTaskUseCase : IAddTaskUseCase
         _newTaskValidator = newTaskValidator;
     }
 
-    public async Task<Result> HandleAsync(NewTask newTask)
+    public async Task<Result> HandleAsync(NewKanTask newTask)
     {
         var validationResult = await _newTaskValidator.ValidateAsync(newTask);
         if (!validationResult.IsValid)

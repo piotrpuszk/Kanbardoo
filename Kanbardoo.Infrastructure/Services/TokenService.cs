@@ -16,11 +16,11 @@ public class TokenService : ICreateToken
         _symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenSecretKey"]!));
     }
 
-    public string Create(User user)
+    public string Create(KanUser user)
     {
         var claims = new List<Claim>()
         {
-            new Claim(ClaimTypes.Name, user.Name),
+            new Claim(ClaimTypes.Name, user.UserName),
             new Claim("TestClaim", "test"),
         };
 

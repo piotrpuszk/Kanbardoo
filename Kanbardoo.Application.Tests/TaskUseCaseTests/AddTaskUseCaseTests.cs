@@ -6,7 +6,6 @@ using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
 using Moq;
 using Serilog;
-using TaskStatus = Kanbardoo.Domain.Entities.TaskStatus;
 
 namespace Kanbardoo.Application.Tests.TaskUseCaseTests;
 internal class AddTaskUseCaseTests
@@ -47,7 +46,7 @@ internal class AddTaskUseCaseTests
     {
         //Arrange
         var tableId = 1;
-        NewTask newTask = new()
+        NewKanTask newTask = new()
         {
             Name = "Test",
             TableID = tableId,
@@ -55,14 +54,14 @@ internal class AddTaskUseCaseTests
             StatusID= 1,
         };
 
-        Table table = new()
+        KanTable table = new()
         {
             ID = tableId,
         };
 
         _tableRepository.Setup(e => e.GetAsync(tableId)).ReturnsAsync(table);
-        _userRepository.Setup(e => e.GetAsync(newTask.AssigneeID)).ReturnsAsync(new User { ID = newTask.AssigneeID });
-        _taskStatusRepository.Setup(e => e.GetAsync(newTask.StatusID)).ReturnsAsync(new TaskStatus { ID = newTask.StatusID });
+        _userRepository.Setup(e => e.GetAsync(newTask.AssigneeID)).ReturnsAsync(new KanUser { ID = newTask.AssigneeID });
+        _taskStatusRepository.Setup(e => e.GetAsync(newTask.StatusID)).ReturnsAsync(new KanTaskStatus { ID = newTask.StatusID });
         _taskRepository.Setup(e => e.AddAsync(It.IsAny<KanTask>())).Returns(Task.CompletedTask);
 
         //Act
@@ -78,15 +77,15 @@ internal class AddTaskUseCaseTests
     {
         //Arrange
         var tableId = 1;
-        NewTask newTask = new()
+        NewKanTask newTask = new()
         {
             Name = "Test",
             TableID = tableId,
         };
 
-        _tableRepository.Setup(e => e.GetAsync(tableId)).ReturnsAsync(new Table());
-        _userRepository.Setup(e => e.GetAsync(newTask.AssigneeID)).ReturnsAsync(new User { ID = newTask.AssigneeID });
-        _taskStatusRepository.Setup(e => e.GetAsync(newTask.StatusID)).ReturnsAsync(new TaskStatus { ID = newTask.StatusID });
+        _tableRepository.Setup(e => e.GetAsync(tableId)).ReturnsAsync(new KanTable());
+        _userRepository.Setup(e => e.GetAsync(newTask.AssigneeID)).ReturnsAsync(new KanUser { ID = newTask.AssigneeID });
+        _taskStatusRepository.Setup(e => e.GetAsync(newTask.StatusID)).ReturnsAsync(new KanTaskStatus { ID = newTask.StatusID });
 
         //Act
         ErrorResult errorResult = (await _addTaskUseCase.HandleAsync(newTask) as ErrorResult)!;
@@ -103,7 +102,7 @@ internal class AddTaskUseCaseTests
     {
         //Arrange
         var tableId = 1;
-        NewTask newTask = new()
+        NewKanTask newTask = new()
         {
             Name = "Test",
             TableID = tableId,
@@ -111,14 +110,14 @@ internal class AddTaskUseCaseTests
             StatusID = 1,
         };
 
-        Table table = new()
+        KanTable table = new()
         {
             ID = tableId,
         };
 
         _tableRepository.Setup(e => e.GetAsync(tableId)).ReturnsAsync(table);
-        _userRepository.Setup(e => e.GetAsync(newTask.AssigneeID)).ReturnsAsync(new User { ID = newTask.AssigneeID });
-        _taskStatusRepository.Setup(e => e.GetAsync(newTask.StatusID)).ReturnsAsync(new TaskStatus { ID = newTask.StatusID });
+        _userRepository.Setup(e => e.GetAsync(newTask.AssigneeID)).ReturnsAsync(new KanUser { ID = newTask.AssigneeID });
+        _taskStatusRepository.Setup(e => e.GetAsync(newTask.StatusID)).ReturnsAsync(new KanTaskStatus { ID = newTask.StatusID });
         _taskRepository.Setup(e => e.AddAsync(It.IsAny<KanTask>())).Returns(Task.CompletedTask);
 
         //Act
@@ -133,7 +132,7 @@ internal class AddTaskUseCaseTests
     {
         //Arrange
         var tableId = 1;
-        NewTask newTask = new()
+        NewKanTask newTask = new()
         {
             Name = "Test",
             TableID = tableId,
@@ -141,14 +140,14 @@ internal class AddTaskUseCaseTests
             StatusID = 1,
         };
 
-        Table table = new()
+        KanTable table = new()
         {
             ID = tableId,
         };
 
         _tableRepository.Setup(e => e.GetAsync(tableId)).ReturnsAsync(table);
-        _userRepository.Setup(e => e.GetAsync(newTask.AssigneeID)).ReturnsAsync(new User { ID = newTask.AssigneeID });
-        _taskStatusRepository.Setup(e => e.GetAsync(newTask.StatusID)).ReturnsAsync(new TaskStatus { ID = newTask.StatusID });
+        _userRepository.Setup(e => e.GetAsync(newTask.AssigneeID)).ReturnsAsync(new KanUser { ID = newTask.AssigneeID });
+        _taskStatusRepository.Setup(e => e.GetAsync(newTask.StatusID)).ReturnsAsync(new KanTaskStatus { ID = newTask.StatusID });
         _taskRepository.Setup(e => e.AddAsync(It.IsAny<KanTask>())).Returns(Task.CompletedTask);
 
         //Act

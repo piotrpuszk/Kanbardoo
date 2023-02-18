@@ -8,6 +8,6 @@ public class NewTableProfile : Profile
 {
 	public NewTableProfile()
 	{
-		CreateMap<NewTableDTO, NewTable>();
+		CreateMap<NewKanTableDTO, NewKanTable>();
 	}
 }
