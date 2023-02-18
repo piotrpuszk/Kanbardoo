@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Contracts.BoardContracts;
+﻿using Kanbardoo.Application.Constants;
+using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
@@ -29,7 +30,7 @@ public class UpdateBoardUseCase : IUpdateBoardUseCase
         if (!validationResult.IsValid)
         {
             _logger.Error($"{nameof(UpdateBoardUseCase)}.{nameof(HandleAsync)} board is invalid");
-            return Result.ErrorResult("Board is invalid");
+            return Result.ErrorResult(ErrorMessage.GivenBoardInvalid);
         }
 
         try
@@ -41,7 +42,7 @@ public class UpdateBoardUseCase : IUpdateBoardUseCase
         catch (Exception ex)
         {
             _logger.Error($"{JsonConvert.SerializeObject(board)} \n\n {ex}");
-            return Result.ErrorResult("Internal server error", HttpStatusCode.InternalServerError);
+            return Result.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
         
     }

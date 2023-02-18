@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Contracts.TableContracts;
+﻿using Kanbardoo.Application.Constants;
+using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
@@ -30,8 +31,8 @@ public class AddTableUseCase : IAddTableUseCase
         var validationResult = await _newTableValidator.ValidateAsync(newTable);
         if (!validationResult.IsValid)
         {
-            _logger.Error($"newTable is invalid");
-            return Result.ErrorResult("The given table is invalid");
+            _logger.Error(ErrorMessage.GivenTableInvalid);
+            return Result.ErrorResult(ErrorMessage.GivenTableInvalid);
         }
 
         Table table = new()
@@ -52,7 +53,7 @@ public class AddTableUseCase : IAddTableUseCase
         catch(Exception ex)
         {
             _logger.Error($"Internal server error: \n\n {nameof(AddTableUseCase)}.{nameof(HandleAsync)}({JsonConvert.SerializeObject(newTable)}) \n\n {ex}");
-            return Result.ErrorResult("Internal server error", HttpStatusCode.InternalServerError);
+            return Result.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
         
     }

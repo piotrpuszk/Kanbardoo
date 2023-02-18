@@ -24,13 +24,12 @@ public class TokenService : ICreateToken
             new Claim("TestClaim", "test"),
         };
 
-        var expiryDate = DateTime.UtcNow.AddMinutes(1);
         SigningCredentials credentials = new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha512Signature);
 
         var jwtToken = new JwtSecurityToken(
             claims: claims,
             notBefore: DateTime.UtcNow,
-            expires: expiryDate,
+            expires: DateTime.UtcNow.AddMinutes(60),
             signingCredentials: credentials);
 
         var token = new JwtSecurityTokenHandler().WriteToken(jwtToken);

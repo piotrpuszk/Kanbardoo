@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Contracts.TableContracts;
+﻿using Kanbardoo.Application.Constants;
+using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
@@ -29,7 +30,7 @@ public class UpdateTableUseCase : IUpdateTableUseCase
         if (!validationResult.IsValid)
         {
             _logger.Error($"Invalid table to update: {JsonConvert.SerializeObject(table is not null ? table : "null")}");
-            return Result.ErrorResult("The table is invalid");
+            return Result.ErrorResult(ErrorMessage.GivenTableInvalid);
         }
 
         try
@@ -41,7 +42,7 @@ public class UpdateTableUseCase : IUpdateTableUseCase
         catch(Exception ex)
         {
             _logger.Error($"Internal server error {JsonConvert.SerializeObject(table)} \n\n {ex}");
-            return Result.ErrorResult("Internal server error", HttpStatusCode.InternalServerError);
+            return Result.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
         
     }

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
@@ -37,7 +38,7 @@ public class GetBoardUseCase : IGetBoardUseCase
         if (!validationResult.IsValid)
         {
             _logger.Error($"Board filters are invalid: {JsonConvert.SerializeObject(boardFilters)}");
-            return Result<IEnumerable<Board>>.ErrorResult($"Board filters are invalid");
+            return Result<IEnumerable<Board>>.ErrorResult(ErrorMessage.BoardFiltersInvalid);
         }
 
         try
@@ -48,7 +49,7 @@ public class GetBoardUseCase : IGetBoardUseCase
         catch (Exception ex)
         {
             _logger.Error($"{JsonConvert.SerializeObject(boardFilters)} \n\n {ex}");
-            return Result<IEnumerable<Board>>.ErrorResult($"Internal server error", HttpStatusCode.InternalServerError);
+            return Result<IEnumerable<Board>>.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
     }
 
@@ -62,7 +63,7 @@ public class GetBoardUseCase : IGetBoardUseCase
         catch(Exception ex)
         {
             _logger.Error($"Internal server error GetBoardUseCase.HandleAsync({id}) \n\n {ex}");
-            return Result<Board>.ErrorResult($"Internal server error", HttpStatusCode.InternalServerError);
+            return Result<Board>.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
 
         if (!board.Exists())

@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Contracts.TaskContracts;
+﻿using Kanbardoo.Application.Constants;
+using Kanbardoo.Application.Contracts.TaskContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
@@ -30,7 +31,7 @@ public class UpdateTaskUseCase : IUpdateTaskUseCase
         if (task is null || !validationResult.IsValid)
         {
             _logger.Error($"Invalid task to update: {JsonConvert.SerializeObject(task is not null ? task : "null")}");
-            return Result.ErrorResult("The task is invalid");
+            return Result.ErrorResult(ErrorMessage.GivenTaskInvalid);
         }
 
         try
@@ -42,7 +43,7 @@ public class UpdateTaskUseCase : IUpdateTaskUseCase
         catch(Exception ex)
         {
             _logger.Error($"Internal server error {JsonConvert.SerializeObject(task)} \n\n {ex}");
-            return Result.ErrorResult("Internal server error", HttpStatusCode.InternalServerError);
+            return Result.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Contracts.BoardContracts;
+﻿using Kanbardoo.Application.Constants;
+using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
@@ -30,7 +31,7 @@ public sealed class AddBoardUseCase : IAddBoardUseCase
         if (!validationResult.IsValid)
         {
             _logger.Error($"{nameof(AddBoardUseCase)}.{nameof(HandleAsync)} => newBoard is invalid");
-            return Result.ErrorResult("A new board is invalid");
+            return Result.ErrorResult(ErrorMessage.NewTableInvalid);
         }
 
         try
@@ -40,7 +41,7 @@ public sealed class AddBoardUseCase : IAddBoardUseCase
         catch (Exception ex)
         {
             _logger.Error($"Error during adding a new board: {JsonConvert.SerializeObject(newBoard)}" + $"\n\n {ex}");
-            return Result.ErrorResult("Internal server error", HttpStatusCode.InternalServerError);
+            return Result.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
     }
 
@@ -55,7 +56,7 @@ public sealed class AddBoardUseCase : IAddBoardUseCase
         if (addedItemsCount < 0)
         {
             _logger.Error($"no board has been saved: {JsonConvert.SerializeObject(newBoard)} => {JsonConvert.SerializeObject(board)}");
-            return Result.ErrorResult($"no board has been saved");
+            return Result.ErrorResult(ErrorMessage.NoBoardSaved);
         }
 
         return Result.SuccessResult();

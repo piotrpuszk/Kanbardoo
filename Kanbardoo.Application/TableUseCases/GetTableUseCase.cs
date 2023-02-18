@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Contracts.TableContracts;
+﻿using Kanbardoo.Application.Constants;
+using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
 using System.Net;
@@ -27,7 +28,7 @@ public class GetTableUseCase : IGetTableUseCase
         catch(Exception ex)
         {
             _logger.Error($"{nameof(GetTableUseCase)}.{nameof(HandleAsync)} \n\n {ex}");
-            return Result<IEnumerable<Table>>.ErrorResult("Internal server error", HttpStatusCode.InternalServerError);
+            return Result<IEnumerable<Table>>.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
     }
 
@@ -41,13 +42,13 @@ public class GetTableUseCase : IGetTableUseCase
         catch (Exception ex)
         {
             _logger.Error($"Internal server error {id} \n\n {ex}");
-            return ErrorResult<Table>.ErrorResult($"Internal server error", HttpStatusCode.InternalServerError);
+            return ErrorResult<Table>.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
 
         if (!table.Exists())
         {
             _logger.Error($"A table with the give id {id} does not exist");
-            return ErrorResult<Table>.ErrorResult($"A table with the give id {id} does not exist");
+            return ErrorResult<Table>.ErrorResult(ErrorMessage.TableWithIDNotExist);
         }
 
         return Result<Table>.SuccessResult(table);
