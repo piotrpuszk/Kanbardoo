@@ -15,7 +15,7 @@ public class BoardToUpdateValidator : AbstractValidator<KanBoard>
 		RuleFor(e => e.ID).MustAsync(async (id, token) => 
 		{
             var found = await unitOfWork.BoardRepository.GetAsync(id);
-			return found.ID != default;
+			return found.Exists();
         });
 	}
 

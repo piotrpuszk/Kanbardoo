@@ -15,13 +15,17 @@ public class UnitOfWork : IUnitOfWork
     public ITaskRepository TaskRepository { get; init; }
     public ITaskStatusRepository TaskStatusRepository { get; init; }
     public IUserRepository UserRepository { get; init; }
+    public IUserClaimsRepository UserClaimsRepository { get; init; }
+    public IClaimRepository ClaimRepository { get; init; }
 
     public UnitOfWork(DBContext dbContext,
                       IBoardRepository boardRepository,
                       ITableRepository tableRepository,
                       ITaskRepository taskRepository,
                       ITaskStatusRepository taskStatusRepository,
-                      IUserRepository userRepository)
+                      IUserRepository userRepository,
+                      IUserClaimsRepository userClaimsRepository,
+                      IClaimRepository claimRepository)
     {
         BoardRepository = boardRepository;
         TableRepository = tableRepository;
@@ -29,6 +33,8 @@ public class UnitOfWork : IUnitOfWork
         TaskRepository = taskRepository;
         TaskStatusRepository = taskStatusRepository;
         UserRepository = userRepository;
+        UserClaimsRepository = userClaimsRepository;
+        ClaimRepository = claimRepository;
     }
 
     public async Task<int> SaveChangesAsync()

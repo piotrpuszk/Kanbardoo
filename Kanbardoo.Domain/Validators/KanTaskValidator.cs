@@ -19,7 +19,7 @@ public class KanTaskValidator : AbstractValidator<KanTask>
 		{
 			var status = await unitOfWork.TaskStatusRepository.GetAsync(id);
 
-			return status.ID != default;
+			return status.Exists();
 		});
 	}
 

@@ -3,9 +3,11 @@ using Kanbardoo.Application.Contracts;
 using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Application.Contracts.TaskContracts;
+using Kanbardoo.Application.Contracts.UserClaimsContracts;
 using Kanbardoo.Application.Contracts.UserContracts;
 using Kanbardoo.Application.TableUseCases;
 using Kanbardoo.Application.TaskUseCases;
+using Kanbardoo.Application.UserClaimsUseCases;
 using Kanbardoo.Application.UserContracts;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
@@ -93,11 +95,15 @@ builder.Services.AddScoped<IUpdateTaskUseCase, UpdateTaskUseCase>();
 builder.Services.AddScoped<ISignUpUseCase, SignUpUseCase>();
 builder.Services.AddScoped<ISignInUseCase, SignInUseCase>();
 
+builder.Services.AddScoped<IAddClaimToUserUseCase, AddClaimToUserUseCase>();
+
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<ITaskStatusRepository, TaskStatusRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IClaimRepository, ClaimRepository>();
+builder.Services.AddScoped<IUserClaimsRepository, UserClaimsRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<BoardFiltersValidator>();
@@ -115,6 +121,8 @@ builder.Services.AddScoped<KanTaskIdToDeleteValidator>();
 
 builder.Services.AddScoped<SignInValidator>();
 builder.Services.AddScoped<SignUpValidator>();
+
+builder.Services.AddScoped<AddClaimToUserValidator>();
 
 builder.Services.AddScoped<ICreateToken, TokenService>();
 

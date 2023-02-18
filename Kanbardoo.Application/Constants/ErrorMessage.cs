@@ -19,4 +19,6 @@ public static class ErrorMessage
     public const string Unauthenticated = "Unauthenticated";
     public const string SignUpDataInvalid = "The sign up data are invalid";
     public const string SignInDataInvalid = "The sign in data are invalid";
+
+    public const string UserClaimInvalid = "The user claims are invalid";
 }

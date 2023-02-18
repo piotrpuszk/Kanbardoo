@@ -13,7 +13,7 @@ public class NewTableValidator : AbstractValidator<NewKanTable>
 		{ 
 			var found = await unitOfWork.BoardRepository.GetAsync(id);
 
-			return found.ID != default;
+			return found.Exists();
 		});
 
 		RuleFor(e => e.Name).Must(e => !string.IsNullOrWhiteSpace(e));

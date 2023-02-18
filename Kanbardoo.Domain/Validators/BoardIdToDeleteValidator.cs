@@ -10,7 +10,7 @@ public class BoardIdToDeleteValidator : AbstractValidator<int>
 		{
 			var foundBoard = await unitOfWork.BoardRepository.GetAsync(id);
 
-			return foundBoard.ID != default;
-		});
+			return foundBoard.Exists();
+        });
 	}
 }
