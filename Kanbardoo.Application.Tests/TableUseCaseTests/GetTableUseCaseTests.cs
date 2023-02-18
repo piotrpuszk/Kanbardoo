@@ -41,7 +41,7 @@ internal class GetTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(table);
 
         //Act
-        SuccessResult<Table> successResult = await _getTableUseCase.HandleAsync(id) as SuccessResult<Table>;
+        SuccessResult<Table> successResult = (await _getTableUseCase.HandleAsync(id) as SuccessResult<Table>)!;
 
         //Assert
         Assert.IsNotNull(successResult);
@@ -57,7 +57,7 @@ internal class GetTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync(It.IsAny<int>())).ReturnsAsync(new Table());
 
         //Act
-        ErrorResult<Table> errorResult = await _getTableUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult<Table>;
+        ErrorResult<Table> errorResult = (await _getTableUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult<Table>)!;
 
         //Assert
         Assert.IsNotNull(errorResult);
@@ -73,7 +73,7 @@ internal class GetTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync(It.IsAny<int>())).Throws<Exception>();
 
         //Act
-        ErrorResult<Table> errorResult = await _getTableUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult<Table>;
+        ErrorResult<Table> errorResult = (await _getTableUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult<Table>)!;
 
         //Assert
         Assert.IsNotNull(errorResult);
@@ -90,7 +90,7 @@ internal class GetTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync()).ReturnsAsync(tables);
 
         //Act
-        SuccessResult<IEnumerable<Table>> successResult = await _getTableUseCase.HandleAsync() as SuccessResult<IEnumerable<Table>>;
+        SuccessResult<IEnumerable<Table>> successResult = (await _getTableUseCase.HandleAsync() as SuccessResult<IEnumerable<Table>>)!;
 
         //Assert
         Assert.IsNotNull(successResult);
@@ -106,7 +106,7 @@ internal class GetTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync()).Throws<Exception>();
 
         //Act
-        ErrorResult<IEnumerable<Table>> errorResult = await _getTableUseCase.HandleAsync() as ErrorResult<IEnumerable<Table>>;
+        ErrorResult<IEnumerable<Table>> errorResult = (await _getTableUseCase.HandleAsync() as ErrorResult<IEnumerable<Table>>)!;
 
         //Assert
         Assert.IsNotNull(errorResult);

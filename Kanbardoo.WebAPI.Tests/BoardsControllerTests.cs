@@ -10,6 +10,7 @@ using Kanbardoo.WebAPI.FilterDTOs;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Serilog;
+using System.Net;
 
 namespace Kanbardoo.WebAPI.Tests;
 internal class BoardsControllerTests
@@ -58,7 +59,7 @@ internal class BoardsControllerTests
         _mapper.Setup(e => e.Map<NewBoard>(newBoardDTO)).Returns(newBoard);
         _addBoardUseCase.Setup(e => e.HandleAsync(newBoard)).ReturnsAsync(Result.SuccessResult());
 
-        OkObjectResult result = await _boardsController.Post(newBoardDTO) as OkObjectResult;
+        OkObjectResult result = (await _boardsController.Post(newBoardDTO) as OkObjectResult)!;
 
         Assert.IsNotNull(result);
 
@@ -299,5 +300,100 @@ internal class BoardsControllerTests
         Assert.NotNull(errorResult.Errors);
         Assert.IsNotEmpty(errorResult.Errors);
         Assert.IsFalse(errorResult.IsSuccess);
+    }
+
+    [Test]
+    public async Task Post_HandleAsyncReturnsInternalServerError_ReturnsInternalServerErrorWithErrorResult()
+    {
+        //Arrange
+        _addBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<NewBoard>())).ReturnsAsync(Result.ErrorResult("", HttpStatusCode.InternalServerError));
+
+        //Act
+        var result = await _boardsController.Post(It.IsAny<NewBoardDTO>()) as ObjectResult;
+
+        //Assert
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.Value);
+        Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+
+        var errorResult = result.Value as ErrorResult;
+
+        Assert.NotNull(errorResult);
+    }
+
+    [Test]
+    public async Task Get_HandleAsyncReturnsInternalServerError_ReturnsInternalServerErrorWithErrorResult()
+    {
+        //Arrange
+        _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<BoardFilters>())).ReturnsAsync(Result<IEnumerable<Board>>.ErrorResult("", HttpStatusCode.InternalServerError));
+
+        //Act
+        var result = await _boardsController.Get(It.IsAny<BoardFiltersDTO>()) as ObjectResult;
+
+        //Assert
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.Value);
+        Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+
+        var errorResult = result.Value as ErrorResult<IEnumerable<BoardDTO>>;
+
+        Assert.NotNull(errorResult);
+    }
+
+    [Test]
+    public async Task GetById_HandleAsyncReturnsInternalServerError_ReturnsInternalServerErrorWithErrorResult()
+    {
+        //Arrange
+        _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<int>())).ReturnsAsync(Result<Board>.ErrorResult("", HttpStatusCode.InternalServerError));
+
+        //Act
+        var result = await _boardsController.Get(It.IsAny<int>()) as ObjectResult;
+
+        //Assert
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.Value);
+        Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+
+        var errorResult = result.Value as ErrorResult<BoardDTO>;
+
+        Assert.NotNull(errorResult);
+    }
+
+    [Test]
+    public async Task Put_HandleAsyncReturnsInternalServerError_ReturnsInternalServerErrorWithErrorResult()
+    {
+        //Arrange
+        _updateBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<Board>())).ReturnsAsync(Result.ErrorResult("", HttpStatusCode.InternalServerError));
+
+        //Act
+        var result = await _boardsController.Put(It.IsAny<BoardDTO>()) as ObjectResult;
+
+        //Assert
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.Value);
+        Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+
+        var errorResult = result.Value as ErrorResult;
+
+        Assert.NotNull(errorResult);
+    }
+
+    [Test]
+    public async Task Delete_HandleAsyncReturnsInternalServerError_ReturnsInternalServerErrorWithErrorResult()
+    {
+        //Arrange
+        _deleteBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<int>())).ReturnsAsync(Result.ErrorResult("", HttpStatusCode.InternalServerError));
+
+        //Act
+        var result = await _boardsController.Delete(It.IsAny<int>()) as ObjectResult;
+
+        //Assert
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.Value);
+        Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+
+        var errorResult = result.Value as ErrorResult;
+
+        Assert.NotNull(errorResult);
     }
 }

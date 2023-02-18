@@ -145,25 +145,6 @@ internal class TablesControllerTests
     }
 
     [Test]
-    public async Task Get_GettingFromDBError_ReturnsInternalServerErrorWithErrorResult()
-    {
-        _getTableUseCase.Setup(e => e.HandleAsync()).ReturnsAsync(Result<IEnumerable<Table>>.ErrorResult("Internal server error", HttpStatusCode.InternalServerError));
-
-        var result = await _tablesController.Get() as ObjectResult;
-
-        Assert.IsNotNull(result);
-        Assert.IsNotNull(result.Value);
-        Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
-
-        var errorResult = result.Value as ErrorResult<IEnumerable<TableDTO>>;
-
-        Assert.IsNotNull(errorResult);
-        Assert.IsNotNull(errorResult.Errors);
-        Assert.IsNotEmpty(errorResult.Errors);
-        Assert.IsFalse(errorResult.IsSuccess);
-    }
-
-    [Test]
     public async Task Put_ValidTableDTO_ReturnsOkWithSuccessResult()
     {
         TableDTO tableDTO = new()
@@ -254,6 +235,101 @@ internal class TablesControllerTests
 
         Assert.NotNull(errorResult);
         Assert.NotNull(errorResult.Errors);
+        Assert.IsNotEmpty(errorResult.Errors);
+        Assert.IsFalse(errorResult.IsSuccess);
+    }
+
+    [Test]
+    public async Task Get_GettingFromDBError_ReturnsInternalServerErrorWithErrorResult()
+    {
+        _getTableUseCase.Setup(e => e.HandleAsync()).ReturnsAsync(Result<IEnumerable<Table>>.ErrorResult("Internal server error", HttpStatusCode.InternalServerError));
+
+        var result = await _tablesController.Get() as ObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.Value);
+        Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+
+        var errorResult = result.Value as ErrorResult<IEnumerable<TableDTO>>;
+
+        Assert.IsNotNull(errorResult);
+        Assert.IsNotNull(errorResult.Errors);
+        Assert.IsNotEmpty(errorResult.Errors);
+        Assert.IsFalse(errorResult.IsSuccess);
+    }
+
+    [Test]
+    public async Task GetById_GettingFromDBError_ReturnsInternalServerErrorWithErrorResult()
+    {
+        _getTableUseCase.Setup(e => e.HandleAsync(It.IsAny<int>())).ReturnsAsync(Result<Table>.ErrorResult("Internal server error", HttpStatusCode.InternalServerError));
+
+        var result = await _tablesController.Get(It.IsAny<int>()) as ObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.Value);
+        Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+
+        var errorResult = result.Value as ErrorResult<TableDTO>;
+
+        Assert.IsNotNull(errorResult);
+        Assert.IsNotNull(errorResult.Errors);
+        Assert.IsNotEmpty(errorResult.Errors);
+        Assert.IsFalse(errorResult.IsSuccess);
+    }
+
+    [Test]
+    public async Task Post_GettingFromDBError_ReturnsInternalServerErrorWithErrorResult()
+    {
+        _addTableUseCase.Setup(e => e.HandleAsync(It.IsAny<NewTable>())).ReturnsAsync(Result.ErrorResult("", HttpStatusCode.InternalServerError));
+
+        var result = await _tablesController.Post(It.IsAny<NewTableDTO>()) as ObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.Value);
+        Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+
+        var errorResult = result.Value as ErrorResult;
+
+        Assert.IsNotNull(errorResult);
+        Assert.IsNotNull(errorResult.Errors);
+        Assert.IsNotEmpty(errorResult.Errors);
+        Assert.IsFalse(errorResult.IsSuccess);
+    }
+
+    [Test]
+    public async Task Put_GettingFromDBError_ReturnsInternalServerErrorWithErrorResult()
+    {
+        _updateTableUseCase.Setup(e => e.HandleAsync(It.IsAny<Table>())).ReturnsAsync(Result.ErrorResult("", HttpStatusCode.InternalServerError));
+
+        var result = await _tablesController.Put(It.IsAny<TableDTO>()) as ObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.Value);
+        Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+
+        var errorResult = result.Value as ErrorResult;
+
+        Assert.IsNotNull(errorResult);
+        Assert.IsNotNull(errorResult.Errors);
+        Assert.IsNotEmpty(errorResult.Errors);
+        Assert.IsFalse(errorResult.IsSuccess);
+    }
+
+    [Test]
+    public async Task Delete_GettingFromDBError_ReturnsInternalServerErrorWithErrorResult()
+    {
+        _deleteTableUseCase.Setup(e => e.HandleAsync(It.IsAny<int>())).ReturnsAsync(Result.ErrorResult("", HttpStatusCode.InternalServerError));
+
+        var result = await _tablesController.Delete(It.IsAny<int>()) as ObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.Value);
+        Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+
+        var errorResult = result.Value as ErrorResult;
+
+        Assert.IsNotNull(errorResult);
+        Assert.IsNotNull(errorResult.Errors);
         Assert.IsNotEmpty(errorResult.Errors);
         Assert.IsFalse(errorResult.IsSuccess);
     }

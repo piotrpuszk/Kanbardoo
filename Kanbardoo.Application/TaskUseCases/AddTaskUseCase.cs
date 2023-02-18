@@ -54,7 +54,7 @@ public class AddTaskUseCase : IAddTaskUseCase
         }
         catch (Exception ex)
         {
-            _logger.Error($"Internal server error: \n\n {nameof(AddTaskUseCase)}.{nameof(HandleAsync)}({JsonConvert.SerializeObject(newTask)})");
+            _logger.Error($"Internal server error: \n\n {nameof(AddTaskUseCase)}.{nameof(HandleAsync)}({JsonConvert.SerializeObject(newTask)}) \n\n {ex}");
             return Result.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
 

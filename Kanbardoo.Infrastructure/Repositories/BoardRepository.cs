@@ -80,7 +80,7 @@ public class BoardRepository : IBoardRepository
     {
         board.Status = null;
         board.Owner = null;
-        board.Tables = null;
+        board.Tables = null!;
         _dbContext.Boards.Update(board);
     }
 }
