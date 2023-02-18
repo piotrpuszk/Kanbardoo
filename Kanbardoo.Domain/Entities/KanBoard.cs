@@ -19,7 +19,7 @@ public class KanBoard : Entity
     public KanBoardStatus? Status { get; set; }
     [MaxLength(1024)]
     public string BackgroundImageUrl { get; set; } = string.Empty;
-    public virtual ICollection<KanTable> Tables { get; set; } = new List<KanTable>();
+    public ICollection<KanTable> Tables { get; set; } = new List<KanTable>();
 
     public static KanBoard CreateFromNewBoard(NewKanBoard newBoard)
     {
