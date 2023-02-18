@@ -4,9 +4,9 @@ namespace Kanbardoo.Domain.Repositories;
 
 public interface ITableRepository
 {
-    Task<IEnumerable<Table>> GetAsync();
-    Task<Table> GetAsync(int id);
-    Task UpdateAsync(Table board);
-    Task AddAsync(Table board);
+    Task<IEnumerable<KanTable>> GetAsync();
+    Task<KanTable> GetAsync(int id);
+    Task UpdateAsync(KanTable board);
+    Task AddAsync(KanTable board);
     Task DeleteAsync(int id);
 }

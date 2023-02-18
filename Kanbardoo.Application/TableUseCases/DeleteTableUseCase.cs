@@ -1,8 +1,10 @@
-﻿using Kanbardoo.Application.Contracts.TableContracts;
+﻿using Kanbardoo.Application.Constants;
+using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
+using System.Net;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.TableUseCases;
@@ -28,7 +30,7 @@ public class DeleteTableUseCase : IDeleteTableUseCase
         if (!validationResult.IsValid)
         {
             _logger.Error($"The table id is invalid {id}");
-            return Result.ErrorResult("The table id is invalid");
+            return Result.ErrorResult(ErrorMessage.TableIDInvalid);
         }
 
         try
@@ -41,7 +43,7 @@ public class DeleteTableUseCase : IDeleteTableUseCase
         catch (Exception ex)
         {
             _logger.Error($"Internal server error: {id} \n\n {ex}");
-            return Result.ErrorResult("Internal server error");
+            return Result.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
         
     }

@@ -5,7 +5,7 @@ using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 
 namespace Kanbardoo.Domain.Validators;
-public class NewTaskValidator : AbstractValidator<NewTask>
+public class NewTaskValidator : AbstractValidator<NewKanTask>
 {
 	public NewTaskValidator(IUnitOfWork unitOfWork)
 	{
@@ -30,7 +30,7 @@ public class NewTaskValidator : AbstractValidator<NewTask>
 		});
 	}
 
-    public override ValidationResult Validate(ValidationContext<NewTask> context)
+    public override ValidationResult Validate(ValidationContext<NewKanTask> context)
     {
         if (context.InstanceToValidate is null)
         {
@@ -40,7 +40,7 @@ public class NewTaskValidator : AbstractValidator<NewTask>
         return base.Validate(context);
     }
 
-    public override Task<ValidationResult> ValidateAsync(ValidationContext<NewTask> context, CancellationToken cancellation = default)
+    public override Task<ValidationResult> ValidateAsync(ValidationContext<NewKanTask> context, CancellationToken cancellation = default)
     {
         if (context.InstanceToValidate is null)
         {

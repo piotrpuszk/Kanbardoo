@@ -12,15 +12,32 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
-    public async Task<User> GetAsync(int id)
+    public async Task<KanUser> GetAsync(int id)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(e => e.ID== id);
 
         if (user is null)
         {
-            return new User();
+            return new KanUser();
         }
 
         return user;
+    }
+
+    public async Task<KanUser> GetAsync(string name)
+    {
+        var user = await _dbContext.Users.FirstOrDefaultAsync(e => e.UserName == name);
+
+        if (user is null)
+        {
+            return new KanUser();
+        }
+
+        return user;
+    }
+
+    public async Task AddAsync(KanUser user)
+    {
+        await _dbContext.Users.AddAsync(user);
     }
 }

@@ -9,6 +9,6 @@ public class BoardOrderByClauseProfile : Profile
 {
 	public BoardOrderByClauseProfile()
 	{
-		CreateMap<OrderByClauseDTO, OrderByClause<Board>>();
+		CreateMap<OrderByClauseDTO, OrderByClause<KanBoard>>();
 	}
 }

@@ -8,6 +8,6 @@ public class BoardFiltersProfile : Profile
 {
 	public BoardFiltersProfile()
 	{
-		CreateMap<BoardFiltersDTO, BoardFilters>();
+		CreateMap<KanBoardFiltersDTO, KanBoardFilters>();
 	}
 }

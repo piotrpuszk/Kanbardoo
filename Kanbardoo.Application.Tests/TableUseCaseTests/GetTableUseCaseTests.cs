@@ -33,7 +33,7 @@ internal class GetTableUseCaseTests
     {
         //Arrange
         int id = 1;
-        Table table = new()
+        KanTable table = new()
         {
             ID = id,
         };
@@ -41,7 +41,7 @@ internal class GetTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(table);
 
         //Act
-        SuccessResult<Table> successResult = await _getTableUseCase.HandleAsync(id) as SuccessResult<Table>;
+        SuccessResult<KanTable> successResult = (await _getTableUseCase.HandleAsync(id) as SuccessResult<KanTable>)!;
 
         //Assert
         Assert.IsNotNull(successResult);
@@ -54,10 +54,10 @@ internal class GetTableUseCaseTests
     public async Task HandleAsync_NonExistingId_ReturnsErrorResult()
     {
         //Arrange
-        _tableRepository.Setup(e => e.GetAsync(It.IsAny<int>())).ReturnsAsync(new Table());
+        _tableRepository.Setup(e => e.GetAsync(It.IsAny<int>())).ReturnsAsync(new KanTable());
 
         //Act
-        ErrorResult<Table> errorResult = await _getTableUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult<Table>;
+        ErrorResult<KanTable> errorResult = (await _getTableUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult<KanTable>)!;
 
         //Assert
         Assert.IsNotNull(errorResult);
@@ -73,7 +73,7 @@ internal class GetTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync(It.IsAny<int>())).Throws<Exception>();
 
         //Act
-        ErrorResult<Table> errorResult = await _getTableUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult<Table>;
+        ErrorResult<KanTable> errorResult = (await _getTableUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult<KanTable>)!;
 
         //Assert
         Assert.IsNotNull(errorResult);
@@ -86,11 +86,11 @@ internal class GetTableUseCaseTests
     public async Task HandleAsync_GetAsyncNoException_ReturnsSuccessResult()
     {
         //Assert
-        var tables = new List<Table>();
+        var tables = new List<KanTable>();
         _tableRepository.Setup(e => e.GetAsync()).ReturnsAsync(tables);
 
         //Act
-        SuccessResult<IEnumerable<Table>> successResult = await _getTableUseCase.HandleAsync() as SuccessResult<IEnumerable<Table>>;
+        SuccessResult<IEnumerable<KanTable>> successResult = (await _getTableUseCase.HandleAsync() as SuccessResult<IEnumerable<KanTable>>)!;
 
         //Assert
         Assert.IsNotNull(successResult);
@@ -106,7 +106,7 @@ internal class GetTableUseCaseTests
         _tableRepository.Setup(e => e.GetAsync()).Throws<Exception>();
 
         //Act
-        ErrorResult<IEnumerable<Table>> errorResult = await _getTableUseCase.HandleAsync() as ErrorResult<IEnumerable<Table>>;
+        ErrorResult<IEnumerable<KanTable>> errorResult = (await _getTableUseCase.HandleAsync() as ErrorResult<IEnumerable<KanTable>>)!;
 
         //Assert
         Assert.IsNotNull(errorResult);

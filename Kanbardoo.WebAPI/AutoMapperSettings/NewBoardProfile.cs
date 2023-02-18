@@ -8,6 +8,6 @@ public class NewBoardProfile : Profile
 {
 	public NewBoardProfile()
 	{
-		CreateMap<NewBoard, NewBoardDTO>().ReverseMap();
+		CreateMap<NewKanBoard, NewKanBoardDTO>().ReverseMap();
 	}
 }

@@ -1,7 +1,9 @@
-﻿using Kanbardoo.Application.Contracts.BoardContracts;
+﻿using Kanbardoo.Application.Constants;
+using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
+using System.Net;
 using ILogger = Serilog.ILogger;  
 
 namespace Kanbardoo.Application.BoardUseCases;
@@ -26,7 +28,7 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
         if (!validationResult.IsValid)
         {
             _logger.Error($"A board with given ID does not exist: {id}");
-            return Result.ErrorResult("A board with given ID does not exist");
+            return Result.ErrorResult(ErrorMessage.BoardWithIDNotExist);
         }
 
         try
@@ -36,7 +38,7 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
         catch (Exception ex)
         {
             _logger.Error($"Error during delete from database: {id} \n\n {ex}");
-            return Result.ErrorResult("Internal server error");
+            return Result.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
     }
 

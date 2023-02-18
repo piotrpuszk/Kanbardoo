@@ -33,7 +33,7 @@ internal class DeleteBoardUseCaseTests
     {
         //Arrange
         int id = 1;
-        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new Board() { ID = id });
+        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new KanBoard() { ID = id });
         _boardRepository.Setup(e => e.DeleteAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
 
         //Act
@@ -50,7 +50,7 @@ internal class DeleteBoardUseCaseTests
     {
         //Arrange
         int id = 1;
-        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new Board() { ID = id });
+        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new KanBoard() { ID = id });
         _boardRepository.Setup(e => e.DeleteAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
 
         //Act
@@ -65,7 +65,7 @@ internal class DeleteBoardUseCaseTests
     {
         //Arrange
         int id = 1;
-        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new Board() { ID = id });
+        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new KanBoard() { ID = id });
         _boardRepository.Setup(e => e.DeleteAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
 
         //Act
@@ -80,7 +80,7 @@ internal class DeleteBoardUseCaseTests
     {
         //Arrange
         int id = 165;
-        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new Board());
+        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new KanBoard());
 
         //Act
         Result result = await _deleteBoardUseCase.HandleAsync(id);
@@ -101,7 +101,7 @@ internal class DeleteBoardUseCaseTests
     {
         //Arrange
         int id = 165;
-        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new Board());
+        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new KanBoard());
 
         //Act
         Result result = await _deleteBoardUseCase.HandleAsync(id);
@@ -115,7 +115,7 @@ internal class DeleteBoardUseCaseTests
     {
         //Arrange
         int id = 165;
-        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new Board());
+        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new KanBoard());
 
         //Act
         Result result = await _deleteBoardUseCase.HandleAsync(id);
@@ -129,7 +129,7 @@ internal class DeleteBoardUseCaseTests
     {
         //Arrange
         int id = 165;
-        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new Board());
+        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new KanBoard());
         _boardRepository.Setup(e => e.DeleteAsync(It.IsAny<int>())).Throws<Exception>();
 
         //Act
@@ -151,7 +151,7 @@ internal class DeleteBoardUseCaseTests
     {
         //Arrange
         int id = 165;
-        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new Board());
+        _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(new KanBoard());
         _boardRepository.Setup(e => e.DeleteAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
         _unitOfWork.Setup(e => e.SaveChangesAsync()).Throws<Exception>();
 

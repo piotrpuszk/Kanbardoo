@@ -33,16 +33,16 @@ internal class GetBoardUseCaseTests
     {
         //Arrange
         int id = 1;
-        var correspondingBoard = new Board { ID = id };
+        var correspondingBoard = new KanBoard { ID = id };
         _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(correspondingBoard);
 
         //Act
-        Result<Board> result = await _getBoardUseCase.HandleAsync(id);
+        Result<KanBoard> result = await _getBoardUseCase.HandleAsync(id);
 
         //Assert
         Assert.IsNotNull(result);
 
-        var successResult = result as SuccessResult<Board>;
+        var successResult = result as SuccessResult<KanBoard>;
 
         Assert.IsNotNull(successResult);
         Assert.IsTrue(successResult.IsSuccess);
@@ -55,16 +55,16 @@ internal class GetBoardUseCaseTests
     {
         //Arrange
         int id = 1;
-        var defaultBoard = new Board();
+        var defaultBoard = new KanBoard();
         _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(defaultBoard);
 
         //Act
-        Result<Board> result = await _getBoardUseCase.HandleAsync(id);
+        Result<KanBoard> result = await _getBoardUseCase.HandleAsync(id);
 
         //Assert
         Assert.IsNotNull(result);
 
-        var errorResult = result as ErrorResult<Board>;
+        var errorResult = result as ErrorResult<KanBoard>;
         Assert.IsNotNull(errorResult);
         Assert.IsNotNull(errorResult.Errors);
         Assert.IsNotEmpty(errorResult.Errors);
@@ -76,11 +76,11 @@ internal class GetBoardUseCaseTests
     {
         //Arrange
         int id = default;
-        var defaultBoard = new Board();
+        var defaultBoard = new KanBoard();
         _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(defaultBoard);
 
         //Act
-        Result<Board> result = await _getBoardUseCase.HandleAsync(id);
+        Result<KanBoard> result = await _getBoardUseCase.HandleAsync(id);
 
         //Assert
         _boardRepository.Verify(e => e.GetAsync(It.IsAny<int>()), Times.Once);
@@ -92,11 +92,11 @@ internal class GetBoardUseCaseTests
 
         //Arrange
         int id = 1;
-        var board = new Board() { ID = id };
+        var board = new KanBoard() { ID = id };
         _boardRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(board);
 
         //Act
-        Result<Board> secondResult = await _getBoardUseCase.HandleAsync(id);
+        Result<KanBoard> secondResult = await _getBoardUseCase.HandleAsync(id);
 
         //Assert
         _boardRepository.Verify(e => e.GetAsync(It.IsAny<int>()), Times.Once);
@@ -109,7 +109,7 @@ internal class GetBoardUseCaseTests
         _boardRepository.Setup(e => e.GetAsync(It.IsAny<int>())).Throws<Exception>();
 
         //Act
-        ErrorResult<Board> result = (await _getBoardUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult<Board>)!;
+        ErrorResult<KanBoard> result = (await _getBoardUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult<KanBoard>)!;
 
         //Assert
         Assert.IsNotNull(result);
@@ -122,47 +122,47 @@ internal class GetBoardUseCaseTests
     public async Task HandleAsync_ValidFilters_ReturnsSuccessResult()
     {
         //Arrange
-        BoardFilters boardFilters = new()
+        KanBoardFilters boardFilters = new()
         {
             BoardName = It.IsAny<string>(),
-            OrderByClauses = new List<OrderByClause<Board>>()
+            OrderByClauses = new List<OrderByClause<KanBoard>>()
             {
                 new()
                 {
-                     ColumnName = nameof(Board.Name),
+                     ColumnName = nameof(KanBoard.Name),
                 },
                 new()
                 {
-                     ColumnName = nameof(Board.ID),
+                     ColumnName = nameof(KanBoard.ID),
                 },
                 new()
                 {
-                     ColumnName = nameof(Board.StatusID),
+                     ColumnName = nameof(KanBoard.StatusID),
                 },
                 new()
                 {
-                     ColumnName = nameof(Board.CreationDate),
+                     ColumnName = nameof(KanBoard.CreationDate),
                 },
                 new()
                 {
-                     ColumnName = nameof(Board.StartDate),
+                     ColumnName = nameof(KanBoard.StartDate),
                 },
                 new()
                 {
-                     ColumnName = nameof(Board.FinishDate),
+                     ColumnName = nameof(KanBoard.FinishDate),
                 },
             },
         };
-        var returnValue = new List<Board>()
+        var returnValue = new List<KanBoard>()
         {
-            new Board(),
-            new Board(),
-            new Board(),
+            new KanBoard(),
+            new KanBoard(),
+            new KanBoard(),
         };
         _boardRepository.Setup(e => e.GetAsync(boardFilters)).ReturnsAsync(returnValue);
 
         //Act
-        SuccessResult<IEnumerable<Board>> result = (await _getBoardUseCase.HandleAsync(boardFilters) as SuccessResult<IEnumerable<Board>>)!;
+        SuccessResult<IEnumerable<KanBoard>> result = (await _getBoardUseCase.HandleAsync(boardFilters) as SuccessResult<IEnumerable<KanBoard>>)!;
 
         //Assert
         Assert.IsNotNull(result);
@@ -175,11 +175,11 @@ internal class GetBoardUseCaseTests
     public async Task HandleAsync_NonExistingOrderByColumn_ReturnsErrorResult()
     {
         //Arrange
-        BoardFilters boardFilters = new()
+        KanBoardFilters boardFilters = new()
         {
-            OrderByClauses = new List<OrderByClause<Board>>()
+            OrderByClauses = new List<OrderByClause<KanBoard>>()
             {
-                new OrderByClause<Board>()
+                new OrderByClause<KanBoard>()
                 {
                     ColumnName = "NonExistingColumn",
                 }
@@ -187,7 +187,7 @@ internal class GetBoardUseCaseTests
         };
 
         //Act
-        ErrorResult<IEnumerable<Board>> result = (await _getBoardUseCase.HandleAsync(boardFilters) as ErrorResult<IEnumerable<Board>>)!;
+        ErrorResult<IEnumerable<KanBoard>> result = (await _getBoardUseCase.HandleAsync(boardFilters) as ErrorResult<IEnumerable<KanBoard>>)!;
 
         //Assert
         Assert.IsNotNull(result);
@@ -200,13 +200,13 @@ internal class GetBoardUseCaseTests
     public async Task HandleAsync_GetAsyncThrowsError_ReturnsErrorResult()
     {
         //Arrange
-        BoardFilters boardFilters = new()
+        KanBoardFilters boardFilters = new()
         {
-            OrderByClauses = new List<OrderByClause<Board>>()
+            OrderByClauses = new List<OrderByClause<KanBoard>>()
             {
-                new OrderByClause<Board>()
+                new OrderByClause<KanBoard>()
                 {
-                    ColumnName = nameof(Board.Name),
+                    ColumnName = nameof(KanBoard.Name),
                 }
             }
         };
@@ -214,7 +214,7 @@ internal class GetBoardUseCaseTests
         _boardRepository.Setup(e => e.GetAsync(boardFilters)).Throws<Exception>();
 
         //Act
-        ErrorResult<IEnumerable<Board>> result = (await _getBoardUseCase.HandleAsync(boardFilters) as ErrorResult<IEnumerable<Board>>)!;
+        ErrorResult<IEnumerable<KanBoard>> result = (await _getBoardUseCase.HandleAsync(boardFilters) as ErrorResult<IEnumerable<KanBoard>>)!;
 
         //Assert
         Assert.IsNotNull(result);

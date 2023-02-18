@@ -37,13 +37,13 @@ internal class AddTableUseCaseTests
     {
         //Arrange
         var boardId = 1;
-        NewTable newTable = new()
+        NewKanTable newTable = new()
         {
             Name = "Test",
             BoardID = boardId,
         };
 
-        Board board = new()
+        KanBoard board = new()
         {
             ID = boardId,
         };
@@ -51,7 +51,7 @@ internal class AddTableUseCaseTests
         _boardRepository.Setup(e => e.GetAsync(boardId)).ReturnsAsync(board);
 
         //Act
-        SuccessResult successResult = await _addTableUseCase.HandleAsync(newTable) as SuccessResult;
+        SuccessResult successResult = (await _addTableUseCase.HandleAsync(newTable) as SuccessResult)!;
 
         //Assert
         Assert.IsNotNull(successResult);
@@ -63,16 +63,16 @@ internal class AddTableUseCaseTests
     {
         //Arrange
         var boardId = 1;
-        NewTable newTable = new()
+        NewKanTable newTable = new()
         {
             Name = "Test",
             BoardID = boardId,
         };
 
-        _boardRepository.Setup(e => e.GetAsync(boardId)).ReturnsAsync(new Board());
+        _boardRepository.Setup(e => e.GetAsync(boardId)).ReturnsAsync(new KanBoard());
 
         //Act
-        ErrorResult errorResult = await _addTableUseCase.HandleAsync(newTable) as ErrorResult;
+        ErrorResult errorResult = (await _addTableUseCase.HandleAsync(newTable) as ErrorResult)!;
 
         //Assert
         Assert.IsNotNull(errorResult);
@@ -86,13 +86,13 @@ internal class AddTableUseCaseTests
     {
         //Arrange
         var boardId = 1;
-        NewTable newTable = new()
+        NewKanTable newTable = new()
         {
             Name = "Test",
             BoardID = boardId,
         };
 
-        Board board = new()
+        KanBoard board = new()
         {
             ID = boardId,
         };
@@ -100,7 +100,7 @@ internal class AddTableUseCaseTests
         _boardRepository.Setup(e => e.GetAsync(boardId)).ReturnsAsync(board);
 
         //Act
-        SuccessResult successResult = await _addTableUseCase.HandleAsync(newTable) as SuccessResult;
+        SuccessResult successResult = (await _addTableUseCase.HandleAsync(newTable) as SuccessResult)!;
 
         //Arrange
         _unitOfWork.Verify(e => e.SaveChangesAsync(), Times.Once);
@@ -111,13 +111,13 @@ internal class AddTableUseCaseTests
     {
         //Arrange
         var boardId = 1;
-        NewTable newTable = new()
+        NewKanTable newTable = new()
         {
             Name = "Test",
             BoardID = boardId,
         };
 
-        Board board = new()
+        KanBoard board = new()
         {
             ID = boardId,
         };
@@ -125,17 +125,17 @@ internal class AddTableUseCaseTests
         _boardRepository.Setup(e => e.GetAsync(boardId)).ReturnsAsync(board);
 
         //Act
-        SuccessResult successResult = await _addTableUseCase.HandleAsync(newTable) as SuccessResult;
+        SuccessResult successResult = (await _addTableUseCase.HandleAsync(newTable) as SuccessResult)!;
 
         //Arrange
-        _tableRepository.Verify(e => e.AddAsync(It.IsAny<Table>()), Times.Once);
+        _tableRepository.Verify(e => e.AddAsync(It.IsAny<KanTable>()), Times.Once);
     }
 
     [Test]
     public async Task HandleAsync_NewTableIsNull_ReturnsErrorResult()
     {
         //Act
-        ErrorResult errorResult = await _addTableUseCase.HandleAsync(null) as ErrorResult;
+        ErrorResult errorResult = (await _addTableUseCase.HandleAsync(null!) as ErrorResult)!;
 
         //Assert
         Assert.IsNotNull(errorResult);

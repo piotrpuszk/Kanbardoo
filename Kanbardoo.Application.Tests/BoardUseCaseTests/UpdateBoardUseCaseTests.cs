@@ -14,7 +14,7 @@ internal class UpdateBoardUseCaseTests
     private Mock<IUnitOfWork> _unitOfWork;
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
-    private NewBoard _newBoard;
+    private NewKanBoard _newBoard;
     private BoardToUpdateValidator _boardToUpdateValidator;
 
     [SetUp]
@@ -30,14 +30,14 @@ internal class UpdateBoardUseCaseTests
 
         _updateBoardUseCase = new UpdateBoardUseCase(_unitOfWork.Object, _logger.Object, _boardToUpdateValidator);
 
-        _newBoard = new NewBoard();
+        _newBoard = new NewKanBoard();
     }
 
     [Test]
     public async Task HandleAsync_ValidBoard_ReturnsSuccessResult()
     {
         //Arrange
-        var board = new Board()
+        var board = new KanBoard()
         {
             ID = 1,
             Name = "modifiedName",
@@ -47,7 +47,7 @@ internal class UpdateBoardUseCaseTests
         };
 
         _boardRepository.Setup(e => e.UpdateAsync(board)).Returns(Task.CompletedTask);
-        _boardRepository.Setup(e => e.GetAsync(board.ID)).ReturnsAsync(new Board() { ID = 1 });
+        _boardRepository.Setup(e => e.GetAsync(board.ID)).ReturnsAsync(new KanBoard() { ID = 1 });
 
         //Act
         SuccessResult successResult = (await _updateBoardUseCase.HandleAsync(board) as SuccessResult)!;
@@ -61,7 +61,7 @@ internal class UpdateBoardUseCaseTests
     public async Task HandleAsync_BoardIsNull_ReturnsErrorResult()
     {
         //Arrange
-        Board board = null!;
+        KanBoard board = null!;
 
         //Act
         ErrorResult errorResult = (await _updateBoardUseCase.HandleAsync(board) as ErrorResult)!;
@@ -77,10 +77,10 @@ internal class UpdateBoardUseCaseTests
     public async Task HandleAsync_UpdateThrowsException_ReturnsErrorResult()
     {
         //Arrange
-        _boardRepository.Setup(e => e.UpdateAsync(It.IsAny<Board>())).Throws<Exception>();
+        _boardRepository.Setup(e => e.UpdateAsync(It.IsAny<KanBoard>())).Throws<Exception>();
 
         //Act
-        ErrorResult errorResult = (await _updateBoardUseCase.HandleAsync(It.IsAny<Board>()) as ErrorResult)!;
+        ErrorResult errorResult = (await _updateBoardUseCase.HandleAsync(It.IsAny<KanBoard>()) as ErrorResult)!;
 
         //Assert
         Assert.IsNotNull(errorResult);
@@ -96,7 +96,7 @@ internal class UpdateBoardUseCaseTests
         _unitOfWork.Setup(e => e.SaveChangesAsync()).Throws<Exception>();
 
         //Act
-        ErrorResult errorResult = (await _updateBoardUseCase.HandleAsync(It.IsAny<Board>()) as ErrorResult)!;
+        ErrorResult errorResult = (await _updateBoardUseCase.HandleAsync(It.IsAny<KanBoard>()) as ErrorResult)!;
 
         //Assert
         Assert.IsNotNull(errorResult);
@@ -108,7 +108,7 @@ internal class UpdateBoardUseCaseTests
     [Test]
     public async Task HandleAsync_ValidBoard_ExecutesUpdateOnce()
     {
-        var board = new Board()
+        var board = new KanBoard()
         {
             ID = 1,
             Name = "test",
@@ -117,17 +117,17 @@ internal class UpdateBoardUseCaseTests
             CreationDate = new DateTime(2000, 1, 1, 0, 0, 0),
         };
         _boardRepository.Setup(e => e.UpdateAsync(board)).Returns(Task.CompletedTask);
-        _boardRepository.Setup(e => e.GetAsync(board.ID)).ReturnsAsync(new Board() { ID = 1 });
+        _boardRepository.Setup(e => e.GetAsync(board.ID)).ReturnsAsync(new KanBoard() { ID = 1 });
 
         await _updateBoardUseCase.HandleAsync(board);
 
-        _boardRepository.Verify(e => e.UpdateAsync(It.IsAny<Board>()), Times.Once);
+        _boardRepository.Verify(e => e.UpdateAsync(It.IsAny<KanBoard>()), Times.Once);
     }
 
     [Test]
     public async Task HandleAsync_ValidBoard_ExecutesSaveChangesAsyncOnce()
     {
-        var board = new Board()
+        var board = new KanBoard()
         {
             ID = 1,
             Name = "test",
@@ -136,7 +136,7 @@ internal class UpdateBoardUseCaseTests
             CreationDate = new DateTime(2000, 1, 1, 0, 0, 0),
         };
         _boardRepository.Setup(e => e.UpdateAsync(board)).Returns(Task.CompletedTask);
-        _boardRepository.Setup(e => e.GetAsync(board.ID)).ReturnsAsync(new Board() { ID = 1 });
+        _boardRepository.Setup(e => e.GetAsync(board.ID)).ReturnsAsync(new KanBoard() { ID = 1 });
 
         await _updateBoardUseCase.HandleAsync(board);
 

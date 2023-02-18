@@ -5,5 +5,5 @@ namespace Kanbardoo.Application.Contracts.TableContracts;
 
 public interface IUpdateTableUseCase
 {
-    Task<Result> HandleAsync(Table table);
+    Task<Result> HandleAsync(KanTable table);
 }

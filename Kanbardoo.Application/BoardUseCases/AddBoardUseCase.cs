@@ -1,10 +1,12 @@
-﻿using Kanbardoo.Application.Contracts.BoardContracts;
+﻿using Kanbardoo.Application.Constants;
+using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
 using Newtonsoft.Json;
+using System.Net;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.BoardUseCases;
@@ -23,13 +25,13 @@ public sealed class AddBoardUseCase : IAddBoardUseCase
         _newBoardValidator = newBoardValidator;
     }
 
-    public async Task<Result> HandleAsync(NewBoard newBoard)
+    public async Task<Result> HandleAsync(NewKanBoard newBoard)
     {
         var validationResult = _newBoardValidator.Validate(newBoard);
         if (!validationResult.IsValid)
         {
             _logger.Error($"{nameof(AddBoardUseCase)}.{nameof(HandleAsync)} => newBoard is invalid");
-            return Result.ErrorResult("A new board is invalid");
+            return Result.ErrorResult(ErrorMessage.NewTableInvalid);
         }
 
         try
@@ -39,13 +41,13 @@ public sealed class AddBoardUseCase : IAddBoardUseCase
         catch (Exception ex)
         {
             _logger.Error($"Error during adding a new board: {JsonConvert.SerializeObject(newBoard)}" + $"\n\n {ex}");
-            return Result.ErrorResult("Internal server error");
+            return Result.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
     }
 
-    private async Task<Result> SaveBoardInDatabase(NewBoard newBoard)
+    private async Task<Result> SaveBoardInDatabase(NewKanBoard newBoard)
     {
-        Board board = Board.CreateFromNewBoard(newBoard);
+        KanBoard board = KanBoard.CreateFromNewBoard(newBoard);
 
         await _unitOfWork.BoardRepository.AddAsync(board);
 
@@ -54,7 +56,7 @@ public sealed class AddBoardUseCase : IAddBoardUseCase
         if (addedItemsCount < 0)
         {
             _logger.Error($"no board has been saved: {JsonConvert.SerializeObject(newBoard)} => {JsonConvert.SerializeObject(board)}");
-            return Result.ErrorResult($"no board has been saved");
+            return Result.ErrorResult(ErrorMessage.NoBoardSaved);
         }
 
         return Result.SuccessResult();

@@ -1,6 +1,8 @@
-﻿using Kanbardoo.Application.Contracts.TaskContracts;
+﻿using Kanbardoo.Application.Constants;
+using Kanbardoo.Application.Contracts.TaskContracts;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
+using System.Net;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.TaskUseCases;
@@ -26,13 +28,13 @@ public class GetTaskUseCase : IGetTaskUseCase
         catch (Exception ex)
         {
             _logger.Error($"Internal server error {id} \n\n {ex}");
-            return ErrorResult<KanTask>.ErrorResult($"Internal server error");
+            return ErrorResult<KanTask>.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
 
         if (!task.Exists())
         {
             _logger.Error($"A task with the give id {id} does not exist");
-            return ErrorResult<KanTask>.ErrorResult($"A task with the give id {id} does not exist");
+            return ErrorResult<KanTask>.ErrorResult(ErrorMessage.TaskWithIDNotExist);
         }
 
         return Result<KanTask>.SuccessResult(task);

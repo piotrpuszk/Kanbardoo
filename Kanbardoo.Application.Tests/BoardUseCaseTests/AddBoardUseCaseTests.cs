@@ -14,7 +14,7 @@ internal class AddBoardUseCaseTests
     private Mock<IUnitOfWork> _unitOfWork;
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
-    private NewBoard _newBoard;
+    private NewKanBoard _newBoard;
     private NewBoardValidator _newBoardValidator;
 
     [SetUp]
@@ -29,14 +29,14 @@ internal class AddBoardUseCaseTests
 
         _addBoardUseCase = new AddBoardUseCase(_unitOfWork.Object, _logger.Object, _newBoardValidator);
 
-        _newBoard = new NewBoard();
+        _newBoard = new NewKanBoard();
     }
 
     [Test]
     public async Task HandleAsync_ValidNewBoard_ReturnsEmptySuccessResult()
     {
         //Arrange
-        _boardRepository.Setup(e => e.AddAsync(It.IsAny<Board>())).Returns(Task.CompletedTask);
+        _boardRepository.Setup(e => e.AddAsync(It.IsAny<KanBoard>())).Returns(Task.CompletedTask);
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(1);
         var boardName = "Test";
         _newBoard = new()
@@ -55,7 +55,7 @@ internal class AddBoardUseCaseTests
     [Test]
     public async Task HandleAsync_AddAsyncException_ReturnsCorrectErrorResult()
     {
-        _boardRepository.Setup(e => e.AddAsync(It.IsAny<Board>())).Throws<Exception>();
+        _boardRepository.Setup(e => e.AddAsync(It.IsAny<KanBoard>())).Throws<Exception>();
         var boardName = "Test";
         _newBoard = new()
         {
@@ -134,7 +134,7 @@ internal class AddBoardUseCaseTests
     [Test]
     public async Task HandleAsync_NameIsNull_ReturnsErrorResult()
     {
-        _newBoard = new NewBoard()
+        _newBoard = new NewKanBoard()
         {
             Name = null!,
         };

@@ -1,18 +1,16 @@
 ﻿using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using KanTask = Kanbardoo.Domain.Entities.KanTask;
-using TaskStatus = Kanbardoo.Domain.Entities.TaskStatus;
 
 namespace Kanbardoo.Infrastructure;
 public class DBContext : DbContext
 {
-    public DbSet<Board> Boards { get; set; }
-    public DbSet<BoardStatus> BoardStatuses { get; set; }
-    public DbSet<TaskStatus> TaskStatuses { get; set; }
-    public DbSet<Table> Tables { get; set; }
+    public DbSet<KanBoard> Boards { get; set; }
+    public DbSet<KanBoardStatus> BoardStatuses { get; set; }
+    public DbSet<KanTaskStatus> TaskStatuses { get; set; }
+    public DbSet<KanTable> Tables { get; set; }
     public DbSet<KanTask> Tasks { get; set; }
-    public DbSet<User> Users { get; set; }
+    public DbSet<KanUser> Users { get; set; }
 
     public DBContext(DbContextOptions<DBContext> options) : base(options)
     {
@@ -22,63 +20,63 @@ public class DBContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Table>()
+        modelBuilder.Entity<KanTable>()
             .HasOne(e => e.Board)
             .WithMany(e => e.Tables);
 
 
-        modelBuilder.Entity<BoardStatus>()
+        modelBuilder.Entity<KanBoardStatus>()
         .HasData
         (
-            new List<BoardStatus>()
+            new List<KanBoardStatus>()
             {
-                new BoardStatus()
+                new KanBoardStatus()
                 {
-                    ID = BoardStatusId.Active,
-                    Name = nameof(BoardStatusId.Active),
+                    ID = KanBoardStatusId.Active,
+                    Name = nameof(KanBoardStatusId.Active),
                 },
-                new BoardStatus()
+                new KanBoardStatus()
                 {
-                    ID = BoardStatusId.Closed,
-                    Name = nameof(BoardStatusId.Closed),
+                    ID = KanBoardStatusId.Closed,
+                    Name = nameof(KanBoardStatusId.Closed),
                 }
             }
         );
 
-        modelBuilder.Entity<TaskStatus>().HasData
+        modelBuilder.Entity<KanTaskStatus>().HasData
         (
-            new List<TaskStatus>()
+            new List<KanTaskStatus>()
             {
-                new TaskStatus()
+                new KanTaskStatus()
                 {
-                    ID = TaskStatusId.New,
-                    Name = nameof(TaskStatusId.New),
+                    ID = KanTaskStatusId.New,
+                    Name = nameof(KanTaskStatusId.New),
                 },
-                new TaskStatus()
+                new KanTaskStatus()
                 {
-                    ID = TaskStatusId.Active,
-                    Name = nameof(TaskStatusId.Active),
+                    ID = KanTaskStatusId.Active,
+                    Name = nameof(KanTaskStatusId.Active),
                 },
-                new TaskStatus()
+                new KanTaskStatus()
                 {
-                    ID = TaskStatusId.Closed,
-                    Name = nameof(TaskStatusId.Closed),
+                    ID = KanTaskStatusId.Closed,
+                    Name = nameof(KanTaskStatusId.Closed),
                 }
             }
         );
 
-        modelBuilder.Entity<User>()
+        modelBuilder.Entity<KanUser>()
             .HasData
             (
-                new List<User>()
+                new List<KanUser>()
                 {
-                    new User()
+                    new KanUser()
                     {
                         ID = 46920,
-                        Name = "piotrpuszk",
-                        CreationDate = DateTime.UtcNow,
+                        UserName = "piotrpuszk",
+                        CreationDate = new DateTime(2023, 2, 1),
                     }
                 }
-            );
+            ); ;
     } 
 }

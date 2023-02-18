@@ -1,8 +1,10 @@
-﻿using Kanbardoo.Application.Contracts.TaskContracts;
+﻿using Kanbardoo.Application.Constants;
+using Kanbardoo.Application.Contracts.TaskContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
+using System.Net;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.TaskUseCases;
@@ -28,7 +30,7 @@ public class DeleteTaskUseCase : IDeleteTaskUseCase
         if (!validationResult.IsValid)
         {
             _logger.Error($"A task with the given id ({id}) does not exist");
-            return Result.ErrorResult("A task with the given id does not exist");
+            return Result.ErrorResult(ErrorMessage.TaskWithIDNotExist);
         }
 
         try
@@ -41,7 +43,7 @@ public class DeleteTaskUseCase : IDeleteTaskUseCase
         catch (Exception ex)
         {
             _logger.Error($"Internal server error: {id} \n\n {ex}");
-            return Result.ErrorResult("Internal server error");
+            return Result.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
         
     }

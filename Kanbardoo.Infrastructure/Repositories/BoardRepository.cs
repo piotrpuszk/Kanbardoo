@@ -14,7 +14,7 @@ public class BoardRepository : IBoardRepository
         _dbContext = dbContext;
     }
 
-    public async Task AddAsync(Board board)
+    public async Task AddAsync(KanBoard board)
     {
         board.Owner = null!;
         board.Status = null!;
@@ -29,7 +29,7 @@ public class BoardRepository : IBoardRepository
             .ExecuteDeleteAsync();
     }
 
-    public async Task<IEnumerable<Board>> GetAsync()
+    public async Task<IEnumerable<KanBoard>> GetAsync()
     {
         return await _dbContext.Boards
             .Include(e => e.Owner)
@@ -37,7 +37,7 @@ public class BoardRepository : IBoardRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Board>> GetAsync(BoardFilters boardFilters)
+    public async Task<IEnumerable<KanBoard>> GetAsync(KanBoardFilters boardFilters)
     {
         var query = _dbContext.Boards
             .Include(e => e.Owner)
@@ -55,7 +55,7 @@ public class BoardRepository : IBoardRepository
         return await query.ToListAsync();
     }
 
-    public async Task<Board> GetAsync(int id)
+    public async Task<KanBoard> GetAsync(int id)
     {
         var found = await _dbContext.Boards
             .Include(e => e.Owner)
@@ -70,17 +70,17 @@ public class BoardRepository : IBoardRepository
 
         if (found is null)
         {
-            return new Board();
+            return new KanBoard();
         }
 
         return found;
     }
 
-    public async Task UpdateAsync(Board board)
+    public async Task UpdateAsync(KanBoard board)
     {
         board.Status = null;
         board.Owner = null;
-        board.Tables = null;
+        board.Tables = null!;
         _dbContext.Boards.Update(board);
     }
 }

@@ -1,6 +1,8 @@
-﻿using Kanbardoo.Application.Contracts.TableContracts;
+﻿using Kanbardoo.Application.Constants;
+using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
+using System.Net;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.TableUseCases;
@@ -16,23 +18,23 @@ public class GetTableUseCase : IGetTableUseCase
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<IEnumerable<Table>>> HandleAsync()
+    public async Task<Result<IEnumerable<KanTable>>> HandleAsync()
     {
         try
         {
             var tables = await _unitOfWork.TableRepository.GetAsync();
-            return Result<IEnumerable<Table>>.SuccessResult(tables);
+            return Result<IEnumerable<KanTable>>.SuccessResult(tables);
         }
         catch(Exception ex)
         {
             _logger.Error($"{nameof(GetTableUseCase)}.{nameof(HandleAsync)} \n\n {ex}");
-            return Result<IEnumerable<Table>>.ErrorResult("Internal server error");
+            return Result<IEnumerable<KanTable>>.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
     }
 
-    public async Task<Result<Table>> HandleAsync(int id)
+    public async Task<Result<KanTable>> HandleAsync(int id)
     {
-        Table table = new Table();
+        KanTable table = new KanTable();
         try
         {
             table = await _unitOfWork.TableRepository.GetAsync(id);
@@ -40,15 +42,15 @@ public class GetTableUseCase : IGetTableUseCase
         catch (Exception ex)
         {
             _logger.Error($"Internal server error {id} \n\n {ex}");
-            return ErrorResult<Table>.ErrorResult($"Internal server error");
+            return ErrorResult<KanTable>.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
 
         if (!table.Exists())
         {
             _logger.Error($"A table with the give id {id} does not exist");
-            return ErrorResult<Table>.ErrorResult($"A table with the give id {id} does not exist");
+            return ErrorResult<KanTable>.ErrorResult(ErrorMessage.TableWithIDNotExist);
         }
 
-        return Result<Table>.SuccessResult(table);
+        return Result<KanTable>.SuccessResult(table);
     }
 }

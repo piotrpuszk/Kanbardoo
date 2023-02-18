@@ -4,7 +4,7 @@ using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
 
 namespace Kanbardoo.Domain.Validators;
-public class BoardToUpdateValidator : AbstractValidator<Board>
+public class BoardToUpdateValidator : AbstractValidator<KanBoard>
 {
 	public BoardToUpdateValidator(IUnitOfWork unitOfWork)
 	{
@@ -19,7 +19,7 @@ public class BoardToUpdateValidator : AbstractValidator<Board>
         });
 	}
 
-    public override ValidationResult Validate(ValidationContext<Board> context)
+    public override ValidationResult Validate(ValidationContext<KanBoard> context)
     {
         if (context.InstanceToValidate is null)
         {
@@ -29,7 +29,7 @@ public class BoardToUpdateValidator : AbstractValidator<Board>
         return base.Validate(context);
     }
 
-    public override Task<ValidationResult> ValidateAsync(ValidationContext<Board> context, CancellationToken cancellation = default)
+    public override Task<ValidationResult> ValidateAsync(ValidationContext<KanBoard> context, CancellationToken cancellation = default)
     {
         if (context.InstanceToValidate is null)
         {

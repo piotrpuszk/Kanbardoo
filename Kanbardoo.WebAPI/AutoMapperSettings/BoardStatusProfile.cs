@@ -8,6 +8,6 @@ public class BoardStatusProfile : Profile
 {
     public BoardStatusProfile()
     {
-        CreateMap<BoardStatus, BoardStatusDTO>().ReverseMap();
+        CreateMap<KanBoardStatus, KanBoardStatusDTO>().ReverseMap();
     }
 }

@@ -4,10 +4,10 @@ using Kanbardoo.Domain.Filters;
 namespace Kanbardoo.Domain.Repositories;
 public interface IBoardRepository
 {
-    Task<IEnumerable<Board>> GetAsync();
-    Task<IEnumerable<Board>> GetAsync(BoardFilters boardFilters);
-    Task<Board> GetAsync(int id);
-    Task UpdateAsync(Board board);
-    Task AddAsync(Board board);
+    Task<IEnumerable<KanBoard>> GetAsync();
+    Task<IEnumerable<KanBoard>> GetAsync(KanBoardFilters boardFilters);
+    Task<KanBoard> GetAsync(int id);
+    Task UpdateAsync(KanBoard board);
+    Task AddAsync(KanBoard board);
     Task DeleteAsync(int id);
 }

@@ -8,6 +8,6 @@ public class TableProfile : Profile
 {
 	public TableProfile()
 	{
-		CreateMap<Table, TableDTO>().ReverseMap();
+		CreateMap<KanTable, KanTableDTO>().ReverseMap();
 	}
 }

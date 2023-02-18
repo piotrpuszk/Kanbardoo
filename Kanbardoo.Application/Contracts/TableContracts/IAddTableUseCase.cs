@@ -4,5 +4,5 @@ using Kanbardoo.Domain.Models;
 namespace Kanbardoo.Application.Contracts.TableContracts;
 public interface IAddTableUseCase
 {
-    Task<Result> HandleAsync(NewTable newTable);
+    Task<Result> HandleAsync(NewKanTable newTable);
 }

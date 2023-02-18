@@ -1,9 +1,11 @@
-﻿using Kanbardoo.Application.Contracts.BoardContracts;
+﻿using Kanbardoo.Application.Constants;
+using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
 using Newtonsoft.Json;
+using System.Net;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.BoardUseCases;
@@ -22,13 +24,13 @@ public class UpdateBoardUseCase : IUpdateBoardUseCase
         _boardToUpdateValidator = boardToUpdateValidator;
     }
 
-    public async Task<Result> HandleAsync(Board board)
+    public async Task<Result> HandleAsync(KanBoard board)
     {
         var validationResult = await _boardToUpdateValidator.ValidateAsync(board);
         if (!validationResult.IsValid)
         {
             _logger.Error($"{nameof(UpdateBoardUseCase)}.{nameof(HandleAsync)} board is invalid");
-            return Result.ErrorResult("Board is invalid");
+            return Result.ErrorResult(ErrorMessage.GivenBoardInvalid);
         }
 
         try
@@ -40,7 +42,7 @@ public class UpdateBoardUseCase : IUpdateBoardUseCase
         catch (Exception ex)
         {
             _logger.Error($"{JsonConvert.SerializeObject(board)} \n\n {ex}");
-            return Result.ErrorResult("Internal server error");
+            return Result.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
         
     }

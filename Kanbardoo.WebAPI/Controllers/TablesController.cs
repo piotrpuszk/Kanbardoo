@@ -40,11 +40,11 @@ public class TablesController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return Ok(Result<IEnumerable<TableDTO>>.ErrorResult(result.Errors!));
+            return Result<IEnumerable<KanTableDTO>>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
         }
 
-        var tableDTOs = _mapper.Map<IEnumerable<TableDTO>>(result.Content);
-        return Ok(Result<IEnumerable<TableDTO>>.SuccessResult(tableDTOs));
+        var tableDTOs = _mapper.Map<IEnumerable<KanTableDTO>>(result.Content);
+        return Result<IEnumerable<KanTableDTO>>.SuccessResult(tableDTOs).GetActionResult();
     }
 
     [HttpGet("{id}")]
@@ -54,34 +54,34 @@ public class TablesController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return Ok(Result<TableDTO>.ErrorResult(result.Errors!));
+            return Result<KanTableDTO>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
         }
 
-        var tableDTO = _mapper.Map<TableDTO>(result.Content);
-        return Ok(Result<TableDTO>.SuccessResult(tableDTO));
+        var tableDTO = _mapper.Map<KanTableDTO>(result.Content);
+        return Result<KanTableDTO>.SuccessResult(tableDTO).GetActionResult();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(NewTableDTO newTableDTO)
+    public async Task<IActionResult> Post(NewKanTableDTO newTableDTO)
     {
-        var newTable = _mapper.Map<NewTable>(newTableDTO);
+        var newTable = _mapper.Map<NewKanTable>(newTableDTO);
         var result = await _addTableUseCase.HandleAsync(newTable);
-        return Ok(result);
+        return result.GetActionResult();
     }
 
     [HttpPut]
-    public async Task<IActionResult> Put(TableDTO tableDTO)
+    public async Task<IActionResult> Put(KanTableDTO tableDTO)
     {
-        var table = _mapper.Map<Table>(tableDTO);
+        var table = _mapper.Map<KanTable>(tableDTO);
         var result = await _updateTableUseCase.HandleAsync(table);
-        return Ok(result);
+        return result.GetActionResult();
     }
 
     [HttpDelete]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _deleteTableUseCase.HandleAsync(id);
-        return Ok(result);
+        return result.GetActionResult();
     }
 
 }

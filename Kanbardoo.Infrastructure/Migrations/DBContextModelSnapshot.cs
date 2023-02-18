@@ -17,7 +17,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.2");
 
-            modelBuilder.Entity("Kanbardoo.Domain.Entities.Board", b =>
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanBoard", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -54,10 +54,10 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("StatusID");
 
-                    b.ToTable("Boards");
+                    b.ToTable("Boards", (string)null);
                 });
 
-            modelBuilder.Entity("Kanbardoo.Domain.Entities.BoardStatus", b =>
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanBoardStatus", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -70,7 +70,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("BoardStatuses");
+                    b.ToTable("BoardStatuses", (string)null);
 
                     b.HasData(
                         new
@@ -83,6 +83,33 @@ namespace Kanbardoo.Infrastructure.Migrations
                             ID = 2,
                             Name = "Closed"
                         });
+                });
+
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTable", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BoardID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("BoardID");
+
+                    b.ToTable("Tables", (string)null);
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTask", b =>
@@ -121,37 +148,10 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("TableID");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
-            modelBuilder.Entity("Kanbardoo.Domain.Entities.Table", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("BoardID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Priority")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("BoardID");
-
-                    b.ToTable("Tables");
-                });
-
-            modelBuilder.Entity("Kanbardoo.Domain.Entities.TaskStatus", b =>
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTaskStatus", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -164,7 +164,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("TaskStatuses");
+                    b.ToTable("TaskStatuses", (string)null);
 
                     b.HasData(
                         new
@@ -184,7 +184,7 @@ namespace Kanbardoo.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Kanbardoo.Domain.Entities.User", b =>
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUser", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -193,33 +193,43 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
+                    b.Property<byte[]>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
                         {
                             ID = 46920,
-                            CreationDate = new DateTime(2023, 2, 16, 5, 24, 7, 391, DateTimeKind.Utc).AddTicks(2619),
-                            Name = "piotrpuszk"
+                            CreationDate = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PasswordHash = new byte[0],
+                            PasswordSalt = new byte[0],
+                            UserName = "piotrpuszk"
                         });
                 });
 
-            modelBuilder.Entity("Kanbardoo.Domain.Entities.Board", b =>
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanBoard", b =>
                 {
-                    b.HasOne("Kanbardoo.Domain.Entities.User", "Owner")
+                    b.HasOne("Kanbardoo.Domain.Entities.KanUser", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Kanbardoo.Domain.Entities.BoardStatus", "Status")
+                    b.HasOne("Kanbardoo.Domain.Entities.KanBoardStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -230,21 +240,32 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.Navigation("Status");
                 });
 
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTable", b =>
+                {
+                    b.HasOne("Kanbardoo.Domain.Entities.KanBoard", "Board")
+                        .WithMany("Tables")
+                        .HasForeignKey("BoardID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Board");
+                });
+
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTask", b =>
                 {
-                    b.HasOne("Kanbardoo.Domain.Entities.User", "Assignee")
+                    b.HasOne("Kanbardoo.Domain.Entities.KanUser", "Assignee")
                         .WithMany()
                         .HasForeignKey("AssigneeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Kanbardoo.Domain.Entities.TaskStatus", "Status")
+                    b.HasOne("Kanbardoo.Domain.Entities.KanTaskStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Kanbardoo.Domain.Entities.Table", "Table")
+                    b.HasOne("Kanbardoo.Domain.Entities.KanTable", "Table")
                         .WithMany("Tasks")
                         .HasForeignKey("TableID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -257,23 +278,12 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.Navigation("Table");
                 });
 
-            modelBuilder.Entity("Kanbardoo.Domain.Entities.Table", b =>
-                {
-                    b.HasOne("Kanbardoo.Domain.Entities.Board", "Board")
-                        .WithMany("Tables")
-                        .HasForeignKey("BoardID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Board");
-                });
-
-            modelBuilder.Entity("Kanbardoo.Domain.Entities.Board", b =>
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanBoard", b =>
                 {
                     b.Navigation("Tables");
                 });
 
-            modelBuilder.Entity("Kanbardoo.Domain.Entities.Table", b =>
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTable", b =>
                 {
                     b.Navigation("Tasks");
                 });

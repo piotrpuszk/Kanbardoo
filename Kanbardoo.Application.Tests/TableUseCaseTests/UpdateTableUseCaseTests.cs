@@ -35,7 +35,7 @@ internal class UpdateTableUseCaseTests
     public async Task HandleAsync_ValidTable_ReturnsSuccessResult()
     {
         //Arrange
-        var table = new Table()
+        var table = new KanTable()
         {
             ID = 1,
             BoardID = 1,
@@ -45,7 +45,7 @@ internal class UpdateTableUseCaseTests
 
         _tableRepository.Setup(e => e.UpdateAsync(table)).Returns(Task.CompletedTask);
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
-        _boardRepository.Setup(e => e.GetAsync(table.BoardID)).ReturnsAsync(new Board() { Name = "board", ID = 1 });
+        _boardRepository.Setup(e => e.GetAsync(table.BoardID)).ReturnsAsync(new KanBoard() { Name = "board", ID = 1 });
         _tableRepository.Setup(e => e.GetAsync(table.ID)).ReturnsAsync(table);
 
         //Act
@@ -60,7 +60,7 @@ internal class UpdateTableUseCaseTests
     public async Task HandleAsync_InvalidTableName_ReturnsErrorResult()
     {
         //Arrange
-        var table = new Table()
+        var table = new KanTable()
         {
             BoardID = 1,
             Name = "",
@@ -69,7 +69,7 @@ internal class UpdateTableUseCaseTests
 
         _tableRepository.Setup(e => e.UpdateAsync(table)).Returns(Task.CompletedTask);
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
-        _boardRepository.Setup(e => e.GetAsync(table.BoardID)).ReturnsAsync(new Board() { Name = "board", ID = 1 });
+        _boardRepository.Setup(e => e.GetAsync(table.BoardID)).ReturnsAsync(new KanBoard() { Name = "board", ID = 1 });
         _tableRepository.Setup(e => e.GetAsync(table.ID)).ReturnsAsync(table);
 
         //Act
@@ -86,7 +86,7 @@ internal class UpdateTableUseCaseTests
     public async Task HandleAsync_Null_ReturnsErrorResult()
     {
         //Arrange
-        Table table = null!;
+        KanTable table = null!;
 
         _tableRepository.Setup(e => e.UpdateAsync(table)).Returns(Task.CompletedTask);
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
@@ -105,7 +105,7 @@ internal class UpdateTableUseCaseTests
     public async Task HandleAsync_ValidTable_ExecutesUpdateAsyncOnce()
     {
         //Arrange
-        var table = new Table()
+        var table = new KanTable()
         {
             ID = 1,
             BoardID = 1,
@@ -115,14 +115,14 @@ internal class UpdateTableUseCaseTests
 
         _tableRepository.Setup(e => e.UpdateAsync(table)).Returns(Task.CompletedTask);
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
-        _boardRepository.Setup(e => e.GetAsync(table.BoardID)).ReturnsAsync(new Board() { Name = "board", ID = 1 });
+        _boardRepository.Setup(e => e.GetAsync(table.BoardID)).ReturnsAsync(new KanBoard() { Name = "board", ID = 1 });
         _tableRepository.Setup(e => e.GetAsync(table.ID)).ReturnsAsync(table);
 
         //Act
         SuccessResult successResult = (await _updateTableUseCase.HandleAsync(table) as SuccessResult)!;
 
         //Assert
-        _tableRepository.Verify(e => e.UpdateAsync(It.IsAny<Table>()), Times.Once);
+        _tableRepository.Verify(e => e.UpdateAsync(It.IsAny<KanTable>()), Times.Once);
         _tableRepository.Verify(e => e.UpdateAsync(table), Times.Once);
     }
 
@@ -130,7 +130,7 @@ internal class UpdateTableUseCaseTests
     public async Task HandleAsync_ValidTable_ExecutesSaveChangesAsyncAtLeastOnce()
     {
         //Arrange
-        var table = new Table()
+        var table = new KanTable()
         {
             ID = 1,
             BoardID = 1,
@@ -140,7 +140,7 @@ internal class UpdateTableUseCaseTests
 
         _tableRepository.Setup(e => e.UpdateAsync(table)).Returns(Task.CompletedTask);
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
-        _boardRepository.Setup(e => e.GetAsync(table.BoardID)).ReturnsAsync(new Board() { Name = "board", ID = 1 });
+        _boardRepository.Setup(e => e.GetAsync(table.BoardID)).ReturnsAsync(new KanBoard() { Name = "board", ID = 1 });
         _tableRepository.Setup(e => e.GetAsync(table.ID)).ReturnsAsync(table);
 
         //Act
