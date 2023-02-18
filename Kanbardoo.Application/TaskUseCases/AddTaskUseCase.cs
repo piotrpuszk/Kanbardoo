@@ -5,6 +5,7 @@ using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
 using Newtonsoft.Json;
+using System.Net;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.TaskUseCases;
@@ -53,7 +54,7 @@ public class AddTaskUseCase : IAddTaskUseCase
         catch (Exception ex)
         {
             _logger.Error($"Internal server error: \n\n {nameof(AddTaskUseCase)}.{nameof(HandleAsync)}({JsonConvert.SerializeObject(newTask)})");
-            return Result.ErrorResult("Internal server error");
+            return Result.ErrorResult("Internal server error", HttpStatusCode.InternalServerError);
         }
 
     }

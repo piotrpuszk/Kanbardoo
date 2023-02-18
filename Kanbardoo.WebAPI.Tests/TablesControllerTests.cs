@@ -10,6 +10,7 @@ using Kanbardoo.WebAPI.FilterDTOs;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Serilog;
+using System.Net;
 
 namespace Kanbardoo.WebAPI.Tests;
 internal class TablesControllerTests
@@ -58,7 +59,7 @@ internal class TablesControllerTests
         _mapper.Setup(e => e.Map<NewTable>(newTableDTO)).Returns(newTable);
         _addTableUseCase.Setup(e => e.HandleAsync(newTable)).ReturnsAsync(Result.SuccessResult());
 
-        OkObjectResult result = await _tablesController.Post(newTableDTO) as OkObjectResult;
+        var result = await _tablesController.Post(newTableDTO) as OkObjectResult;
 
         Assert.IsNotNull(result);
 
@@ -69,7 +70,7 @@ internal class TablesControllerTests
     }
 
     [Test]
-    public async Task Post_EmptyNewTableName_ReturnsOkWithErrorResult()
+    public async Task Post_EmptyNewTableName_ReturnsBadRequestWithErrorResult()
     {
         NewTableDTO newTableDTO = new NewTableDTO()
         {
@@ -84,7 +85,7 @@ internal class TablesControllerTests
         _mapper.Setup(e => e.Map<NewTable>(newTableDTO)).Returns(newTable);
         _addTableUseCase.Setup(e => e.HandleAsync(newTable)).ReturnsAsync(Result.ErrorResult(""));
 
-        OkObjectResult result = await _tablesController.Post(newTableDTO) as OkObjectResult;
+        var result = await _tablesController.Post(newTableDTO) as BadRequestObjectResult;
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.Value);
@@ -130,7 +131,7 @@ internal class TablesControllerTests
         _getTableUseCase.Setup(e => e.HandleAsync()).ReturnsAsync(Result<IEnumerable<Table>>.SuccessResult(tables));
         _mapper.Setup(e => e.Map<IEnumerable<TableDTO>>(tables)).Returns(tablesDTO);
 
-        OkObjectResult result = await _tablesController.Get() as OkObjectResult;
+        var result = await _tablesController.Get() as OkObjectResult;
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.Value);
@@ -144,16 +145,17 @@ internal class TablesControllerTests
     }
 
     [Test]
-    public async Task Get_GettingFromDBError_ReturnsOkWithErrorResult()
+    public async Task Get_GettingFromDBError_ReturnsInternalServerErrorWithErrorResult()
     {
-        _getTableUseCase.Setup(e => e.HandleAsync()).ReturnsAsync(Result<IEnumerable<Table>>.ErrorResult(""));
+        _getTableUseCase.Setup(e => e.HandleAsync()).ReturnsAsync(Result<IEnumerable<Table>>.ErrorResult("Internal server error", HttpStatusCode.InternalServerError));
 
-        OkObjectResult result = await _tablesController.Get() as OkObjectResult;
+        var result = await _tablesController.Get() as ObjectResult;
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.Value);
+        Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
 
-        ErrorResult<IEnumerable<TableDTO>> errorResult = result.Value as ErrorResult<IEnumerable<TableDTO>>;
+        var errorResult = result.Value as ErrorResult<IEnumerable<TableDTO>>;
 
         Assert.IsNotNull(errorResult);
         Assert.IsNotNull(errorResult.Errors);
@@ -194,7 +196,7 @@ internal class TablesControllerTests
     }
 
     [Test]
-    public async Task Put_InvalidTableDTO_ReturnsOkWithErrorResult()
+    public async Task Put_InvalidTableDTO_ReturnsBadRequestWithErrorResult()
     {
         TableDTO tableDTO = new()
         {
@@ -209,7 +211,7 @@ internal class TablesControllerTests
         _mapper.Setup(e => e.Map<Table>(tableDTO)).Returns(table);
         _updateTableUseCase.Setup(e => e.HandleAsync(table)).ReturnsAsync(Result.ErrorResult("error"));
 
-        var result = await _tablesController.Put(tableDTO) as OkObjectResult;
+        var result = await _tablesController.Put(tableDTO) as BadRequestObjectResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Value);
@@ -239,11 +241,11 @@ internal class TablesControllerTests
     }
 
     [Test]
-    public async Task Delete_NonExistingId_ReturnsOkWithErrorResult()
+    public async Task Delete_NonExistingId_ReturnsBadRequestWithErrorResult()
     {
         _deleteTableUseCase.Setup(e => e.HandleAsync(It.IsAny<int>())).ReturnsAsync(Result.ErrorResult("error"));
 
-        var result = await _tablesController.Delete(It.IsAny<int>()) as OkObjectResult;
+        var result = await _tablesController.Delete(It.IsAny<int>()) as BadRequestObjectResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Value);

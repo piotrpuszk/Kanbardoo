@@ -41,12 +41,12 @@ public class TasksController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return Ok(Result<KanTaskDTO>.ErrorResult(result.Errors!));
+            return Result<KanTaskDTO>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
         }
 
         var taskDTO = _mapper.Map<KanTaskDTO>(result.Content);
 
-        return Ok(Result<KanTaskDTO>.SuccessResult(taskDTO));    
+        return Result<KanTaskDTO>.SuccessResult(taskDTO).GetActionResult();
     }
 
     [HttpPost]
@@ -56,12 +56,7 @@ public class TasksController : ControllerBase
 
         var result = await _addTaskUseCase.HandleAsync(newTask);
 
-        if (!result.IsSuccess)
-        {
-            return Ok(Result.ErrorResult(result.Errors!));
-        }
-
-        return Ok(Result.SuccessResult());
+        return result.GetActionResult();
     }
 
     [HttpPut]
@@ -71,12 +66,7 @@ public class TasksController : ControllerBase
 
         var result = await _updateTaskUseCase.HandleAsync(task);
 
-        if (!result.IsSuccess)
-        {
-            return Ok(Result.ErrorResult(result.Errors!));
-        }
-
-        return Ok(Result.SuccessResult());
+        return result.GetActionResult();
     }
 
     [HttpDelete]
@@ -84,11 +74,6 @@ public class TasksController : ControllerBase
     {
         var result = await _deleteTaskUseCase.HandleAsync(id);
 
-        if (!result.IsSuccess)
-        {
-            return Ok(Result.ErrorResult(result.Errors!));
-        }
-
-        return Ok(Result.SuccessResult());
+        return result.GetActionResult();
     }
 }

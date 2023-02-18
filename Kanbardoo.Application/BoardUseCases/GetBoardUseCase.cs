@@ -6,6 +6,7 @@ using Kanbardoo.Domain.Filters;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
 using Newtonsoft.Json;
+using System.Net;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.BoardUseCases;
@@ -47,7 +48,7 @@ public class GetBoardUseCase : IGetBoardUseCase
         catch (Exception ex)
         {
             _logger.Error($"{JsonConvert.SerializeObject(boardFilters)} \n\n {ex}");
-            return Result<IEnumerable<Board>>.ErrorResult($"Internal server error");
+            return Result<IEnumerable<Board>>.ErrorResult($"Internal server error", HttpStatusCode.InternalServerError);
         }
     }
 
@@ -61,7 +62,7 @@ public class GetBoardUseCase : IGetBoardUseCase
         catch(Exception ex)
         {
             _logger.Error($"Internal server error GetBoardUseCase.HandleAsync({id}) \n\n {ex}");
-            return Result<Board>.ErrorResult($"Internal server error");
+            return Result<Board>.ErrorResult($"Internal server error", HttpStatusCode.InternalServerError);
         }
 
         if (!board.Exists())

@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
     {
         var signUp = _mapper.Map<SignUp>(signUpDTO);
         var result = await _signUpUseCase.HandleAsync(signUp);
-        return Ok(result);
+        return result.GetActionResult();
     }
 
     [HttpPost("sign-in")]
@@ -46,11 +46,11 @@ public class UsersController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return Ok(result);
+            return result.GetActionResult();
         }
 
         var jwtToken = _createToken.Create(result.Content!);
         var resultWithToken = Result<string>.SuccessResult(jwtToken);
-        return Ok(resultWithToken);
+        return resultWithToken.GetActionResult();
     }
 }

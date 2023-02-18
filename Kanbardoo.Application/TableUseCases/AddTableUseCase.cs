@@ -5,6 +5,7 @@ using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
 using Newtonsoft.Json;
+using System.Net;
 using System.Text.Json.Nodes;
 using ILogger = Serilog.ILogger;
 
@@ -51,7 +52,7 @@ public class AddTableUseCase : IAddTableUseCase
         catch(Exception ex)
         {
             _logger.Error($"Internal server error: \n\n {nameof(AddTableUseCase)}.{nameof(HandleAsync)}({JsonConvert.SerializeObject(newTable)}) \n\n {ex}");
-            return Result.ErrorResult("Internal server error");
+            return Result.ErrorResult("Internal server error", HttpStatusCode.InternalServerError);
         }
         
     }

@@ -40,11 +40,11 @@ public class TablesController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return Ok(Result<IEnumerable<TableDTO>>.ErrorResult(result.Errors!));
+            return Result<IEnumerable<TableDTO>>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
         }
 
         var tableDTOs = _mapper.Map<IEnumerable<TableDTO>>(result.Content);
-        return Ok(Result<IEnumerable<TableDTO>>.SuccessResult(tableDTOs));
+        return Result<IEnumerable<TableDTO>>.SuccessResult(tableDTOs).GetActionResult();
     }
 
     [HttpGet("{id}")]
@@ -54,11 +54,11 @@ public class TablesController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return Ok(Result<TableDTO>.ErrorResult(result.Errors!));
+            return Result<TableDTO>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
         }
 
         var tableDTO = _mapper.Map<TableDTO>(result.Content);
-        return Ok(Result<TableDTO>.SuccessResult(tableDTO));
+        return Result<TableDTO>.SuccessResult(tableDTO).GetActionResult();
     }
 
     [HttpPost]
@@ -66,7 +66,7 @@ public class TablesController : ControllerBase
     {
         var newTable = _mapper.Map<NewTable>(newTableDTO);
         var result = await _addTableUseCase.HandleAsync(newTable);
-        return Ok(result);
+        return result.GetActionResult();
     }
 
     [HttpPut]
@@ -74,14 +74,14 @@ public class TablesController : ControllerBase
     {
         var table = _mapper.Map<Table>(tableDTO);
         var result = await _updateTableUseCase.HandleAsync(table);
-        return Ok(result);
+        return result.GetActionResult();
     }
 
     [HttpDelete]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _deleteTableUseCase.HandleAsync(id);
-        return Ok(result);
+        return result.GetActionResult();
     }
 
 }

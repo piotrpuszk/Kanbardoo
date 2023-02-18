@@ -1,6 +1,7 @@
 ﻿using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
+using System.Net;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.TableUseCases;
@@ -26,7 +27,7 @@ public class GetTableUseCase : IGetTableUseCase
         catch(Exception ex)
         {
             _logger.Error($"{nameof(GetTableUseCase)}.{nameof(HandleAsync)} \n\n {ex}");
-            return Result<IEnumerable<Table>>.ErrorResult("Internal server error");
+            return Result<IEnumerable<Table>>.ErrorResult("Internal server error", HttpStatusCode.InternalServerError);
         }
     }
 
@@ -40,7 +41,7 @@ public class GetTableUseCase : IGetTableUseCase
         catch (Exception ex)
         {
             _logger.Error($"Internal server error {id} \n\n {ex}");
-            return ErrorResult<Table>.ErrorResult($"Internal server error");
+            return ErrorResult<Table>.ErrorResult($"Internal server error", HttpStatusCode.InternalServerError);
         }
 
         if (!table.Exists())

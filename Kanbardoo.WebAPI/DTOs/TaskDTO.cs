@@ -6,6 +6,7 @@ public sealed class KanTaskDTO
 {
     [Required]
     public int ID { get; set; }
+    [Required]
     [MaxLength(256)]
     public string Name { get; set; } = string.Empty;
     [MaxLength(1024)]

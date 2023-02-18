@@ -42,7 +42,7 @@ public sealed class BoardsController : ControllerBase
     {
         NewBoard newBoard = _mapper.Map<NewBoard>(newBoardDTO);
         var result = await _addBoardUseCase.HandleAsync(newBoard);
-        return Ok(result);
+        return result.GetActionResult();
     }
 
     [HttpPost]
@@ -53,11 +53,11 @@ public sealed class BoardsController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return Ok(Result<IEnumerable<BoardDTO>>.ErrorResult(result.Errors!));
+            return Result<IEnumerable<BoardDTO>>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
         }
 
         var boardDTOs = _mapper.Map<IEnumerable<BoardDTO>>(result.Content);
-        return Ok(Result<IEnumerable<BoardDTO>>.SuccessResult(boardDTOs));
+        return Result<IEnumerable<BoardDTO>>.SuccessResult(boardDTOs).GetActionResult();
     }
 
     [HttpGet("{id}")]
@@ -67,11 +67,11 @@ public sealed class BoardsController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return Ok(Result<BoardDTO>.ErrorResult(result.Errors!));
+            return Result<BoardDTO>.ErrorResult(result.Errors!, result.HttpCode).GetActionResult();
         }
 
         var boardDTO = _mapper.Map<BoardDTO>(result.Content);
-        return Ok(Result<BoardDTO>.SuccessResult(boardDTO));
+        return Result<BoardDTO>.SuccessResult(boardDTO).GetActionResult();
     }
 
     [HttpPut]
@@ -79,13 +79,13 @@ public sealed class BoardsController : ControllerBase
     {
         Board board = _mapper.Map<Board>(boardDTO);
         var result = await _updateBoardUseCase.HandleAsync(board);
-        return Ok(result);
+        return result.GetActionResult();
     }
 
     [HttpDelete]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _deleteBoardUseCase.HandleAsync(id);
-        return Ok(result);
+        return result.GetActionResult();
     }
 }

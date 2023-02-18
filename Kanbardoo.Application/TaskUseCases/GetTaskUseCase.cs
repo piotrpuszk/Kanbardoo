@@ -1,6 +1,7 @@
 ﻿using Kanbardoo.Application.Contracts.TaskContracts;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
+using System.Net;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.TaskUseCases;
@@ -26,7 +27,7 @@ public class GetTaskUseCase : IGetTaskUseCase
         catch (Exception ex)
         {
             _logger.Error($"Internal server error {id} \n\n {ex}");
-            return ErrorResult<KanTask>.ErrorResult($"Internal server error");
+            return ErrorResult<KanTask>.ErrorResult($"Internal server error", HttpStatusCode.InternalServerError);
         }
 
         if (!task.Exists())

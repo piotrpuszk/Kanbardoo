@@ -2,6 +2,7 @@
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
+using System.Net;
 using ILogger = Serilog.ILogger;  
 
 namespace Kanbardoo.Application.BoardUseCases;
@@ -36,7 +37,7 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
         catch (Exception ex)
         {
             _logger.Error($"Error during delete from database: {id} \n\n {ex}");
-            return Result.ErrorResult("Internal server error");
+            return Result.ErrorResult("Internal server error", HttpStatusCode.InternalServerError);
         }
     }
 

@@ -4,6 +4,7 @@ using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
 using Newtonsoft.Json;
+using System.Net;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.BoardUseCases;
@@ -40,7 +41,7 @@ public class UpdateBoardUseCase : IUpdateBoardUseCase
         catch (Exception ex)
         {
             _logger.Error($"{JsonConvert.SerializeObject(board)} \n\n {ex}");
-            return Result.ErrorResult("Internal server error");
+            return Result.ErrorResult("Internal server error", HttpStatusCode.InternalServerError);
         }
         
     }

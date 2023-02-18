@@ -69,7 +69,7 @@ internal class BoardsControllerTests
     }
 
     [Test]
-    public async Task Post_EmptyNewBoardName_ReturnsOkWithErrorResult()
+    public async Task Post_EmptyNewBoardName_ReturnsBadRequestWithErrorResult()
     {
         NewBoardDTO newBoardDTO = new NewBoardDTO()
         {
@@ -84,7 +84,7 @@ internal class BoardsControllerTests
         _mapper.Setup(e => e.Map<NewBoard>(newBoardDTO)).Returns(newBoard);
         _addBoardUseCase.Setup(e => e.HandleAsync(newBoard)).ReturnsAsync(Result.ErrorResult(""));
 
-        OkObjectResult result = await _boardsController.Post(newBoardDTO) as OkObjectResult;
+        var result = await _boardsController.Post(newBoardDTO) as BadRequestObjectResult;
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.Value);
@@ -156,7 +156,7 @@ internal class BoardsControllerTests
         _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<BoardFilters>())).ReturnsAsync(Result<IEnumerable<Board>>.SuccessResult(boards));
         _mapper.Setup(e => e.Map<IEnumerable<BoardDTO>>(boards)).Returns(boardsDTO);
 
-        OkObjectResult result = await _boardsController.Get(boardFiltersDTO) as OkObjectResult;
+        var result = await _boardsController.Get(boardFiltersDTO) as OkObjectResult;
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.Value);
@@ -170,19 +170,19 @@ internal class BoardsControllerTests
     }
 
     [Test]
-    public async Task Get_InvalidBoardFilters_ReturnsOkWithErrorResult()
+    public async Task Get_InvalidBoardFilters_ReturnsBadRequestWithErrorResult()
     {
-        BoardFiltersDTO boardFiltersDTO = null;
+        BoardFiltersDTO boardFiltersDTO = null!;
 
         _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<BoardFilters>())).ReturnsAsync(Result<IEnumerable<Board>>.ErrorResult(""));
         _mapper.Setup(e => e.Map<BoardFilters>(boardFiltersDTO)).Returns(() => null!);
 
-        OkObjectResult result = await _boardsController.Get(boardFiltersDTO) as OkObjectResult;
+        var result = await _boardsController.Get(boardFiltersDTO) as BadRequestObjectResult;
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.Value);
 
-        ErrorResult<IEnumerable<BoardDTO>> errorResult = result.Value as ErrorResult<IEnumerable<BoardDTO>>;
+        var errorResult = result.Value as ErrorResult<IEnumerable<BoardDTO>>;
 
         Assert.IsNotNull(errorResult);
         Assert.IsNotNull(errorResult.Errors);
@@ -239,7 +239,7 @@ internal class BoardsControllerTests
     }
 
     [Test]
-    public async Task Put_InvalidBoardDTO_ReturnsOkWithErrorResult()
+    public async Task Put_InvalidBoardDTO_ReturnsBadRequestWithErrorResult()
     {
         BoardDTO boardDTO = new()
         {
@@ -254,7 +254,7 @@ internal class BoardsControllerTests
         _mapper.Setup(e => e.Map<Board>(boardDTO)).Returns(board);
         _updateBoardUseCase.Setup(e => e.HandleAsync(board)).ReturnsAsync(Result.ErrorResult("error"));
 
-        var result = await _boardsController.Put(boardDTO) as OkObjectResult;
+        var result = await _boardsController.Put(boardDTO) as BadRequestObjectResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Value);
@@ -284,11 +284,11 @@ internal class BoardsControllerTests
     }
 
     [Test]
-    public async Task Delete_NonExistingId_ReturnsOkWithErrorResult()
+    public async Task Delete_NonExistingId_ReturnsBadRequestWithErrorResult()
     {
         _deleteBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<int>())).ReturnsAsync(Result.ErrorResult("error"));
 
-        var result = await _boardsController.Delete(It.IsAny<int>()) as OkObjectResult;
+        var result = await _boardsController.Delete(It.IsAny<int>()) as BadRequestObjectResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Value);
