@@ -11,6 +11,10 @@ public class DBContext : DbContext
     public DbSet<KanTable> Tables { get; set; }
     public DbSet<KanTask> Tasks { get; set; }
     public DbSet<KanUser> Users { get; set; }
+    public DbSet<KanClaim> Claims { get; set; }
+    public DbSet<KanRole> Roles { get; set; }
+    public DbSet<KanUserClaim> UsersClaims { get; set; }
+    public DbSet<KanUserRole> UsersRoles { get; set; }
 
     public DBContext(DbContextOptions<DBContext> options) : base(options)
     {
@@ -20,10 +24,49 @@ public class DBContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<KanUserClaim>()
+            .HasOne(e => e.User)
+            .WithMany(e => e.Claims)
+            .HasForeignKey(e => e.UserID);
+
+        modelBuilder.Entity<KanUserClaim>()
+            .HasOne(e => e.Claim)
+            .WithMany(e => e.Users)
+            .HasForeignKey(e => e.ClaimID);
+
+        modelBuilder.Entity<KanUserRole>()
+            .HasOne(e => e.User)
+            .WithMany(e => e.Roles)
+            .HasForeignKey(e => e.UserID);
+
+        modelBuilder.Entity<KanUserRole>()
+            .HasOne(e => e.Role)
+            .WithMany(e => e.Users)
+            .HasForeignKey(e => e.RoleID);
+
         modelBuilder.Entity<KanTable>()
             .HasOne(e => e.Board)
             .WithMany(e => e.Tables);
 
+        modelBuilder.Entity<KanClaim>()
+            .HasData(new List<KanClaim>()
+            { 
+                new KanClaim()
+                {
+                    ID = 1,
+                    Name = "Admin",
+                },
+                new KanClaim()
+                {
+                    ID = 2,
+                    Name = "Owner",
+                },
+                new KanClaim()
+                {
+                    ID = 3,
+                    Name = "Member",
+                }
+            });
 
         modelBuilder.Entity<KanBoardStatus>()
         .HasData
@@ -77,6 +120,6 @@ public class DBContext : DbContext
                         CreationDate = new DateTime(2023, 2, 1),
                     }
                 }
-            ); ;
+            );
     } 
 }
