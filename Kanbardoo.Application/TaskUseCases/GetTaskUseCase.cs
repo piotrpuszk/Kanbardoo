@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Constants;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.TaskContracts;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
@@ -10,17 +11,20 @@ public class GetTaskUseCase : IGetTaskUseCase
 {
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
 
     public GetTaskUseCase(ILogger logger,
-                           IUnitOfWork unitOfWork)
+                           IUnitOfWork unitOfWork,
+                           IBoardMembershipPolicy boardMembershipPolicy)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
+        _boardMembershipPolicy = boardMembershipPolicy;
     }
 
     public async Task<Result<KanTask>> HandleAsync(int id)
     {
-        KanTask task = new();
+        KanTask task;
         try
         {
             task = await _unitOfWork.TaskRepository.GetAsync(id);
@@ -35,6 +39,18 @@ public class GetTaskUseCase : IGetTaskUseCase
         {
             _logger.Error($"A task with the give id {id} does not exist");
             return ErrorResult<KanTask>.ErrorResult(ErrorMessage.TaskWithIDNotExist);
+        }
+
+        return await AuthorizeAsync(task);
+    }
+
+    private async Task<Result<KanTask>> AuthorizeAsync(KanTask task)
+    {
+        var table = await _unitOfWork.TableRepository.GetAsync(task.TableID);
+        var authorizationResult = await _boardMembershipPolicy.Authorize(table.BoardID);
+        if (!authorizationResult.IsSuccess)
+        {
+            return Result<KanTask>.ErrorResult(authorizationResult.Errors!);
         }
 
         return Result<KanTask>.SuccessResult(task);

@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Results;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Results;
 using Kanbardoo.Application.TaskUseCases;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
@@ -18,6 +19,7 @@ internal class UpdateTaskUseCaseTests
     private Mock<ITaskStatusRepository> _taskStatusRepository;
     private Mock<ILogger> _logger;
     private KanTaskValidator _taskToUpdateValidator;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
 
     [SetUp]
     public void Setup()
@@ -37,7 +39,10 @@ internal class UpdateTaskUseCaseTests
         _unitOfWork.Setup(e => e.TaskRepository).Returns(_taskRepository.Object);
         _taskToUpdateValidator = new KanTaskValidator(_unitOfWork.Object);
 
-        _updateTaskUseCase = new UpdateTaskUseCase(_logger.Object, _unitOfWork.Object, _taskToUpdateValidator);
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+
+        _updateTaskUseCase = new UpdateTaskUseCase(_logger.Object, _unitOfWork.Object, _taskToUpdateValidator, _boardMembershipPolicy.Object);
     }
 
     [Test]
@@ -57,6 +62,7 @@ internal class UpdateTaskUseCaseTests
         _userRepository.Setup(e => e.GetAsync(task.AssigneeID)).ReturnsAsync(new KanUser { ID = task.AssigneeID });
         _taskStatusRepository.Setup(e => e.GetAsync(task.StatusID)).ReturnsAsync(new KanTaskStatus { ID = task.StatusID });
         _taskRepository.Setup(e => e.UpdateAsync(It.IsAny<KanTask>())).Returns(Task.CompletedTask);
+        _tableRepository.Setup(e => e.GetAsync(task.TableID)).ReturnsAsync(new KanTable { ID = task.TableID, BoardID = 1, });
 
         //Act
         SuccessResult successResult = (await _updateTaskUseCase.HandleAsync(task) as SuccessResult)!;
@@ -127,6 +133,7 @@ internal class UpdateTaskUseCaseTests
         _userRepository.Setup(e => e.GetAsync(task.AssigneeID)).ReturnsAsync(new KanUser { ID = task.AssigneeID });
         _taskStatusRepository.Setup(e => e.GetAsync(task.StatusID)).ReturnsAsync(new KanTaskStatus { ID = task.StatusID });
         _taskRepository.Setup(e => e.UpdateAsync(It.IsAny<KanTask>())).Returns(Task.CompletedTask);
+        _tableRepository.Setup(e => e.GetAsync(task.TableID)).ReturnsAsync(new KanTable { ID = task.TableID, BoardID = 1, });
 
         //Act
         SuccessResult successResult = (await _updateTaskUseCase.HandleAsync(task) as SuccessResult)!;
@@ -153,6 +160,7 @@ internal class UpdateTaskUseCaseTests
         _userRepository.Setup(e => e.GetAsync(task.AssigneeID)).ReturnsAsync(new KanUser { ID = task.AssigneeID });
         _taskStatusRepository.Setup(e => e.GetAsync(task.StatusID)).ReturnsAsync(new KanTaskStatus { ID = task.StatusID });
         _taskRepository.Setup(e => e.UpdateAsync(It.IsAny<KanTask>())).Returns(Task.CompletedTask);
+        _tableRepository.Setup(e => e.GetAsync(task.TableID)).ReturnsAsync(new KanTable { ID = task.TableID, BoardID = 1, });
 
         //Act
         SuccessResult successResult = (await _updateTaskUseCase.HandleAsync(task) as SuccessResult)!;

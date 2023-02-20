@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Constants;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
@@ -16,14 +17,17 @@ public class AddTableUseCase : IAddTableUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly NewTableValidator _newTableValidator;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
 
     public AddTableUseCase(ILogger logger,
                            IUnitOfWork unitOfWork,
-                           NewTableValidator newTableValidator)
+                           NewTableValidator newTableValidator,
+                           IBoardMembershipPolicy boardMembershipPolicy)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _newTableValidator = newTableValidator;
+        _boardMembershipPolicy = boardMembershipPolicy;
     }
 
     public async Task<Result> HandleAsync(NewKanTable newTable)
@@ -33,6 +37,12 @@ public class AddTableUseCase : IAddTableUseCase
         {
             _logger.Error(ErrorMessage.GivenTableInvalid);
             return Result.ErrorResult(ErrorMessage.GivenTableInvalid);
+        }
+
+        var authorizationResult = await _boardMembershipPolicy.Authorize(newTable.BoardID);
+        if (!authorizationResult.IsSuccess)
+        {
+            return authorizationResult;
         }
 
         KanTable table = new()

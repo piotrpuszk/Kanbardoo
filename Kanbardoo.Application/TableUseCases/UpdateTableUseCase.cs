@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Constants;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
@@ -15,14 +16,17 @@ public class UpdateTableUseCase : IUpdateTableUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly TableToUpdateValidator _tableToUpdateValidator;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
 
     public UpdateTableUseCase(ILogger logger,
                            IUnitOfWork unitOfWork,
-                           TableToUpdateValidator tableToUpdateValidator)
+                           TableToUpdateValidator tableToUpdateValidator,
+                           IBoardMembershipPolicy boardMembershipPolicy)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _tableToUpdateValidator = tableToUpdateValidator;
+        _boardMembershipPolicy = boardMembershipPolicy;
     }
     public async Task<Result> HandleAsync(KanTable table)
     {
@@ -31,6 +35,12 @@ public class UpdateTableUseCase : IUpdateTableUseCase
         {
             _logger.Error($"Invalid table to update: {JsonConvert.SerializeObject(table is not null ? table : "null")}");
             return Result.ErrorResult(ErrorMessage.GivenTableInvalid);
+        }
+
+        var authorizationResult = await _boardMembershipPolicy.Authorize(table.ID);
+        if (!authorizationResult.IsSuccess)
+        {
+            return authorizationResult;
         }
 
         try

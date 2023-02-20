@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.BoardUseCases;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.BoardUseCases;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
@@ -14,6 +15,7 @@ internal class DeleteBoardUseCaseTests
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
     private BoardIdToDeleteValidator _boardIdToDeleteValidator;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
 
     [SetUp]
     public void Setup()
@@ -25,7 +27,10 @@ internal class DeleteBoardUseCaseTests
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
         _boardIdToDeleteValidator = new BoardIdToDeleteValidator(_unitOfWork.Object);
 
-        _deleteBoardUseCase = new DeleteBoardUseCase(_unitOfWork.Object, _logger.Object, _boardIdToDeleteValidator);
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+
+        _deleteBoardUseCase = new DeleteBoardUseCase(_unitOfWork.Object, _logger.Object, _boardIdToDeleteValidator, _boardMembershipPolicy.Object);
     }
 
     [Test]

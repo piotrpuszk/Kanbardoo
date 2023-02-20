@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Constants;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Repositories;
@@ -12,14 +13,17 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly BoardIdToDeleteValidator _boardIdToDeleteValidator;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
 
     public DeleteBoardUseCase(IUnitOfWork unitOfWork,
                               ILogger logger,
-                              BoardIdToDeleteValidator boardIdToDeleteValidator)
+                              BoardIdToDeleteValidator boardIdToDeleteValidator,
+                              IBoardMembershipPolicy boardMembershipPolicy)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _boardIdToDeleteValidator = boardIdToDeleteValidator;
+        _boardMembershipPolicy = boardMembershipPolicy;
     }
 
     public async Task<Result> HandleAsync(int id)
@@ -29,6 +33,12 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
         {
             _logger.Error($"A board with given ID does not exist: {id}");
             return Result.ErrorResult(ErrorMessage.BoardWithIDNotExist);
+        }
+
+        var authorizationResult = await _boardMembershipPolicy.Authorize(id);
+        if (!authorizationResult.IsSuccess)
+        {
+            return authorizationResult;
         }
 
         try

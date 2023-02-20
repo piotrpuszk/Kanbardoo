@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using Kanbardoo.Application.Authorization;
+using Kanbardoo.Application.Authorization.Requirements;
 using Kanbardoo.Application.Contracts.BoardContracts;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Filters;
 using Kanbardoo.Domain.Models;

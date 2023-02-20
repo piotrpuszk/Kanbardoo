@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Constants;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.TaskContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
@@ -15,14 +16,17 @@ public class AddTaskUseCase : IAddTaskUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly NewTaskValidator _newTaskValidator;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
 
     public AddTaskUseCase(ILogger logger,
                            IUnitOfWork unitOfWork,
-                           NewTaskValidator newTaskValidator)
+                           NewTaskValidator newTaskValidator,
+                           IBoardMembershipPolicy boardMembershipPolicy)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _newTaskValidator = newTaskValidator;
+        _boardMembershipPolicy = boardMembershipPolicy;
     }
 
     public async Task<Result> HandleAsync(NewKanTask newTask)
@@ -33,6 +37,12 @@ public class AddTaskUseCase : IAddTaskUseCase
             if(newTask is not null) _logger.Error($"the new task is invalid \n\n {JsonConvert.SerializeObject(newTask)}");
             else _logger.Error($"the new task is null \n\n");
             return Result.ErrorResult(ErrorMessage.GivenTaskInvalid);
+        }
+
+        var authorizationResult = await AuthorizeAsync(newTask);
+        if (!authorizationResult.IsSuccess)
+        {
+            return authorizationResult;
         }
 
         KanTask task = new()
@@ -57,6 +67,11 @@ public class AddTaskUseCase : IAddTaskUseCase
             _logger.Error($"Internal server error: \n\n {nameof(AddTaskUseCase)}.{nameof(HandleAsync)}({JsonConvert.SerializeObject(newTask)}) \n\n {ex}");
             return Result.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
+    }
 
+    private async Task<Result> AuthorizeAsync(NewKanTask newTask)
+    {
+        var table = await _unitOfWork.TableRepository.GetAsync(newTask.TableID);
+        return await _boardMembershipPolicy.Authorize(table.BoardID);
     }
 }

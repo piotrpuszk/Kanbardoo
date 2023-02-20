@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.BoardUseCases;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.BoardUseCases;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
@@ -16,6 +17,7 @@ internal class UpdateBoardUseCaseTests
     private Mock<ILogger> _logger;
     private NewKanBoard _newBoard;
     private BoardToUpdateValidator _boardToUpdateValidator;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
 
     [SetUp]
     public void Setup()
@@ -28,7 +30,10 @@ internal class UpdateBoardUseCaseTests
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
         _boardToUpdateValidator = new BoardToUpdateValidator(_unitOfWork.Object);
 
-        _updateBoardUseCase = new UpdateBoardUseCase(_unitOfWork.Object, _logger.Object, _boardToUpdateValidator);
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+
+        _updateBoardUseCase = new UpdateBoardUseCase(_unitOfWork.Object, _logger.Object, _boardToUpdateValidator, _boardMembershipPolicy.Object);
 
         _newBoard = new NewKanBoard();
     }

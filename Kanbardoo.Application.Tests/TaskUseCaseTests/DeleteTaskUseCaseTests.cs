@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Results;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Results;
 using Kanbardoo.Application.TaskUseCases;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
@@ -18,6 +19,7 @@ internal class DeleteTaskUseCaseTests
     private Mock<ITaskStatusRepository> _taskStatusRepository;
     private Mock<ILogger> _logger;
     private KanTaskIdToDeleteValidator _kanTaskIdToDeleteValidator;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
 
     [SetUp]
     public void Setup()
@@ -37,7 +39,10 @@ internal class DeleteTaskUseCaseTests
         _unitOfWork.Setup(e => e.TaskRepository).Returns(_taskRepository.Object);
         _kanTaskIdToDeleteValidator = new KanTaskIdToDeleteValidator(_unitOfWork.Object);
 
-        _deleteTaskUseCase = new DeleteTaskUseCase(_logger.Object, _unitOfWork.Object, _kanTaskIdToDeleteValidator);
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+
+        _deleteTaskUseCase = new DeleteTaskUseCase(_logger.Object, _unitOfWork.Object, _kanTaskIdToDeleteValidator, _boardMembershipPolicy.Object);
     }
 
     [Test]
@@ -51,6 +56,7 @@ internal class DeleteTaskUseCaseTests
         };
 
         _taskRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(task);
+        _tableRepository.Setup(e => e.GetAsync(task.TableID)).ReturnsAsync(new KanTable { ID = task.TableID, BoardID = 1, });
 
         //Act
         SuccessResult successResult = (await _deleteTaskUseCase.HandleAsync(id) as SuccessResult)!;
@@ -68,9 +74,11 @@ internal class DeleteTaskUseCaseTests
         KanTask task = new()
         {
             ID = id,
+            TableID = 1,
         };
 
         _taskRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(task);
+        _tableRepository.Setup(e => e.GetAsync(task.TableID)).ReturnsAsync(new KanTable { ID = task.TableID, BoardID = 1, });
 
         //Act
         SuccessResult successResult = (await _deleteTaskUseCase.HandleAsync(id) as SuccessResult)!;
@@ -90,6 +98,7 @@ internal class DeleteTaskUseCaseTests
         };
 
         _taskRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(task);
+        _tableRepository.Setup(e => e.GetAsync(task.TableID)).ReturnsAsync(new KanTable { ID = task.TableID, BoardID = 1, });
 
         //Act
         SuccessResult successResult = (await _deleteTaskUseCase.HandleAsync(id) as SuccessResult)!;
@@ -154,6 +163,7 @@ internal class DeleteTaskUseCaseTests
 
         _taskRepository.Setup(e => e.DeleteAsync(It.IsAny<int>())).Throws<Exception>();
         _taskRepository.Setup(e => e.GetAsync(It.IsAny<int>())).ReturnsAsync(task);
+        _tableRepository.Setup(e => e.GetAsync(It.IsAny<int>())).ReturnsAsync(new KanTable { BoardID = 1 });
 
         //Act
         ErrorResult errorResult = (await _deleteTaskUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult)!;
@@ -176,6 +186,7 @@ internal class DeleteTaskUseCaseTests
 
         _unitOfWork.Setup(e => e.SaveChangesAsync()).Throws<Exception>();
         _taskRepository.Setup(e => e.GetAsync(It.IsAny<int>())).ReturnsAsync(task);
+        _tableRepository.Setup(e => e.GetAsync(task.TableID)).ReturnsAsync(new KanTable { ID = task.TableID, BoardID = 1, });
 
         //Act
         ErrorResult errorResult = (await _deleteTaskUseCase.HandleAsync(It.IsAny<int>()) as ErrorResult)!;

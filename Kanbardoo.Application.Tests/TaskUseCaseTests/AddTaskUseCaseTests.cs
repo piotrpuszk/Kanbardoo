@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Results;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Results;
 using Kanbardoo.Application.TaskUseCases;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
@@ -19,6 +20,7 @@ internal class AddTaskUseCaseTests
     private Mock<ITaskStatusRepository> _taskStatusRepository;
     private Mock<ILogger> _logger;
     private NewTaskValidator _newTaskValidator;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
 
     [SetUp]
     public void Setup()
@@ -38,7 +40,10 @@ internal class AddTaskUseCaseTests
         _unitOfWork.Setup(e => e.TaskRepository).Returns(_taskRepository.Object);
         _newTaskValidator = new NewTaskValidator(_unitOfWork.Object);
 
-        _addTaskUseCase = new AddTaskUseCase(_logger.Object, _unitOfWork.Object, _newTaskValidator);
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+
+        _addTaskUseCase = new AddTaskUseCase(_logger.Object, _unitOfWork.Object, _newTaskValidator, _boardMembershipPolicy.Object);
     }
 
     [Test]

@@ -5,6 +5,7 @@ using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net;
 using ILogger = Serilog.ILogger;

@@ -1,3 +1,5 @@
+using Kanbardoo.Application.Authorization.Policies;
+using Kanbardoo.Application.Authorization.PolicyContracts;
 using Kanbardoo.Application.BoardUseCases;
 using Kanbardoo.Application.Contracts;
 using Kanbardoo.Application.Contracts.BoardContracts;
@@ -9,12 +11,16 @@ using Kanbardoo.Application.TableUseCases;
 using Kanbardoo.Application.TaskUseCases;
 using Kanbardoo.Application.UserClaimsUseCases;
 using Kanbardoo.Application.UserContracts;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
 using Kanbardoo.Infrastructure;
 using Kanbardoo.Infrastructure.Repositories;
 using Kanbardoo.Infrastructure.Services;
+using Kanbardoo.WebAPI.Authorization.RequirementHandlers;
+using Kanbardoo.WebAPI.Authorization.Requirements;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -24,23 +30,35 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthentication(e =>
+{
+    e.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    e.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    e.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(e =>
+{
+    e.TokenValidationParameters = new()
     {
-        e.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        e.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        e.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(e =>
-    {
-        e.TokenValidationParameters = new()
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenSecretKey"]!)),
-            ValidateLifetime = true,
-            ValidateAudience = false,
-            ValidateIssuer = false,
-            ClockSkew = TimeSpan.Zero,
-        };
-    });
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenSecretKey"]!)),
+        ValidateLifetime = true,
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        ClockSkew = TimeSpan.Zero,
+    };
+});
+
+builder.Services.AddAuthorization(e => 
+{
+    e.AddPolicy(PolicyName.BoardMembership, e => 
+                                            e.AddRequirements(new BoardMembershipRequirement()));
+});
+
+builder.Services.AddScoped<IBoardMembershipPolicy, BoardMembershipPolicy>();
+
+builder.Services.AddScoped<IAuthorizationHandler, BoardMembershipRequirementHandler>();
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Host.UseSerilog((context, config) =>
     config

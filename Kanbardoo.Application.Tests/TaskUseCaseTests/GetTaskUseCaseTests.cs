@@ -1,4 +1,6 @@
-﻿using Kanbardoo.Application.TaskUseCases;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Results;
+using Kanbardoo.Application.TaskUseCases;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
 using Moq;
@@ -15,6 +17,7 @@ internal class GetTaskUseCaseTests
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ITaskStatusRepository> _taskStatusRepository;
     private Mock<ILogger> _logger;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
 
     [SetUp]
     public void Setup()
@@ -33,7 +36,10 @@ internal class GetTaskUseCaseTests
         _unitOfWork.Setup(e => e.TaskStatusRepository).Returns(_taskStatusRepository.Object);
         _unitOfWork.Setup(e => e.TaskRepository).Returns(_taskRepository.Object);
 
-        _getTaskUseCase = new GetTaskUseCase(_logger.Object, _unitOfWork.Object);
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+
+        _getTaskUseCase = new GetTaskUseCase(_logger.Object, _unitOfWork.Object, _boardMembershipPolicy.Object);
     }
 
     [Test]
@@ -47,6 +53,7 @@ internal class GetTaskUseCaseTests
         };
 
         _taskRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(task);
+        _tableRepository.Setup(e => e.GetAsync(task.TableID)).ReturnsAsync(new KanTable { ID = task.TableID, BoardID = 1, });
 
         //Act
         var successResult = await _getTaskUseCase.HandleAsync(id) as SuccessResult<KanTask>;

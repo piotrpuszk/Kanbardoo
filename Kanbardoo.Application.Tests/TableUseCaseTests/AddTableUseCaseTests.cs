@@ -1,4 +1,6 @@
-﻿using Kanbardoo.Application.Results;
+﻿using Kanbardoo.Application.Authorization.Policies;
+using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Results;
 using Kanbardoo.Application.TableUseCases;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
@@ -16,6 +18,7 @@ internal class AddTableUseCaseTests
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
     private NewTableValidator _newTableValidator;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
 
     [SetUp]
     public void Setup()
@@ -29,7 +32,10 @@ internal class AddTableUseCaseTests
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
         _newTableValidator = new NewTableValidator(_unitOfWork.Object);
 
-        _addTableUseCase = new AddTableUseCase(_logger.Object, _unitOfWork.Object, _newTableValidator);
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+
+        _addTableUseCase = new AddTableUseCase(_logger.Object, _unitOfWork.Object, _newTableValidator, _boardMembershipPolicy.Object);
     }
 
     [Test]

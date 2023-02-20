@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Constants;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
@@ -14,14 +15,17 @@ public class UpdateBoardUseCase : IUpdateBoardUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly BoardToUpdateValidator _boardToUpdateValidator;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
 
     public UpdateBoardUseCase(IUnitOfWork unitOfWork,
                               ILogger logger,
-                              BoardToUpdateValidator boardToUpdateValidator)
+                              BoardToUpdateValidator boardToUpdateValidator,
+                              IBoardMembershipPolicy boardMembershipPolicy)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _boardToUpdateValidator = boardToUpdateValidator;
+        _boardMembershipPolicy = boardMembershipPolicy;
     }
 
     public async Task<Result> HandleAsync(KanBoard board)
@@ -31,6 +35,12 @@ public class UpdateBoardUseCase : IUpdateBoardUseCase
         {
             _logger.Error($"{nameof(UpdateBoardUseCase)}.{nameof(HandleAsync)} board is invalid");
             return Result.ErrorResult(ErrorMessage.GivenBoardInvalid);
+        }
+
+        var authorizationResult = await _boardMembershipPolicy.Authorize(board.ID);
+        if (!authorizationResult.IsSuccess)
+        {
+            return authorizationResult;
         }
 
         try

@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Constants;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
@@ -10,12 +11,15 @@ public class GetTableUseCase : IGetTableUseCase
 {
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
 
     public GetTableUseCase(ILogger logger,
-                           IUnitOfWork unitOfWork)
+                           IUnitOfWork unitOfWork,
+                           IBoardMembershipPolicy boardMembershipPolicy)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
+        _boardMembershipPolicy = boardMembershipPolicy;
     }
 
     public async Task<Result<IEnumerable<KanTable>>> HandleAsync()
@@ -49,6 +53,12 @@ public class GetTableUseCase : IGetTableUseCase
         {
             _logger.Error($"A table with the give id {id} does not exist");
             return ErrorResult<KanTable>.ErrorResult(ErrorMessage.TableWithIDNotExist);
+        }
+
+        var authorizationResult = await _boardMembershipPolicy.Authorize(table.ID);
+        if (!authorizationResult.IsSuccess)
+        {
+            return Result<KanTable>.ErrorResult(authorizationResult.Errors!);
         }
 
         return Result<KanTable>.SuccessResult(table);

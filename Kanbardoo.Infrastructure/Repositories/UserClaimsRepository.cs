@@ -14,6 +14,8 @@ public class UserClaimsRepository : IUserClaimsRepository
 
     public async Task AddAsync(KanUserClaim userClaim)
     {
+        userClaim.Claim = null!;
+        userClaim.User = null!;
         await _dBContext.UsersClaims.AddAsync(userClaim);
     }
 }
