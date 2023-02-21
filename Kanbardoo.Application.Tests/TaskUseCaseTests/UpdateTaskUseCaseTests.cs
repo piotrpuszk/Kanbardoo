@@ -40,7 +40,7 @@ internal class UpdateTaskUseCaseTests
         _taskToUpdateValidator = new KanTaskValidator(_unitOfWork.Object);
 
         _taskMembershipPolicy = new Mock<ITaskMembershipPolicy>();
-        _taskMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _taskMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
         _updateTaskUseCase = new UpdateTaskUseCase(_logger.Object, _unitOfWork.Object, _taskToUpdateValidator, _taskMembershipPolicy.Object);
     }

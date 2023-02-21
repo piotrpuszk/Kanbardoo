@@ -4,6 +4,6 @@ namespace Kanbardoo.Application.Authorization.PolicyContracts;
 
 public interface ITaskMembershipPolicy
 {
-    Task<Result> Authorize(int taskID);
+    Task<Result> AuthorizeAsync(int taskID);
 }
 

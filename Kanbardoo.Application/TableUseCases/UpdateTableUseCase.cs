@@ -37,7 +37,7 @@ public class UpdateTableUseCase : IUpdateTableUseCase
             return Result.ErrorResult(ErrorMessage.GivenTableInvalid);
         }
 
-        var authorizationResult = await _tableMembershipPolicy.Authorize(table.ID);
+        var authorizationResult = await _tableMembershipPolicy.AuthorizeAsync(table.ID);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;

@@ -43,6 +43,7 @@ public class SignUpUseCase : ISignUpUseCase
             UserName = signUp.Name,
             PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(signUp.Password)),
             PasswordSalt = hmac.Key,
+            CreationDate= DateTime.UtcNow,
         };
 
         await _unitOfWork.UserRepository.AddAsync(user);

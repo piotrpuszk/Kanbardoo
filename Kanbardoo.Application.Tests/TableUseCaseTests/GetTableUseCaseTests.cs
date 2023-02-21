@@ -28,7 +28,7 @@ internal class GetTableUseCaseTests
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
 
         _tableMembershipPolicy = new Mock<ITableMembershipPolicy>();
-        _tableMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _tableMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
         _getTableUseCase = new GetTableUseCase(_logger.Object, _unitOfWork.Object, _tableMembershipPolicy.Object);
     }

@@ -3,5 +3,5 @@
 namespace Kanbardoo.Application.Authorization.PolicyContracts;
 public interface IBoardMembershipPolicy
 {
-    Task<Result> Authorize(int boardID);
+    Task<Result> AuthorizeAsync(int boardID);
 }

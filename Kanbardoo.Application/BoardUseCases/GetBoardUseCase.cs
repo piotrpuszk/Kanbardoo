@@ -78,7 +78,7 @@ public class GetBoardUseCase : IGetBoardUseCase
             return Result<KanBoard>.ErrorResult($"A board with ID {id} does not exist");
         }
 
-        var authorizationResult = await _boardMembershipPolicy.Authorize(id);
+        var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(id);
         if (!authorizationResult.IsSuccess)
         {
             return Result<KanBoard>.ErrorResult(authorizationResult.Errors!);

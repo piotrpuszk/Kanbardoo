@@ -43,7 +43,7 @@ public class DeleteTableUseCase : IDeleteTableUseCase
             return Result.ErrorResult(ErrorMessage.TableIDInvalid);
         }
 
-        var authorizationResult = await _tableMembershipPolicy.Authorize(id);
+        var authorizationResult = await _tableMembershipPolicy.AuthorizeAsync(id);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;

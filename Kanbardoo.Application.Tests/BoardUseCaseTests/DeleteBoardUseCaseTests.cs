@@ -39,7 +39,7 @@ internal class DeleteBoardUseCaseTests
         _boardIdToDeleteValidator = new BoardIdToDeleteValidator(_unitOfWork.Object);
 
         _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
-        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _boardMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
         _deleteBoardUseCase = new DeleteBoardUseCase(_unitOfWork.Object,
                                                      _logger.Object,

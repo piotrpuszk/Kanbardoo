@@ -18,7 +18,7 @@ public class TableMembershipPolicy : ITableMembershipPolicy
         _tableMembershipRequirementHandler = tableMembershipRequirementHandler;
     }
 
-    public async Task<Result> Authorize(int tableID)
+    public async Task<Result> AuthorizeAsync(int tableID)
     {
         var policy = new KanAuthorizationPolicy(_contextAccessor.HttpContext!);
 

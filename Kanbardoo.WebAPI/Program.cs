@@ -4,10 +4,12 @@ using Kanbardoo.Application.Authorization.RequirementHandlers;
 using Kanbardoo.Application.BoardUseCases;
 using Kanbardoo.Application.Contracts;
 using Kanbardoo.Application.Contracts.BoardContracts;
+using Kanbardoo.Application.Contracts.InvitationContrats;
 using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Application.Contracts.TaskContracts;
 using Kanbardoo.Application.Contracts.UserClaimsContracts;
 using Kanbardoo.Application.Contracts.UserContracts;
+using Kanbardoo.Application.InvitationUseCases;
 using Kanbardoo.Application.TableUseCases;
 using Kanbardoo.Application.TaskUseCases;
 using Kanbardoo.Application.UserClaimsUseCases;
@@ -117,6 +119,9 @@ builder.Services.AddScoped<ISignInUseCase, SignInUseCase>();
 builder.Services.AddScoped<IAddClaimToUserUseCase, AddClaimToUserUseCase>();
 builder.Services.AddScoped<IRevokeClaimFromUserUseCase, RevokeClaimFromUserUseCase>();
 
+builder.Services.AddScoped<IInviteUserUseCase, InviteUserUseCase>();
+builder.Services.AddScoped<IGetInvitationsUseCase, GetInvitationsUseCase>();
+
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
@@ -127,6 +132,7 @@ builder.Services.AddScoped<IUserClaimsRepository, UserClaimsRepository>();
 builder.Services.AddScoped<IUserBoardsRepository, UserBoardsRepository>();
 builder.Services.AddScoped<IUserTablesRepository, UserTablesRepository>();
 builder.Services.AddScoped<IUserTasksRepository, UserTasksRepository>();
+builder.Services.AddScoped<IInvitationRepository, InvitationRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<BoardFiltersValidator>();
@@ -147,6 +153,8 @@ builder.Services.AddScoped<SignUpValidator>();
 
 builder.Services.AddScoped<KanUserClaimValidator>();
 builder.Services.AddScoped<NewKanUserClaimValidator>();
+
+builder.Services.AddScoped<NewInvitationValidator>();
 
 builder.Services.AddScoped<ICreateToken, TokenService>();
 

@@ -52,7 +52,7 @@ internal class AddTaskUseCaseTests
         _newTaskValidator = new NewTaskValidator(_unitOfWork.Object);
 
         _tableMembershipPolicy = new Mock<ITableMembershipPolicy>();
-        _tableMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _tableMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
         _userTasksRepository.Setup(e => e.AddAsync(It.IsAny<KanUserTask>())).Returns(Task.CompletedTask);
         _unitOfWork.Setup(e => e.UserTasksRepository).Returns(_userTasksRepository.Object);
 

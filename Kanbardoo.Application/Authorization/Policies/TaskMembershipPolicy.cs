@@ -18,7 +18,7 @@ public class TaskMembershipPolicy : ITaskMembershipPolicy
         __taskMembershipRequirementHandler = taskMembershipRequirementHandler;
     }
 
-    public async Task<Result> Authorize(int taskID)
+    public async Task<Result> AuthorizeAsync(int taskID)
     {
         var policy = new KanAuthorizationPolicy(_contextAccessor.HttpContext!);
 
