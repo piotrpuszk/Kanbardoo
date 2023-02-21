@@ -2,10 +2,14 @@
 using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.TaskContracts;
 using Kanbardoo.Application.Results;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
+using Microsoft.AspNetCore.Http;
 using System.Net;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.TaskUseCases;
@@ -15,17 +19,20 @@ public class DeleteTaskUseCase : IDeleteTaskUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly KanTaskIdToDeleteValidator _kanTaskIdToDeleteValidator;
-    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
+    private readonly ITaskMembershipPolicy _taskMembershipPolicy;
+    private readonly int _userID;
 
     public DeleteTaskUseCase(ILogger logger,
                            IUnitOfWork unitOfWork,
                            KanTaskIdToDeleteValidator kanTaskIdToDeleteValidator,
-                           IBoardMembershipPolicy boardMembershipPolicy)
+                           ITaskMembershipPolicy taskMembershipPolicy,
+                           IHttpContextAccessor contextAccessor)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _kanTaskIdToDeleteValidator = kanTaskIdToDeleteValidator;
-        _boardMembershipPolicy = boardMembershipPolicy;
+        _taskMembershipPolicy = taskMembershipPolicy;
+        _userID = int.Parse(contextAccessor.HttpContext!.User.FindFirstValue(KanClaimName.ID)!);
     }
 
     public async Task<Result> HandleAsync(int id)
@@ -37,7 +44,7 @@ public class DeleteTaskUseCase : IDeleteTaskUseCase
             return Result.ErrorResult(ErrorMessage.TaskWithIDNotExist);
         }
 
-        var authorizationResult = await AuthorizeAsync(id);
+        var authorizationResult = await _taskMembershipPolicy.Authorize(id);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;
@@ -46,6 +53,7 @@ public class DeleteTaskUseCase : IDeleteTaskUseCase
         try
         {
             await _unitOfWork.TaskRepository.DeleteAsync(id);
+            await _unitOfWork.UserTasksRepository.DeleteAsync(new KanUserTask { UserID = _userID, TaskID = id});
             await _unitOfWork.SaveChangesAsync();
 
             return Result.SuccessResult();
@@ -55,12 +63,5 @@ public class DeleteTaskUseCase : IDeleteTaskUseCase
             _logger.Error($"Internal server error: {id} \n\n {ex}");
             return Result.ErrorResult(ErrorMessage.InternalServerError, HttpStatusCode.InternalServerError);
         }
-    }
-
-    private async Task<Result> AuthorizeAsync(int taskID)
-    {
-        var task = await _unitOfWork.TaskRepository.GetAsync(taskID);
-        var table = await _unitOfWork.TableRepository.GetAsync(task.TableID);
-        return await _boardMembershipPolicy.Authorize(table.BoardID);
     }
 }

@@ -1,5 +1,6 @@
 using Kanbardoo.Application.Authorization.Policies;
 using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Authorization.RequirementHandlers;
 using Kanbardoo.Application.BoardUseCases;
 using Kanbardoo.Application.Contracts;
 using Kanbardoo.Application.Contracts.BoardContracts;
@@ -17,10 +18,7 @@ using Kanbardoo.Domain.Validators;
 using Kanbardoo.Infrastructure;
 using Kanbardoo.Infrastructure.Repositories;
 using Kanbardoo.Infrastructure.Services;
-using Kanbardoo.WebAPI.Authorization.RequirementHandlers;
-using Kanbardoo.WebAPI.Authorization.Requirements;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -48,15 +46,18 @@ builder.Services.AddAuthentication(e =>
     };
 });
 
-builder.Services.AddAuthorization(e => 
+builder.Services.AddAuthorization(e =>
 {
-    e.AddPolicy(PolicyName.BoardMembership, e => 
-                                            e.AddRequirements(new BoardMembershipRequirement()));
+    e.AddPolicy(PolicyName.Admin, e => e.RequireClaim(KanClaimName.Admin));
 });
 
 builder.Services.AddScoped<IBoardMembershipPolicy, BoardMembershipPolicy>();
+builder.Services.AddScoped<ITableMembershipPolicy, TableMembershipPolicy>();
+builder.Services.AddScoped<ITaskMembershipPolicy, TaskMembershipPolicy>();
 
-builder.Services.AddScoped<IAuthorizationHandler, BoardMembershipRequirementHandler>();
+builder.Services.AddScoped<BoardMembershipRequirementHandler>();
+builder.Services.AddScoped<TableMembershipRequirementHandler>();
+builder.Services.AddScoped<TaskMembershipRequirementHandler>();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -114,6 +115,7 @@ builder.Services.AddScoped<ISignUpUseCase, SignUpUseCase>();
 builder.Services.AddScoped<ISignInUseCase, SignInUseCase>();
 
 builder.Services.AddScoped<IAddClaimToUserUseCase, AddClaimToUserUseCase>();
+builder.Services.AddScoped<IRevokeClaimFromUserUseCase, RevokeClaimFromUserUseCase>();
 
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 builder.Services.AddScoped<ITableRepository, TableRepository>();
@@ -122,6 +124,9 @@ builder.Services.AddScoped<ITaskStatusRepository, TaskStatusRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IClaimRepository, ClaimRepository>();
 builder.Services.AddScoped<IUserClaimsRepository, UserClaimsRepository>();
+builder.Services.AddScoped<IUserBoardsRepository, UserBoardsRepository>();
+builder.Services.AddScoped<IUserTablesRepository, UserTablesRepository>();
+builder.Services.AddScoped<IUserTasksRepository, UserTasksRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<BoardFiltersValidator>();
@@ -140,7 +145,8 @@ builder.Services.AddScoped<KanTaskIdToDeleteValidator>();
 builder.Services.AddScoped<SignInValidator>();
 builder.Services.AddScoped<SignUpValidator>();
 
-builder.Services.AddScoped<AddClaimToUserValidator>();
+builder.Services.AddScoped<KanUserClaimValidator>();
+builder.Services.AddScoped<NewKanUserClaimValidator>();
 
 builder.Services.AddScoped<ICreateToken, TokenService>();
 

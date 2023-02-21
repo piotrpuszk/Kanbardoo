@@ -8,16 +8,20 @@ namespace Kanbardoo.Application.Authorization.Policies;
 public class BoardMembershipPolicy : IBoardMembershipPolicy
 {
     private readonly IHttpContextAccessor _contextAccessor;
+    private readonly BoardMembershipRequirementHandler _boardMembershipRequirementHandler;
 
-    public BoardMembershipPolicy(IHttpContextAccessor contextAccessor)
+    public BoardMembershipPolicy(IHttpContextAccessor contextAccessor,
+                                 BoardMembershipRequirementHandler boardMembershipRequirementHandler)
     {
         _contextAccessor = contextAccessor;
+        _boardMembershipRequirementHandler = boardMembershipRequirementHandler;
     }
 
     public async Task<Result> Authorize(int boardID)
     {
         var policy = new KanAuthorizationPolicy(_contextAccessor.HttpContext!);
-        policy.AddRequirement(new BoardMembershipRequirementHandler(), new BoardMembershipRequirement { BoardID = boardID });
+
+        policy.AddRequirement(_boardMembershipRequirementHandler, new BoardMembershipRequirement { BoardID = boardID });
 
         return await policy.Authorize();
     }

@@ -1,4 +1,5 @@
 ﻿using Kanbardoo.Application.Contracts;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +23,7 @@ public class TokenService : ICreateToken
         var claims = new List<Claim>()
         {
             new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(KanClaimName.ID, user.ID.ToString()),
         };
 
         foreach (var claim in user.GetClaimList())

@@ -1,39 +1,40 @@
 ﻿using Kanbardoo.Application.Authorization.Requirements;
 using Kanbardoo.Domain.Authorization;
+using Kanbardoo.Domain.Repositories;
 using Newtonsoft.Json;
 using System.Security.Claims;
 
 namespace Kanbardoo.Application.Authorization.RequirementHandlers;
 public class BoardMembershipRequirementHandler : AuthorizationRequirementHandler<BoardMembershipRequirement>
 {
-    public override Task HandleAsync(AuthorizationRequirementContext context, BoardMembershipRequirement requirement)
+    private readonly IUnitOfWork _unitOfWork;
+
+    public BoardMembershipRequirementHandler(IUnitOfWork unitOfWork)
     {
-        if (!context.User.HasClaim(e => e.Type == KanClaimName.Member))
-        {
-            return Task.CompletedTask;
-        }
-
-        var boardMembershipIDsJSON = context.User.FindFirstValue(KanClaimName.Member);
-
-        if (boardMembershipIDsJSON is null)
-        {
-            return Task.CompletedTask;
-        }
-
-        var boardMembershipIDs = JsonConvert.DeserializeObject<IEnumerable<int>>(boardMembershipIDsJSON);
-
-        return ValidateBoardID(context, requirement, boardMembershipIDs);
+        _unitOfWork = unitOfWork;
     }
 
-    private Task ValidateBoardID(AuthorizationRequirementContext context,
-                                        BoardMembershipRequirement requirement,
-                                        IEnumerable<int>? boardMembershipIDs)
+    public override async Task HandleAsync(AuthorizationRequirementContext context, BoardMembershipRequirement requirement)
     {
-        if (boardMembershipIDs!.Contains(requirement.BoardID))
+        if (!context.User.HasClaim(e => e.Type == KanClaimName.ID))
+        {
+            return;
+        }
+
+        var userID = int.Parse(context.User.FindFirstValue(KanClaimName.ID)!);
+
+        await ValidateBoardID(context, requirement, userID);
+    }
+
+    private async Task ValidateBoardID(AuthorizationRequirementContext context,
+                                        BoardMembershipRequirement requirement,
+                                        int userID)
+    {
+        var board = await _unitOfWork.UserBoardsRepository.GetAsync(userID, requirement.BoardID);
+
+        if (board.Exists())
         {
             context.Succeed(requirement);
         }
-
-        return Task.CompletedTask;
     }
 }

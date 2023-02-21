@@ -2,9 +2,13 @@
 using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Results;
+using Kanbardoo.Domain.Authorization;
+using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
+using Microsoft.AspNetCore.Http;
 using System.Net;
+using System.Security.Claims;
 using ILogger = Serilog.ILogger;  
 
 namespace Kanbardoo.Application.BoardUseCases;
@@ -14,16 +18,19 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
     private readonly IUnitOfWork _unitOfWork;
     private readonly BoardIdToDeleteValidator _boardIdToDeleteValidator;
     private readonly IBoardMembershipPolicy _boardMembershipPolicy;
+    private readonly int _userID;
 
     public DeleteBoardUseCase(IUnitOfWork unitOfWork,
                               ILogger logger,
                               BoardIdToDeleteValidator boardIdToDeleteValidator,
-                              IBoardMembershipPolicy boardMembershipPolicy)
+                              IBoardMembershipPolicy boardMembershipPolicy,
+                              IHttpContextAccessor contextAccessor)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _boardIdToDeleteValidator = boardIdToDeleteValidator;
         _boardMembershipPolicy = boardMembershipPolicy;
+        _userID = int.Parse(contextAccessor.HttpContext!.User.FindFirstValue(KanClaimName.ID)!);
     }
 
     public async Task<Result> HandleAsync(int id)
@@ -55,6 +62,7 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
     private async Task<Result> DeleteFromDatabase(int id)
     {
         await _unitOfWork.BoardRepository.DeleteAsync(id);
+        await _unitOfWork.UserBoardsRepository.DeleteAsync(new KanUserBoard { UserID = _userID, BoardID = id });
         await _unitOfWork.SaveChangesAsync();
 
         return Result.SuccessResult();

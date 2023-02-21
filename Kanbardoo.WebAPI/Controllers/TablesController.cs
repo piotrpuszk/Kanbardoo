@@ -3,10 +3,12 @@ using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.WebAPI.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.WebAPI.Controllers;
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class TablesController : ControllerBase

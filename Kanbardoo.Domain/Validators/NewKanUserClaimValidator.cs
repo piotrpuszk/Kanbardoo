@@ -1,28 +1,27 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using Kanbardoo.Domain.Entities;
-using Kanbardoo.Domain.Filters;
 using Kanbardoo.Domain.Repositories;
 
 namespace Kanbardoo.Domain.Validators;
-public class AddClaimToUserValidator : AbstractValidator<KanUserClaim>
+
+public class NewKanUserClaimValidator : AbstractValidator<KanUserClaim>
 {
-	public AddClaimToUserValidator(IUnitOfWork unitOfWork)
-	{
-		RuleFor(e => e.UserID).MustAsync(async (id, token) => 
-		{ 
-			var found = await unitOfWork.UserRepository.GetAsync(id);
+    public NewKanUserClaimValidator(IUnitOfWork unitOfWork)
+    {
+        RuleFor(e => e.UserID).MustAsync(async (userID, token) =>
+        {
+            var user = await unitOfWork.UserRepository.GetAsync(userID);
 
-			return found.Exists();
-		});
+            return user.Exists();
+        });
+        RuleFor(e => e.ClaimID).MustAsync(async (claimID, token) =>
+        {
+            var claim = await unitOfWork.ClaimRepository.GetAsync(claimID);
 
-		RuleFor(e => e.ClaimID).MustAsync(async (id, token) => 
-		{ 
-			var found = await unitOfWork.ClaimRepository.GetAsync(id);
-
-			return found.Exists();
-		});
-	}
+            return claim.Exists();
+        });
+    }
 
     public override ValidationResult Validate(ValidationContext<KanUserClaim> context)
     {

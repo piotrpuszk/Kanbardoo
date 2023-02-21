@@ -16,6 +16,9 @@ public class DBContext : DbContext
     public DbSet<KanUserClaim> UsersClaims { get; set; }
     public DbSet<KanUserRole> UsersRoles { get; set; }
     public DbSet<KanRoleClaim> RolesClaims { get; set; }
+    public DbSet<KanUserBoard> UserBoards { get; set; }
+    public DbSet<KanUserTable> UserTables { get; set; }
+    public DbSet<KanUserTask> UserTasks { get; set; }
 
     public DBContext(DbContextOptions<DBContext> options) : base(options)
     {

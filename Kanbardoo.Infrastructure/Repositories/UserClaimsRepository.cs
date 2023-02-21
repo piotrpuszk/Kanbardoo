@@ -5,39 +5,34 @@ using Microsoft.EntityFrameworkCore;
 namespace Kanbardoo.Infrastructure.Repositories;
 public class UserClaimsRepository : IUserClaimsRepository
 {
-    private readonly DBContext _dBContext;
+    private readonly DBContext _dbContext;
 
     public UserClaimsRepository(DBContext dBContext)
     {
-        _dBContext = dBContext;
+        _dbContext = dBContext;
     }
 
     public async Task AddAsync(KanUserClaim userClaim)
     {
         userClaim.Claim = null!;
         userClaim.User = null!;
-        await _dBContext.UsersClaims.AddAsync(userClaim);
-    }
-}
-
-public class ClaimRepository : IClaimRepository
-{
-    private readonly DBContext _dBContext;
-
-    public ClaimRepository(DBContext dBContext)
-    {
-        _dBContext = dBContext;
+        await _dbContext.UsersClaims.AddAsync(userClaim);
     }
 
-    public async Task<KanClaim> GetAsync(int id)
+    public async Task DeleteAsync(KanUserClaim userClaim)
     {
-        var claim = await _dBContext.Claims.FirstOrDefaultAsync(e => e.ID == id);
+        await _dbContext.UsersClaims.Where(e => e.UserID == userClaim.UserID && e.ClaimID == userClaim.ClaimID).ExecuteDeleteAsync();
+    }
 
-        if (claim is null)
+    public async Task<KanUserClaim> GetAsync(KanUserClaim userClaim)
+    {
+        var result = await _dbContext.UsersClaims.FirstOrDefaultAsync(e => e.UserID == userClaim.UserID && e.ClaimID == userClaim.ClaimID);
+
+        if (result == null)
         {
-            return new KanClaim();
+            return new KanUserClaim();
         }
 
-        return claim;
+        return result;
     }
 }

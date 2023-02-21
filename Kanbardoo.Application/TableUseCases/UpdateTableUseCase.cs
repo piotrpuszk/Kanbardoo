@@ -16,17 +16,17 @@ public class UpdateTableUseCase : IUpdateTableUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly TableToUpdateValidator _tableToUpdateValidator;
-    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
+    private readonly ITableMembershipPolicy _tableMembershipPolicy;
 
     public UpdateTableUseCase(ILogger logger,
                            IUnitOfWork unitOfWork,
                            TableToUpdateValidator tableToUpdateValidator,
-                           IBoardMembershipPolicy boardMembershipPolicy)
+                           ITableMembershipPolicy tableMembershipPolicy)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _tableToUpdateValidator = tableToUpdateValidator;
-        _boardMembershipPolicy = boardMembershipPolicy;
+        _tableMembershipPolicy = tableMembershipPolicy;
     }
     public async Task<Result> HandleAsync(KanTable table)
     {
@@ -37,7 +37,7 @@ public class UpdateTableUseCase : IUpdateTableUseCase
             return Result.ErrorResult(ErrorMessage.GivenTableInvalid);
         }
 
-        var authorizationResult = await _boardMembershipPolicy.Authorize(table.ID);
+        var authorizationResult = await _tableMembershipPolicy.Authorize(table.ID);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;

@@ -11,15 +11,15 @@ public class GetTaskUseCase : IGetTaskUseCase
 {
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
+    private readonly ITaskMembershipPolicy _taskMembershipPolicy;
 
     public GetTaskUseCase(ILogger logger,
                            IUnitOfWork unitOfWork,
-                           IBoardMembershipPolicy boardMembershipPolicy)
+                           ITaskMembershipPolicy taskMembershipPolicy)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
-        _boardMembershipPolicy = boardMembershipPolicy;
+        _taskMembershipPolicy = taskMembershipPolicy;
     }
 
     public async Task<Result<KanTask>> HandleAsync(int id)
@@ -46,8 +46,7 @@ public class GetTaskUseCase : IGetTaskUseCase
 
     private async Task<Result<KanTask>> AuthorizeAsync(KanTask task)
     {
-        var table = await _unitOfWork.TableRepository.GetAsync(task.TableID);
-        var authorizationResult = await _boardMembershipPolicy.Authorize(table.BoardID);
+        var authorizationResult = await _taskMembershipPolicy.Authorize(task.ID);
         if (!authorizationResult.IsSuccess)
         {
             return Result<KanTask>.ErrorResult(authorizationResult.Errors!);

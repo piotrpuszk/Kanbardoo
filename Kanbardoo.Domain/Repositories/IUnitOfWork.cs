@@ -14,6 +14,9 @@ public interface IUnitOfWork
     public IUserRepository UserRepository { get; init; }
     public IUserClaimsRepository UserClaimsRepository { get; init; }
     public IClaimRepository ClaimRepository { get; init; }
+    public IUserBoardsRepository UserBoardsRepository { get; init; }
+    public IUserTablesRepository UserTablesRepository { get; init; }
+    public IUserTasksRepository UserTasksRepository { get; init; }
 
     public Task<int> SaveChangesAsync();
 }

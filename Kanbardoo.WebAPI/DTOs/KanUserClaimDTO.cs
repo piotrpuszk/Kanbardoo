@@ -5,11 +5,11 @@ namespace Kanbardoo.WebAPI.DTOs;
 public class KanUserClaimDTO
 {
     [Required]
-    [Range(1, int.MaxValue)]
-    public int UserID { get; set; }
+    [MaxLength(256)]
+    public string UserName { get; set; } = string.Empty;
     [Required]
-    [Range(1, int.MaxValue)]
-    public int ClaimID { get; set; }
+    [MaxLength(256)]
+    public string ClaimName { get; set; } = string.Empty;
     [Required]
     [MaxLength(100)]
     public string Value { get; set; } = string.Empty;

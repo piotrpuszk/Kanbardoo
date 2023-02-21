@@ -11,15 +11,15 @@ public class GetTableUseCase : IGetTableUseCase
 {
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
+    private readonly ITableMembershipPolicy _tableMembershipPolicy;
 
     public GetTableUseCase(ILogger logger,
                            IUnitOfWork unitOfWork,
-                           IBoardMembershipPolicy boardMembershipPolicy)
+                           ITableMembershipPolicy tableMembershipPolicy)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
-        _boardMembershipPolicy = boardMembershipPolicy;
+        _tableMembershipPolicy = tableMembershipPolicy;
     }
 
     public async Task<Result<IEnumerable<KanTable>>> HandleAsync()
@@ -38,7 +38,7 @@ public class GetTableUseCase : IGetTableUseCase
 
     public async Task<Result<KanTable>> HandleAsync(int id)
     {
-        KanTable table = new KanTable();
+        KanTable table;
         try
         {
             table = await _unitOfWork.TableRepository.GetAsync(id);
@@ -55,7 +55,7 @@ public class GetTableUseCase : IGetTableUseCase
             return ErrorResult<KanTable>.ErrorResult(ErrorMessage.TableWithIDNotExist);
         }
 
-        var authorizationResult = await _boardMembershipPolicy.Authorize(table.ID);
+        var authorizationResult = await _tableMembershipPolicy.Authorize(table.ID);
         if (!authorizationResult.IsSuccess)
         {
             return Result<KanTable>.ErrorResult(authorizationResult.Errors!);

@@ -2,12 +2,15 @@
 using Kanbardoo.Application.Authorization.PolicyContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Application.TableUseCases;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using Serilog;
+using System.Security.Claims;
 
 namespace Kanbardoo.Application.Tests.TableUseCaseTests;
 internal class AddTableUseCaseTests
@@ -19,11 +22,19 @@ internal class AddTableUseCaseTests
     private Mock<ILogger> _logger;
     private NewTableValidator _newTableValidator;
     private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
+    private Mock<IHttpContextAccessor> _contextAccessor;
+    private Mock<IUserTablesRepository> _userTablesRepository;
 
     [SetUp]
     public void Setup()
     {
+        _contextAccessor = new Mock<IHttpContextAccessor>();
+        var httpContext = new DefaultHttpContext();
+        httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims: new[] { new Claim(KanClaimName.ID, 1.ToString()) }));
+        _contextAccessor.Setup(e => e.HttpContext).Returns(httpContext);
+
         _tableRepository = new Mock<ITableRepository>();
+        _userTablesRepository = new Mock<IUserTablesRepository>();
         _boardRepository = new Mock<IBoardRepository>();
         _unitOfWork = new Mock<IUnitOfWork>();
         _logger = new Mock<ILogger>();
@@ -35,7 +46,11 @@ internal class AddTableUseCaseTests
         _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
         _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
-        _addTableUseCase = new AddTableUseCase(_logger.Object, _unitOfWork.Object, _newTableValidator, _boardMembershipPolicy.Object);
+        _addTableUseCase = new AddTableUseCase(_logger.Object,
+                                               _unitOfWork.Object,
+                                               _newTableValidator,
+                                               _boardMembershipPolicy.Object,
+                                               _contextAccessor.Object);
     }
 
     [Test]
@@ -55,6 +70,8 @@ internal class AddTableUseCaseTests
         };
 
         _boardRepository.Setup(e => e.GetAsync(boardId)).ReturnsAsync(board);
+        _userTablesRepository.Setup(e => e.AddAsync(It.IsAny<KanUserTable>())).Returns(Task.CompletedTask);
+        _unitOfWork.Setup(e => e.UserTablesRepository).Returns(_userTablesRepository.Object);
 
         //Act
         SuccessResult successResult = (await _addTableUseCase.HandleAsync(newTable) as SuccessResult)!;

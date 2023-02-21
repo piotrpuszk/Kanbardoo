@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 namespace Kanbardoo.Domain.Authorization;
 public static class PolicyName
 {
-    public const string BoardMembership = "BoardMembership";
+    public const string Admin = "Admin";
 }

@@ -1,14 +1,17 @@
 ﻿using Kanbardoo.Application.Authorization.PolicyContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Application.TableUseCases;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,12 +24,20 @@ internal class DeleteTableUseCaseTests
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
     private TableIDToDelete _tableIDToDelete;
-    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
+    private Mock<ITableMembershipPolicy> _tableMembershipPolicy;
+    private Mock<IHttpContextAccessor> _contextAccessor;
+    private Mock<IUserTablesRepository> _userTablesRepository;
 
     [SetUp]
     public void Setup()
     {
+        _contextAccessor = new Mock<IHttpContextAccessor>();
+        var httpContext = new DefaultHttpContext();
+        httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims: new[] { new Claim(KanClaimName.ID, 1.ToString()) }));
+        _contextAccessor.Setup(e => e.HttpContext).Returns(httpContext);
+
         _tableRepository = new Mock<ITableRepository>();
+        _userTablesRepository = new Mock<IUserTablesRepository>();
         _boardRepository = new Mock<IBoardRepository>();
         _unitOfWork = new Mock<IUnitOfWork>();
         _logger = new Mock<ILogger>();
@@ -35,10 +46,14 @@ internal class DeleteTableUseCaseTests
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
         _tableIDToDelete = new TableIDToDelete(_unitOfWork.Object);
 
-        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
-        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _tableMembershipPolicy = new Mock<ITableMembershipPolicy>();
+        _tableMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
-        _deleteTableUseCase = new DeleteTableUseCase(_logger.Object, _unitOfWork.Object, _tableIDToDelete, _boardMembershipPolicy.Object);
+        _deleteTableUseCase = new DeleteTableUseCase(_logger.Object,
+                                                     _unitOfWork.Object,
+                                                     _tableIDToDelete,
+                                                     _tableMembershipPolicy.Object,
+                                                     _contextAccessor.Object);
     }
 
     [Test]
@@ -52,6 +67,8 @@ internal class DeleteTableUseCaseTests
         };
 
         _tableRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(table);
+        _userTablesRepository.Setup(e => e.AddAsync(It.IsAny<KanUserTable>())).Returns(Task.CompletedTask);
+        _unitOfWork.Setup(e => e.UserTablesRepository).Returns(_userTablesRepository.Object);
 
         //Act
         SuccessResult successResult = (await _deleteTableUseCase.HandleAsync(id) as SuccessResult)!;
@@ -72,6 +89,8 @@ internal class DeleteTableUseCaseTests
         };
 
         _tableRepository.Setup(e => e.GetAsync(id)).ReturnsAsync(table);
+        _userTablesRepository.Setup(e => e.AddAsync(It.IsAny<KanUserTable>())).Returns(Task.CompletedTask);
+        _unitOfWork.Setup(e => e.UserTablesRepository).Returns(_userTablesRepository.Object);
 
         //Act
         SuccessResult successResult = (await _deleteTableUseCase.HandleAsync(id) as SuccessResult)!;

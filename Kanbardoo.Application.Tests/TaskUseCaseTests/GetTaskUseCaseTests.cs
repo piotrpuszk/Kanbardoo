@@ -17,7 +17,7 @@ internal class GetTaskUseCaseTests
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ITaskStatusRepository> _taskStatusRepository;
     private Mock<ILogger> _logger;
-    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
+    private Mock<ITaskMembershipPolicy> _taskMembershipPolicy;
 
     [SetUp]
     public void Setup()
@@ -36,10 +36,10 @@ internal class GetTaskUseCaseTests
         _unitOfWork.Setup(e => e.TaskStatusRepository).Returns(_taskStatusRepository.Object);
         _unitOfWork.Setup(e => e.TaskRepository).Returns(_taskRepository.Object);
 
-        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
-        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _taskMembershipPolicy = new Mock<ITaskMembershipPolicy>();
+        _taskMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
-        _getTaskUseCase = new GetTaskUseCase(_logger.Object, _unitOfWork.Object, _boardMembershipPolicy.Object);
+        _getTaskUseCase = new GetTaskUseCase(_logger.Object, _unitOfWork.Object, _taskMembershipPolicy.Object);
     }
 
     [Test]

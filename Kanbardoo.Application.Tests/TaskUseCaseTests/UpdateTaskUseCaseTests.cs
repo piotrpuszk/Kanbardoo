@@ -19,7 +19,7 @@ internal class UpdateTaskUseCaseTests
     private Mock<ITaskStatusRepository> _taskStatusRepository;
     private Mock<ILogger> _logger;
     private KanTaskValidator _taskToUpdateValidator;
-    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
+    private Mock<ITaskMembershipPolicy> _taskMembershipPolicy;
 
     [SetUp]
     public void Setup()
@@ -39,10 +39,10 @@ internal class UpdateTaskUseCaseTests
         _unitOfWork.Setup(e => e.TaskRepository).Returns(_taskRepository.Object);
         _taskToUpdateValidator = new KanTaskValidator(_unitOfWork.Object);
 
-        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
-        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _taskMembershipPolicy = new Mock<ITaskMembershipPolicy>();
+        _taskMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
-        _updateTaskUseCase = new UpdateTaskUseCase(_logger.Object, _unitOfWork.Object, _taskToUpdateValidator, _boardMembershipPolicy.Object);
+        _updateTaskUseCase = new UpdateTaskUseCase(_logger.Object, _unitOfWork.Object, _taskToUpdateValidator, _taskMembershipPolicy.Object);
     }
 
     [Test]
