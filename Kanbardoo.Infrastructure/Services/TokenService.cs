@@ -1,7 +1,9 @@
 ﻿using Kanbardoo.Application.Contracts;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -21,8 +23,13 @@ public class TokenService : ICreateToken
         var claims = new List<Claim>()
         {
             new Claim(ClaimTypes.Name, user.UserName),
-            new Claim("TestClaim", "test"),
+            new Claim(KanClaimName.ID, user.ID.ToString()),
         };
+
+        foreach (var claim in user.GetClaimList())
+        {
+            claims.Add(new Claim(claim.Name, JsonConvert.SerializeObject(claim.Value)));
+        }
 
         SigningCredentials credentials = new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha512Signature);
 

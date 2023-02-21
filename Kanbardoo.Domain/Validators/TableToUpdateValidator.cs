@@ -13,14 +13,14 @@ public class TableToUpdateValidator : AbstractValidator<KanTable>
 		{ 
 			var found = await unitOfWork.BoardRepository.GetAsync(id);
 
-			return found.ID != default;
+			return found.Exists();
 		});
 		RuleFor(e => e.Name).Must(e => !string.IsNullOrWhiteSpace(e));
 		RuleFor(e => e.ID).MustAsync(async (id, token) => 
 		{ 
 			var found = await unitOfWork.TableRepository.GetAsync(id);
 
-			return found.ID != default;
+			return found.Exists();
 		});
 		RuleFor(e => e.CreationDate).Must(e => e != default);
 	}

@@ -15,6 +15,10 @@ public class DBContext : DbContext
     public DbSet<KanRole> Roles { get; set; }
     public DbSet<KanUserClaim> UsersClaims { get; set; }
     public DbSet<KanUserRole> UsersRoles { get; set; }
+    public DbSet<KanRoleClaim> RolesClaims { get; set; }
+    public DbSet<KanUserBoard> UserBoards { get; set; }
+    public DbSet<KanUserTable> UserTables { get; set; }
+    public DbSet<KanUserTask> UserTasks { get; set; }
 
     public DBContext(DbContextOptions<DBContext> options) : base(options)
     {
@@ -43,6 +47,16 @@ public class DBContext : DbContext
             .HasOne(e => e.Role)
             .WithMany(e => e.Users)
             .HasForeignKey(e => e.RoleID);
+
+        modelBuilder.Entity<KanRoleClaim>()
+            .HasOne(e => e.Role)
+            .WithMany(e => e.Claims)
+            .HasForeignKey(e => e.RoleID);
+
+        modelBuilder.Entity<KanRoleClaim>()
+            .HasOne(e => e.Claim)
+            .WithMany(e => e.Roles)
+            .HasForeignKey(e => e.ClaimID);
 
         modelBuilder.Entity<KanTable>()
             .HasOne(e => e.Board)

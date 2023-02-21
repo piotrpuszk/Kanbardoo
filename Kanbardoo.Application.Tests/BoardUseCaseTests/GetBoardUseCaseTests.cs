@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.BoardUseCases;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.BoardUseCases;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Filters;
@@ -15,6 +16,7 @@ internal class GetBoardUseCaseTests
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
     private BoardFiltersValidator _boardFiltersValidator;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
 
     [SetUp]
     public void Setup()
@@ -25,7 +27,10 @@ internal class GetBoardUseCaseTests
         _unitOfWork = new Mock<IUnitOfWork>();
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
 
-        _getBoardUseCase = new GetBoardUseCase(_unitOfWork.Object, _logger.Object, _boardFiltersValidator);
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+
+        _getBoardUseCase = new GetBoardUseCase(_unitOfWork.Object, _logger.Object, _boardFiltersValidator, _boardMembershipPolicy.Object);
     }
 
     [Test]

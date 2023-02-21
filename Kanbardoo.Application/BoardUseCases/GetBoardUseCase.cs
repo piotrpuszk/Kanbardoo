@@ -1,4 +1,7 @@
 ﻿using FluentValidation;
+using Kanbardoo.Application.Authorization;
+using Kanbardoo.Application.Authorization.Policies;
+using Kanbardoo.Application.Authorization.PolicyContracts;
 using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Results;
@@ -16,14 +19,17 @@ public class GetBoardUseCase : IGetBoardUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly BoardFiltersValidator _boardFiltersValidator;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
 
     public GetBoardUseCase(IUnitOfWork unitOfWork,
                            ILogger logger,
-                           BoardFiltersValidator boardFiltersValidator)
+                           BoardFiltersValidator boardFiltersValidator,
+                           IBoardMembershipPolicy boardMembershipPolicy)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _boardFiltersValidator = boardFiltersValidator;
+        _boardMembershipPolicy = boardMembershipPolicy;
     }
 
     public async Task<Result<IEnumerable<KanBoard>>> HandleAsync()
@@ -70,6 +76,12 @@ public class GetBoardUseCase : IGetBoardUseCase
         {
             _logger.Error("A board with ID {id} does not exist");
             return Result<KanBoard>.ErrorResult($"A board with ID {id} does not exist");
+        }
+
+        var authorizationResult = await _boardMembershipPolicy.Authorize(id);
+        if (!authorizationResult.IsSuccess)
+        {
+            return Result<KanBoard>.ErrorResult(authorizationResult.Errors!);
         }
 
         return Result<KanBoard>.SuccessResult(board);

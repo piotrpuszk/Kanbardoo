@@ -1,11 +1,15 @@
-﻿using Kanbardoo.Application.Results;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Results;
 using Kanbardoo.Application.TaskUseCases;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using Serilog;
+using System.Security.Claims;
 
 namespace Kanbardoo.Application.Tests.TaskUseCaseTests;
 internal class AddTaskUseCaseTests
@@ -19,11 +23,20 @@ internal class AddTaskUseCaseTests
     private Mock<ITaskStatusRepository> _taskStatusRepository;
     private Mock<ILogger> _logger;
     private NewTaskValidator _newTaskValidator;
+    private Mock<ITableMembershipPolicy> _tableMembershipPolicy;
+    private Mock<IHttpContextAccessor> _contextAccessor;
+    private Mock<IUserTasksRepository> _userTasksRepository;
 
     [SetUp]
     public void Setup()
     {
+        _contextAccessor = new Mock<IHttpContextAccessor>();
+        var httpContext = new DefaultHttpContext();
+        httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims: new[] { new Claim(KanClaimName.ID, 1.ToString()) }));
+        _contextAccessor.Setup(e => e.HttpContext).Returns(httpContext);
+
         _tableRepository = new Mock<ITableRepository>();
+        _userTasksRepository = new Mock<IUserTasksRepository>();
         _userRepository = new Mock<IUserRepository>();
         _boardRepository = new Mock<IBoardRepository>();
         _taskRepository = new Mock<ITaskRepository>();
@@ -38,7 +51,16 @@ internal class AddTaskUseCaseTests
         _unitOfWork.Setup(e => e.TaskRepository).Returns(_taskRepository.Object);
         _newTaskValidator = new NewTaskValidator(_unitOfWork.Object);
 
-        _addTaskUseCase = new AddTaskUseCase(_logger.Object, _unitOfWork.Object, _newTaskValidator);
+        _tableMembershipPolicy = new Mock<ITableMembershipPolicy>();
+        _tableMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _userTasksRepository.Setup(e => e.AddAsync(It.IsAny<KanUserTask>())).Returns(Task.CompletedTask);
+        _unitOfWork.Setup(e => e.UserTasksRepository).Returns(_userTasksRepository.Object);
+
+        _addTaskUseCase = new AddTaskUseCase(_logger.Object,
+                                             _unitOfWork.Object,
+                                             _newTaskValidator,
+                                             _tableMembershipPolicy.Object, 
+                                             _contextAccessor.Object);
     }
 
     [Test]
@@ -119,12 +141,14 @@ internal class AddTaskUseCaseTests
         _userRepository.Setup(e => e.GetAsync(newTask.AssigneeID)).ReturnsAsync(new KanUser { ID = newTask.AssigneeID });
         _taskStatusRepository.Setup(e => e.GetAsync(newTask.StatusID)).ReturnsAsync(new KanTaskStatus { ID = newTask.StatusID });
         _taskRepository.Setup(e => e.AddAsync(It.IsAny<KanTask>())).Returns(Task.CompletedTask);
+        _userTasksRepository.Setup(e => e.AddAsync(It.IsAny<KanUserTask>())).Returns(Task.CompletedTask);
+        _unitOfWork.Setup(e => e.UserTasksRepository).Returns(_userTasksRepository.Object);
 
         //Act
         SuccessResult successResult = (await _addTaskUseCase.HandleAsync(newTask) as SuccessResult)!;
 
         //Arrange
-        _unitOfWork.Verify(e => e.SaveChangesAsync(), Times.Once);
+        _unitOfWork.Verify(e => e.SaveChangesAsync(), Times.AtLeastOnce);
     }
 
     [Test]

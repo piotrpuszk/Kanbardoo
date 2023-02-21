@@ -13,20 +13,20 @@ public class NewTaskValidator : AbstractValidator<NewKanTask>
 		{
 			var found = await unitOfWork.UserRepository.GetAsync(id);
 
-			return found.ID != default;
+			return found.Exists();
 		});
 		RuleFor(e => e.StatusID).MustAsync(async (id, token) => 
 		{ 
 			var found = await unitOfWork.TaskStatusRepository.GetAsync(id);
 
-			return found.ID != default;
+			return found.Exists();
 		});
 		RuleFor(e => e.Name).Must(e => !string.IsNullOrWhiteSpace(e));
 		RuleFor(e => e.TableID).MustAsync(async (id, token) =>
 		{
 			var found = await unitOfWork.TableRepository.GetAsync(id);
 
-			return found.ID != default;
+			return found.Exists();
 		});
 	}
 

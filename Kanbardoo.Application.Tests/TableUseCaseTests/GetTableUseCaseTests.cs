@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Results;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Results;
 using Kanbardoo.Application.TableUseCases;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
@@ -13,6 +14,7 @@ internal class GetTableUseCaseTests
     private Mock<ITableRepository> _tableRepository;
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
+    private Mock<ITableMembershipPolicy> _tableMembershipPolicy;
 
     [SetUp]
     public void Setup()
@@ -25,7 +27,10 @@ internal class GetTableUseCaseTests
         _unitOfWork.Setup(e => e.TableRepository).Returns(_tableRepository.Object);
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
 
-        _getTableUseCase = new GetTableUseCase(_logger.Object, _unitOfWork.Object);
+        _tableMembershipPolicy = new Mock<ITableMembershipPolicy>();
+        _tableMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+
+        _getTableUseCase = new GetTableUseCase(_logger.Object, _unitOfWork.Object, _tableMembershipPolicy.Object);
     }
 
     [Test]

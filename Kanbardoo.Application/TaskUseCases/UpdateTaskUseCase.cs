@@ -1,4 +1,5 @@
-﻿using Kanbardoo.Application.Constants;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.TaskContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Entities;
@@ -15,14 +16,17 @@ public class UpdateTaskUseCase : IUpdateTaskUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly KanTaskValidator _validator;
+    private readonly ITaskMembershipPolicy _taskMembershipPolicy;
 
     public UpdateTaskUseCase(ILogger logger,
                            IUnitOfWork unitOfWork,
-                           KanTaskValidator validator)
+                           KanTaskValidator validator,
+                           ITaskMembershipPolicy taskMembershipPolicy)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _validator = validator;
+        _taskMembershipPolicy = taskMembershipPolicy;
     }
 
     public async Task<Result> HandleAsync(KanTask task)
@@ -32,6 +36,12 @@ public class UpdateTaskUseCase : IUpdateTaskUseCase
         {
             _logger.Error($"Invalid task to update: {JsonConvert.SerializeObject(task is not null ? task : "null")}");
             return Result.ErrorResult(ErrorMessage.GivenTaskInvalid);
+        }
+
+        var authorizationResult = await _taskMembershipPolicy.Authorize(task.ID);
+        if (!authorizationResult.IsSuccess)
+        {
+            return authorizationResult;
         }
 
         try

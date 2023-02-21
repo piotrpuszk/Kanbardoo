@@ -15,13 +15,23 @@ public class UnitOfWork : IUnitOfWork
     public ITaskRepository TaskRepository { get; init; }
     public ITaskStatusRepository TaskStatusRepository { get; init; }
     public IUserRepository UserRepository { get; init; }
+    public IUserClaimsRepository UserClaimsRepository { get; init; }
+    public IClaimRepository ClaimRepository { get; init; }
+    public IUserBoardsRepository UserBoardsRepository { get; init; }
+    public IUserTablesRepository UserTablesRepository { get; init; }
+    public IUserTasksRepository UserTasksRepository { get; init; }
 
     public UnitOfWork(DBContext dbContext,
                       IBoardRepository boardRepository,
                       ITableRepository tableRepository,
                       ITaskRepository taskRepository,
                       ITaskStatusRepository taskStatusRepository,
-                      IUserRepository userRepository)
+                      IUserRepository userRepository,
+                      IUserClaimsRepository userClaimsRepository,
+                      IClaimRepository claimRepository,
+                      IUserBoardsRepository userBoardsRepository,
+                      IUserTablesRepository userTablesRepository,
+                      IUserTasksRepository userTasksRepository)
     {
         BoardRepository = boardRepository;
         TableRepository = tableRepository;
@@ -29,6 +39,11 @@ public class UnitOfWork : IUnitOfWork
         TaskRepository = taskRepository;
         TaskStatusRepository = taskStatusRepository;
         UserRepository = userRepository;
+        UserClaimsRepository = userClaimsRepository;
+        ClaimRepository = claimRepository;
+        UserBoardsRepository = userBoardsRepository;
+        UserTablesRepository = userTablesRepository;
+        UserTasksRepository = userTasksRepository;
     }
 
     public async Task<int> SaveChangesAsync()

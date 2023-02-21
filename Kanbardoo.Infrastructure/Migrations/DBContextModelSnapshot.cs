@@ -91,17 +91,12 @@ namespace Kanbardoo.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("KanRoleID")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("KanRoleID");
 
                     b.ToTable("Claims");
 
@@ -137,6 +132,27 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanRoleClaim", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ClaimID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RoleID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ClaimID");
+
+                    b.HasIndex("RoleID");
+
+                    b.ToTable("RolesClaims");
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTable", b =>
@@ -275,6 +291,27 @@ namespace Kanbardoo.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserBoard", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BoardID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("BoardID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UserBoards");
+                });
+
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserClaim", b =>
                 {
                     b.Property<int>("ID")
@@ -322,6 +359,48 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.ToTable("UsersRoles");
                 });
 
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserTable", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TableID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("TableID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UserTables");
+                });
+
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserTask", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TaskID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("TaskID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UserTasks");
+                });
+
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanBoard", b =>
                 {
                     b.HasOne("Kanbardoo.Domain.Entities.KanUser", "Owner")
@@ -341,11 +420,23 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanClaim", b =>
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanRoleClaim", b =>
                 {
-                    b.HasOne("Kanbardoo.Domain.Entities.KanRole", null)
+                    b.HasOne("Kanbardoo.Domain.Entities.KanClaim", "Claim")
+                        .WithMany("Roles")
+                        .HasForeignKey("ClaimID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kanbardoo.Domain.Entities.KanRole", "Role")
                         .WithMany("Claims")
-                        .HasForeignKey("KanRoleID");
+                        .HasForeignKey("RoleID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Claim");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTable", b =>
@@ -386,6 +477,25 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.Navigation("Table");
                 });
 
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserBoard", b =>
+                {
+                    b.HasOne("Kanbardoo.Domain.Entities.KanBoard", "Board")
+                        .WithMany()
+                        .HasForeignKey("BoardID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kanbardoo.Domain.Entities.KanUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Board");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserClaim", b =>
                 {
                     b.HasOne("Kanbardoo.Domain.Entities.KanClaim", "Claim")
@@ -424,6 +534,44 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserTable", b =>
+                {
+                    b.HasOne("Kanbardoo.Domain.Entities.KanTable", "Table")
+                        .WithMany()
+                        .HasForeignKey("TableID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kanbardoo.Domain.Entities.KanUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Table");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserTask", b =>
+                {
+                    b.HasOne("Kanbardoo.Domain.Entities.KanTask", "Task")
+                        .WithMany()
+                        .HasForeignKey("TaskID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kanbardoo.Domain.Entities.KanUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Task");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanBoard", b =>
                 {
                     b.Navigation("Tables");
@@ -431,6 +579,8 @@ namespace Kanbardoo.Infrastructure.Migrations
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanClaim", b =>
                 {
+                    b.Navigation("Roles");
+
                     b.Navigation("Users");
                 });
 

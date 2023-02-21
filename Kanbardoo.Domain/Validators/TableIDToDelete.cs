@@ -10,7 +10,7 @@ public class TableIDToDelete : AbstractValidator<int>
 		{ 
 			var found = await unitOfWork.TableRepository.GetAsync(id);
 
-			return found.ID != default;
+			return found.Exists();
 		});
 	}
 }

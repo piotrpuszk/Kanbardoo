@@ -1,12 +1,16 @@
-﻿using Kanbardoo.Application.Constants;
+﻿using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Application.Results;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net;
+using System.Security.Claims;
 using System.Text.Json.Nodes;
 using ILogger = Serilog.ILogger;
 
@@ -16,14 +20,20 @@ public class AddTableUseCase : IAddTableUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly NewTableValidator _newTableValidator;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
+    private readonly int _userID;
 
     public AddTableUseCase(ILogger logger,
                            IUnitOfWork unitOfWork,
-                           NewTableValidator newTableValidator)
+                           NewTableValidator newTableValidator,
+                           IBoardMembershipPolicy boardMembershipPolicy,
+                           IHttpContextAccessor contextAccessor)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _newTableValidator = newTableValidator;
+        _boardMembershipPolicy = boardMembershipPolicy;
+        _userID = int.Parse(contextAccessor.HttpContext!.User.FindFirstValue(KanClaimName.ID)!);
     }
 
     public async Task<Result> HandleAsync(NewKanTable newTable)
@@ -33,6 +43,12 @@ public class AddTableUseCase : IAddTableUseCase
         {
             _logger.Error(ErrorMessage.GivenTableInvalid);
             return Result.ErrorResult(ErrorMessage.GivenTableInvalid);
+        }
+
+        var authorizationResult = await _boardMembershipPolicy.Authorize(newTable.BoardID);
+        if (!authorizationResult.IsSuccess)
+        {
+            return authorizationResult;
         }
 
         KanTable table = new()
@@ -46,6 +62,9 @@ public class AddTableUseCase : IAddTableUseCase
         try
         {
             await _unitOfWork.TableRepository.AddAsync(table);
+            await _unitOfWork.SaveChangesAsync();
+
+            await _unitOfWork.UserTablesRepository.AddAsync(new KanUserTable { UserID = _userID, TableID = table.ID });
             await _unitOfWork.SaveChangesAsync();
 
             return Result.SuccessResult();

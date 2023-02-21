@@ -1,12 +1,18 @@
+using Kanbardoo.Application.Authorization.Policies;
+using Kanbardoo.Application.Authorization.PolicyContracts;
+using Kanbardoo.Application.Authorization.RequirementHandlers;
 using Kanbardoo.Application.BoardUseCases;
 using Kanbardoo.Application.Contracts;
 using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Application.Contracts.TaskContracts;
+using Kanbardoo.Application.Contracts.UserClaimsContracts;
 using Kanbardoo.Application.Contracts.UserContracts;
 using Kanbardoo.Application.TableUseCases;
 using Kanbardoo.Application.TaskUseCases;
+using Kanbardoo.Application.UserClaimsUseCases;
 using Kanbardoo.Application.UserContracts;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
 using Kanbardoo.Infrastructure;
@@ -22,23 +28,38 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthentication(e =>
+{
+    e.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    e.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    e.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(e =>
+{
+    e.TokenValidationParameters = new()
     {
-        e.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        e.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        e.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(e =>
-    {
-        e.TokenValidationParameters = new()
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenSecretKey"]!)),
-            ValidateLifetime = true,
-            ValidateAudience = false,
-            ValidateIssuer = false,
-            ClockSkew = TimeSpan.Zero,
-        };
-    });
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenSecretKey"]!)),
+        ValidateLifetime = true,
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        ClockSkew = TimeSpan.Zero,
+    };
+});
+
+builder.Services.AddAuthorization(e =>
+{
+    e.AddPolicy(PolicyName.Admin, e => e.RequireClaim(KanClaimName.Admin));
+});
+
+builder.Services.AddScoped<IBoardMembershipPolicy, BoardMembershipPolicy>();
+builder.Services.AddScoped<ITableMembershipPolicy, TableMembershipPolicy>();
+builder.Services.AddScoped<ITaskMembershipPolicy, TaskMembershipPolicy>();
+
+builder.Services.AddScoped<BoardMembershipRequirementHandler>();
+builder.Services.AddScoped<TableMembershipRequirementHandler>();
+builder.Services.AddScoped<TaskMembershipRequirementHandler>();
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Host.UseSerilog((context, config) =>
     config
@@ -93,11 +114,19 @@ builder.Services.AddScoped<IUpdateTaskUseCase, UpdateTaskUseCase>();
 builder.Services.AddScoped<ISignUpUseCase, SignUpUseCase>();
 builder.Services.AddScoped<ISignInUseCase, SignInUseCase>();
 
+builder.Services.AddScoped<IAddClaimToUserUseCase, AddClaimToUserUseCase>();
+builder.Services.AddScoped<IRevokeClaimFromUserUseCase, RevokeClaimFromUserUseCase>();
+
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<ITaskStatusRepository, TaskStatusRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IClaimRepository, ClaimRepository>();
+builder.Services.AddScoped<IUserClaimsRepository, UserClaimsRepository>();
+builder.Services.AddScoped<IUserBoardsRepository, UserBoardsRepository>();
+builder.Services.AddScoped<IUserTablesRepository, UserTablesRepository>();
+builder.Services.AddScoped<IUserTasksRepository, UserTasksRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<BoardFiltersValidator>();
@@ -115,6 +144,9 @@ builder.Services.AddScoped<KanTaskIdToDeleteValidator>();
 
 builder.Services.AddScoped<SignInValidator>();
 builder.Services.AddScoped<SignUpValidator>();
+
+builder.Services.AddScoped<KanUserClaimValidator>();
+builder.Services.AddScoped<NewKanUserClaimValidator>();
 
 builder.Services.AddScoped<ICreateToken, TokenService>();
 

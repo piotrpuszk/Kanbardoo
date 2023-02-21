@@ -14,7 +14,10 @@ public class UserRepository : IUserRepository
 
     public async Task<KanUser> GetAsync(int id)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(e => e.ID== id);
+        var user = await _dbContext.Users
+            .Include(e => e.Claims)
+            .ThenInclude(e => e.Claim)
+            .FirstOrDefaultAsync(e => e.ID == id);
 
         if (user is null)
         {
@@ -26,7 +29,10 @@ public class UserRepository : IUserRepository
 
     public async Task<KanUser> GetAsync(string name)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(e => e.UserName == name);
+        var user = await _dbContext.Users
+            .Include(e => e.Claims)
+            .ThenInclude(e => e.Claim)
+            .FirstOrDefaultAsync(e => e.UserName == name);
 
         if (user is null)
         {
@@ -38,6 +44,8 @@ public class UserRepository : IUserRepository
 
     public async Task AddAsync(KanUser user)
     {
+        user.Roles = null!;
+        user.Claims = null!;
         await _dbContext.Users.AddAsync(user);
     }
 }

@@ -10,7 +10,7 @@ public class KanTaskIdToDeleteValidator : AbstractValidator<int>
 		{ 
 			var found = await unitOfWork.TaskRepository.GetAsync(id);
 
-			return found.ID != default;
+			return found.Exists();
 		});
 	}
 }

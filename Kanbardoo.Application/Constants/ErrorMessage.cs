@@ -17,6 +17,10 @@ public static class ErrorMessage
     public const string TaskWithIDNotExist = "A task with the given id does not exist";
 
     public const string Unauthenticated = "Unauthenticated";
+    public const string Unauthorized = "Unauthorized";
+
     public const string SignUpDataInvalid = "The sign up data are invalid";
     public const string SignInDataInvalid = "The sign in data are invalid";
+
+    public const string UserClaimInvalid = "The user claims are invalid";
 }
