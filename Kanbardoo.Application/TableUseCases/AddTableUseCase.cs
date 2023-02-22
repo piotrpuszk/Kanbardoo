@@ -45,7 +45,7 @@ public class AddTableUseCase : IAddTableUseCase
             return Result.ErrorResult(ErrorMessage.GivenTableInvalid);
         }
 
-        var authorizationResult = await _boardMembershipPolicy.Authorize(newTable.BoardID);
+        var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(newTable.BoardID);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;

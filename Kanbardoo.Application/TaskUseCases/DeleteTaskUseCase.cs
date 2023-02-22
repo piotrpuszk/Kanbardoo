@@ -44,7 +44,7 @@ public class DeleteTaskUseCase : IDeleteTaskUseCase
             return Result.ErrorResult(ErrorMessage.TaskWithIDNotExist);
         }
 
-        var authorizationResult = await _taskMembershipPolicy.Authorize(id);
+        var authorizationResult = await _taskMembershipPolicy.AuthorizeAsync(id);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;

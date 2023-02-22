@@ -44,7 +44,7 @@ internal class AddTableUseCaseTests
         _newTableValidator = new NewTableValidator(_unitOfWork.Object);
 
         _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
-        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _boardMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
         _addTableUseCase = new AddTableUseCase(_logger.Object,
                                                _unitOfWork.Object,

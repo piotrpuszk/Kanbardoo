@@ -6,18 +6,18 @@ using Kanbardoo.Domain.Repositories;
 namespace Kanbardoo.Domain.Validators;
 public class BoardToUpdateValidator : AbstractValidator<KanBoard>
 {
-	public BoardToUpdateValidator(IUnitOfWork unitOfWork)
-	{
-		RuleFor(e => e.OwnerID).Must(e => e != default);
-		RuleFor(e => e.StatusID).Must(e => e != default);
-		RuleFor(e => e.Name).Must(e => !string.IsNullOrWhiteSpace(e));
-		RuleFor(e => e.CreationDate).Must(e => e != default);
-		RuleFor(e => e.ID).MustAsync(async (id, token) => 
-		{
+    public BoardToUpdateValidator(IUnitOfWork unitOfWork)
+    {
+        RuleFor(e => e.OwnerID).Must(e => e != default);
+        RuleFor(e => e.StatusID).Must(e => e != default);
+        RuleFor(e => e.Name).Must(e => !string.IsNullOrWhiteSpace(e));
+        RuleFor(e => e.CreationDate).Must(e => e != default);
+        RuleFor(e => e.ID).MustAsync(async (id, token) =>
+        {
             var found = await unitOfWork.BoardRepository.GetAsync(id);
-			return found.Exists();
+            return found.Exists();
         });
-	}
+    }
 
     public override ValidationResult Validate(ValidationContext<KanBoard> context)
     {

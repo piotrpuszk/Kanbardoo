@@ -47,7 +47,7 @@ internal class DeleteTableUseCaseTests
         _tableIDToDelete = new TableIDToDelete(_unitOfWork.Object);
 
         _tableMembershipPolicy = new Mock<ITableMembershipPolicy>();
-        _tableMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _tableMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
         _deleteTableUseCase = new DeleteTableUseCase(_logger.Object,
                                                      _unitOfWork.Object,

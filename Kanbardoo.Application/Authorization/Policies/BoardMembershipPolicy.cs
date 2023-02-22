@@ -17,7 +17,7 @@ public class BoardMembershipPolicy : IBoardMembershipPolicy
         _boardMembershipRequirementHandler = boardMembershipRequirementHandler;
     }
 
-    public async Task<Result> Authorize(int boardID)
+    public async Task<Result> AuthorizeAsync(int boardID)
     {
         var policy = new KanAuthorizationPolicy(_contextAccessor.HttpContext!);
 

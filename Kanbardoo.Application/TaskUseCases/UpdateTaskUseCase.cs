@@ -38,7 +38,7 @@ public class UpdateTaskUseCase : IUpdateTaskUseCase
             return Result.ErrorResult(ErrorMessage.GivenTaskInvalid);
         }
 
-        var authorizationResult = await _taskMembershipPolicy.Authorize(task.ID);
+        var authorizationResult = await _taskMembershipPolicy.AuthorizeAsync(task.ID);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;

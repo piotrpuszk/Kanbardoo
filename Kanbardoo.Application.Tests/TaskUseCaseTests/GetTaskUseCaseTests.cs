@@ -37,7 +37,7 @@ internal class GetTaskUseCaseTests
         _unitOfWork.Setup(e => e.TaskRepository).Returns(_taskRepository.Object);
 
         _taskMembershipPolicy = new Mock<ITaskMembershipPolicy>();
-        _taskMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _taskMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
         _getTaskUseCase = new GetTaskUseCase(_logger.Object, _unitOfWork.Object, _taskMembershipPolicy.Object);
     }

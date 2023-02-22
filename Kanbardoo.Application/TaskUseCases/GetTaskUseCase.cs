@@ -46,7 +46,7 @@ public class GetTaskUseCase : IGetTaskUseCase
 
     private async Task<Result<KanTask>> AuthorizeAsync(KanTask task)
     {
-        var authorizationResult = await _taskMembershipPolicy.Authorize(task.ID);
+        var authorizationResult = await _taskMembershipPolicy.AuthorizeAsync(task.ID);
         if (!authorizationResult.IsSuccess)
         {
             return Result<KanTask>.ErrorResult(authorizationResult.Errors!);

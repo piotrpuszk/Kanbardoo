@@ -31,7 +31,7 @@ internal class UpdateTableUseCaseTests
         _tableToUpdateValidator = new TableToUpdateValidator(_unitOfWork.Object);
 
         _tableMembershipPolicy = new Mock<ITableMembershipPolicy>();
-        _tableMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _tableMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
         _updateTableUseCase = new UpdateTableUseCase(_logger.Object, _unitOfWork.Object, _tableToUpdateValidator, _tableMembershipPolicy.Object);
     }

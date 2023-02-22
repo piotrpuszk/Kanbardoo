@@ -45,7 +45,7 @@ public class AddTaskUseCase : IAddTaskUseCase
             return Result.ErrorResult(ErrorMessage.GivenTaskInvalid);
         }
 
-        var authorizationResult = await _tableMembershipPolicy.Authorize(newTask.TableID);
+        var authorizationResult = await _tableMembershipPolicy.AuthorizeAsync(newTask.TableID);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;

@@ -28,7 +28,7 @@ internal class GetBoardUseCaseTests
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
 
         _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
-        _boardMembershipPolicy.Setup(e => e.Authorize(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _boardMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
         _getBoardUseCase = new GetBoardUseCase(_unitOfWork.Object, _logger.Object, _boardFiltersValidator, _boardMembershipPolicy.Object);
     }

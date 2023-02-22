@@ -42,7 +42,7 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
             return Result.ErrorResult(ErrorMessage.BoardWithIDNotExist);
         }
 
-        var authorizationResult = await _boardMembershipPolicy.Authorize(id);
+        var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(id);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;

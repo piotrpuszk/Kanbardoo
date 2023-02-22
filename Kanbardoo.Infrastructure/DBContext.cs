@@ -19,6 +19,7 @@ public class DBContext : DbContext
     public DbSet<KanUserBoard> UserBoards { get; set; }
     public DbSet<KanUserTable> UserTables { get; set; }
     public DbSet<KanUserTask> UserTasks { get; set; }
+    public DbSet<Invitation> Invitations { get; set; }
 
     public DBContext(DbContextOptions<DBContext> options) : base(options)
     {

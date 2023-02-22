@@ -17,6 +17,7 @@ public interface IUnitOfWork
     public IUserBoardsRepository UserBoardsRepository { get; init; }
     public IUserTablesRepository UserTablesRepository { get; init; }
     public IUserTasksRepository UserTasksRepository { get; init; }
+    public IInvitationRepository InvitationRepository { get; init; }
 
     public Task<int> SaveChangesAsync();
 }

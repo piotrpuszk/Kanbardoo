@@ -37,7 +37,7 @@ public class UpdateBoardUseCase : IUpdateBoardUseCase
             return Result.ErrorResult(ErrorMessage.GivenBoardInvalid);
         }
 
-        var authorizationResult = await _boardMembershipPolicy.Authorize(board.ID);
+        var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(board.ID);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;

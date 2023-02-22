@@ -55,7 +55,7 @@ public class GetTableUseCase : IGetTableUseCase
             return ErrorResult<KanTable>.ErrorResult(ErrorMessage.TableWithIDNotExist);
         }
 
-        var authorizationResult = await _tableMembershipPolicy.Authorize(table.ID);
+        var authorizationResult = await _tableMembershipPolicy.AuthorizeAsync(table.ID);
         if (!authorizationResult.IsSuccess)
         {
             return Result<KanTable>.ErrorResult(authorizationResult.Errors!);
