@@ -121,6 +121,7 @@ builder.Services.AddScoped<IRevokeClaimFromUserUseCase, RevokeClaimFromUserUseCa
 
 builder.Services.AddScoped<IInviteUserUseCase, InviteUserUseCase>();
 builder.Services.AddScoped<IGetInvitationsUseCase, GetInvitationsUseCase>();
+builder.Services.AddScoped<ICancelInvitationUseCase, CancelInvitationUseCase>();
 
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 builder.Services.AddScoped<ITableRepository, TableRepository>();
@@ -155,6 +156,7 @@ builder.Services.AddScoped<KanUserClaimValidator>();
 builder.Services.AddScoped<NewKanUserClaimValidator>();
 
 builder.Services.AddScoped<NewInvitationValidator>();
+builder.Services.AddScoped<CancelInvitationValidator>();
 
 builder.Services.AddScoped<ICreateToken, TokenService>();
 

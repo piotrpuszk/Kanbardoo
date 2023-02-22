@@ -6,4 +6,5 @@ public interface IInvitationRepository
 {
     Task AddAsync(Invitation invitation);
     Task<IEnumerable<Invitation>> GetAsync(int userID);
+    Task DeleteAsync(Invitation invitation);
 }

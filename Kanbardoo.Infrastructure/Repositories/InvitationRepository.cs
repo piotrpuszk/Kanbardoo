@@ -20,6 +20,13 @@ public class InvitationRepository : IInvitationRepository
         await _dbContext.Invitations.AddAsync(invitation);
     }
 
+    public async Task DeleteAsync(Invitation invitation)
+    {
+        await _dbContext.Invitations
+            .Where(e => e.UserID == invitation.UserID && e.BoardID == invitation.BoardID)
+            .ExecuteDeleteAsync();
+    }
+
     public async Task<IEnumerable<Invitation>> GetAsync(int userID)
     {
         return await _dbContext.Invitations

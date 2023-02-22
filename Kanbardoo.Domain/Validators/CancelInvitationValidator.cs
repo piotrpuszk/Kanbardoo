@@ -1,14 +1,13 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 
 namespace Kanbardoo.Domain.Validators;
 
-public class NewInvitationValidator : AbstractValidator<NewInvitation>
-{
-    public NewInvitationValidator(IUnitOfWork unitOfWork)
+public class CancelInvitationValidator : AbstractValidator<CancelInvitationModel>
+{ 
+    public CancelInvitationValidator(IUnitOfWork unitOfWork)
     {
         RuleFor(e => e.UserName).MustAsync(async (username, token) =>
         {
@@ -22,21 +21,21 @@ public class NewInvitationValidator : AbstractValidator<NewInvitation>
         });
     }
 
-    public override ValidationResult Validate(ValidationContext<NewInvitation> context)
+    public override ValidationResult Validate(ValidationContext<CancelInvitationModel> context)
     {
         if (context.InstanceToValidate is null)
         {
-            return new ValidationResult(new List<ValidationFailure> { new ValidationFailure("board", "The new invitation is null") });
+            return new ValidationResult(new List<ValidationFailure> { new ValidationFailure("board", "The cancel invitation request is null") });
         }
 
         return base.Validate(context);
     }
 
-    public override Task<ValidationResult> ValidateAsync(ValidationContext<NewInvitation> context, CancellationToken cancellation = default)
+    public override Task<ValidationResult> ValidateAsync(ValidationContext<CancelInvitationModel> context, CancellationToken cancellation = default)
     {
         if (context.InstanceToValidate is null)
         {
-            return Task.FromResult(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("board", "The new invitation is null") }));
+            return Task.FromResult(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("board", "The cancel invitation request is null") }));
         }
 
         return base.ValidateAsync(context, cancellation);

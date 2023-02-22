@@ -2,7 +2,7 @@
 
 namespace Kanbardoo.WebAPI.DTOs;
 
-public class NewInvitationDTO
+public class CancelInvitationDTO
 {
     [Required]
     [MaxLength(256)]

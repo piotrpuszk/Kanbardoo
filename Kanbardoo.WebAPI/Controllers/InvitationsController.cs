@@ -16,18 +16,21 @@ public class InvitationsController : ControllerBase
 {
     private readonly IInviteUserUseCase _inviteUserUseCase;
     private readonly IGetInvitationsUseCase _getInvitationsUseCase;
+    private readonly ICancelInvitationUseCase _cancelInvitationUseCase;
     private readonly IMapper _mapper;
     private readonly ILogger _logger;
 
     public InvitationsController(IInviteUserUseCase inviteUserUseCase,
                                  IGetInvitationsUseCase getInvitationsUseCase,
                                  IMapper mapper,
-                                 ILogger logger)
+                                 ILogger logger,
+                                 ICancelInvitationUseCase cancelInvitationUseCase)
     {
         _inviteUserUseCase = inviteUserUseCase;
         _mapper = mapper;
         _logger = logger;
         _getInvitationsUseCase = getInvitationsUseCase;
+        _cancelInvitationUseCase = cancelInvitationUseCase;
     }
 
     [HttpPost]
@@ -35,6 +38,14 @@ public class InvitationsController : ControllerBase
     {
         var invitation = _mapper.Map<NewInvitation>(invitationDTO);
         var result = await _inviteUserUseCase.HandleAsync(invitation);
+        return result.GetActionResult();
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> Invite([FromBody] CancelInvitationDTO invitationDTO)
+    {
+        var invitation = _mapper.Map<CancelInvitationModel>(invitationDTO);
+        var result = await _cancelInvitationUseCase.HandleAsync(invitation);
         return result.GetActionResult();
     }
 
