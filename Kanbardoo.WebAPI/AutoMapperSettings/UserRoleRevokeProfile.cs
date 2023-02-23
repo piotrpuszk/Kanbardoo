@@ -4,10 +4,10 @@ using Kanbardoo.WebAPI.DTOs;
 
 namespace Kanbardoo.WebAPI.AutoMapperSettings;
 
-public class DeleteUserClaimProfile : Profile
+public class UserRoleRevokeProfile : Profile
 {
-    public DeleteUserClaimProfile()
+    public UserRoleRevokeProfile()
     {
-        CreateMap<DeleteUserClaimDTO, KanUserClaimModel>();
+        CreateMap<UserRoleRevokeDTO, UserRoleRevokeModel>();
     }
 }

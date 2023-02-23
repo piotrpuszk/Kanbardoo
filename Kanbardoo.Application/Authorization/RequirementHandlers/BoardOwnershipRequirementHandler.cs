@@ -2,15 +2,15 @@
 using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
-using Newtonsoft.Json;
 using System.Security.Claims;
 
 namespace Kanbardoo.Application.Authorization.RequirementHandlers;
-public class BoardMembershipRequirementHandler : AuthorizationRequirementHandler<BoardMembershipRequirement>
+
+public class BoardOwnershipRequirementHandler : AuthorizationRequirementHandler<BoardMembershipRequirement>
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public BoardMembershipRequirementHandler(IUnitOfWork unitOfWork)
+    public BoardOwnershipRequirementHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
@@ -33,7 +33,7 @@ public class BoardMembershipRequirementHandler : AuthorizationRequirementHandler
     {
         var userBoardRoles = await _unitOfWork.UserBoardRolesRepository.GetAsync(userID, requirement.BoardID);
 
-        if (userBoardRoles.FirstOrDefault(e => e.RoleID == KanRoleID.Member) is not null)
+        if (userBoardRoles.FirstOrDefault(e => e.RoleID == KanRoleID.Owner) is not null)
         {
             context.Succeed(requirement);
         }

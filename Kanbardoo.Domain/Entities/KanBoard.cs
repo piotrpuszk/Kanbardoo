@@ -20,15 +20,16 @@ public class KanBoard : Entity
     [MaxLength(1024)]
     public string BackgroundImageUrl { get; set; } = string.Empty;
     public ICollection<KanTable> Tables { get; set; } = new List<KanTable>();
+    public ICollection<KanUserBoardRole> UserBoardRoles { get; set; } = new List<KanUserBoardRole>();
 
-    public static KanBoard CreateFromNewBoard(NewKanBoard newBoard)
+    public static KanBoard CreateFromNewBoard(NewKanBoard newBoard, int ownerID)
     {
         return new()
         {
             Name = newBoard.Name,
             CreationDate = DateTime.UtcNow,
             StatusID = KanBoardStatusId.Active,
-            OwnerID = 46920,
+            OwnerID = ownerID,
         };
     }
 }

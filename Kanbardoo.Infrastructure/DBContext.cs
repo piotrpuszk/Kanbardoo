@@ -14,7 +14,7 @@ public class DBContext : DbContext
     public DbSet<KanClaim> Claims { get; set; }
     public DbSet<KanRole> Roles { get; set; }
     public DbSet<KanUserClaim> UsersClaims { get; set; }
-    public DbSet<KanUserRole> UsersRoles { get; set; }
+    public DbSet<KanUserBoardRole> UserBoardsRoles { get; set; }
     public DbSet<KanRoleClaim> RolesClaims { get; set; }
     public DbSet<KanUserBoard> UserBoards { get; set; }
     public DbSet<KanUserTable> UserTables { get; set; }
@@ -39,12 +39,12 @@ public class DBContext : DbContext
             .WithMany(e => e.Users)
             .HasForeignKey(e => e.ClaimID);
 
-        modelBuilder.Entity<KanUserRole>()
+        modelBuilder.Entity<KanUserBoardRole>()
             .HasOne(e => e.User)
             .WithMany(e => e.Roles)
             .HasForeignKey(e => e.UserID);
 
-        modelBuilder.Entity<KanUserRole>()
+        modelBuilder.Entity<KanUserBoardRole>()
             .HasOne(e => e.Role)
             .WithMany(e => e.Users)
             .HasForeignKey(e => e.RoleID);
@@ -79,6 +79,26 @@ public class DBContext : DbContext
                 new KanClaim()
                 {
                     ID = 3,
+                    Name = "Member",
+                }
+            });
+
+        modelBuilder.Entity<KanRole>()
+            .HasData(new List<KanRole>()
+            {
+                new KanRole()
+                {
+                    ID = KanRoleID.Admin,
+                    Name = "Admin",
+                },
+                new KanRole()
+                {
+                    ID = KanRoleID.Owner,
+                    Name = "Owner",
+                },
+                new KanRole()
+                {
+                    ID = KanRoleID.Member,
                     Name = "Member",
                 }
             });

@@ -53,19 +53,33 @@ public sealed class AddBoardUseCase : IAddBoardUseCase
 
     private async Task<Result> SaveBoardInDatabase(NewKanBoard newBoard)
     {
-        KanBoard board = KanBoard.CreateFromNewBoard(newBoard);
+        KanBoard board = KanBoard.CreateFromNewBoard(newBoard, _userID);
+        var role = new KanUserBoardRole
+        {
+            UserID = _userID,
+            RoleID = KanRoleID.Owner,
+            Board = null!,
+            User = null!,
+            Role = null!,
+        };
+        board.UserBoardRoles.Add(role);
 
         await _unitOfWork.BoardRepository.AddAsync(board);
-        var addedItemsCount = await _unitOfWork.SaveChangesAsync();
-
-        await _unitOfWork.UserBoardsRepository.AddAsync(new KanUserBoard { UserID = _userID, BoardID = board.ID });
-        await _unitOfWork.SaveChangesAsync();
-
-        if (addedItemsCount < 0)
+        try
         {
-            _logger.Error($"no board has been saved: {JsonConvert.SerializeObject(newBoard)} => {JsonConvert.SerializeObject(board)}");
-            return Result.ErrorResult(ErrorMessage.NoBoardSaved);
+            var addedItemsCount = await _unitOfWork.SaveChangesAsync();
+            if (addedItemsCount < 0)
+            {
+                _logger.Error($"no board has been saved: {JsonConvert.SerializeObject(newBoard)} => {JsonConvert.SerializeObject(board)}");
+                return Result.ErrorResult(ErrorMessage.NoBoardSaved);
+            }
         }
+        catch (Exception ex)
+        {
+            _logger.Error($"{ErrorMessage.InternalServerError} \r\n\r\n {ex}");
+            return Result.ErrorResult(ErrorMessage.InternalServerError);
+        }
+
 
         return Result.SuccessResult();
     }

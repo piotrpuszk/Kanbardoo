@@ -15,17 +15,17 @@ public class InviteUserUseCase : IInviteUserUseCase
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger _logger;
     private readonly NewInvitationValidator _newInvitationValidator;
-    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
+    private readonly IBoardOwnershipPolicy _boardOwnershipPolicy;
 
     public InviteUserUseCase(IUnitOfWork unitOfWork,
                              ILogger logger,
                              NewInvitationValidator newInvitationValidator,
-                             IBoardMembershipPolicy boardMembershipPolicy)
+                             IBoardOwnershipPolicy boardOwnershipPolicy)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _newInvitationValidator = newInvitationValidator;
-        _boardMembershipPolicy = boardMembershipPolicy;
+        _boardOwnershipPolicy = boardOwnershipPolicy;
     }
 
     public async Task<Result> HandleAsync(NewInvitation newInvitation)
@@ -37,7 +37,7 @@ public class InviteUserUseCase : IInviteUserUseCase
             return Result.ErrorResult(ErrorMessage.InvitationInvalid);
         }
 
-        var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(newInvitation.BoardID);
+        var authorizationResult = await _boardOwnershipPolicy.AuthorizeAsync(newInvitation.BoardID);
         if (!authorizationResult.IsSuccess)
         {
             return Result.ErrorResult(ErrorMessage.Unauthorized);

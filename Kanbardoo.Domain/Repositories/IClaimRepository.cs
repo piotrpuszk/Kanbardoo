@@ -8,3 +8,4 @@ public interface IClaimRepository
     Task<KanClaim> GetAsync(string name);
 
 }
+

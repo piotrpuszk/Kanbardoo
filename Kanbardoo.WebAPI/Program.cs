@@ -54,10 +54,12 @@ builder.Services.AddAuthorization(e =>
 });
 
 builder.Services.AddScoped<IBoardMembershipPolicy, BoardMembershipPolicy>();
+builder.Services.AddScoped<IBoardOwnershipPolicy, BoardOwnershipPolicy>();
 builder.Services.AddScoped<ITableMembershipPolicy, TableMembershipPolicy>();
 builder.Services.AddScoped<ITaskMembershipPolicy, TaskMembershipPolicy>();
 
 builder.Services.AddScoped<BoardMembershipRequirementHandler>();
+builder.Services.AddScoped<BoardOwnershipRequirementHandler>();
 builder.Services.AddScoped<TableMembershipRequirementHandler>();
 builder.Services.AddScoped<TaskMembershipRequirementHandler>();
 
@@ -122,6 +124,7 @@ builder.Services.AddScoped<IRevokeClaimFromUserUseCase, RevokeClaimFromUserUseCa
 builder.Services.AddScoped<IInviteUserUseCase, InviteUserUseCase>();
 builder.Services.AddScoped<IGetInvitationsUseCase, GetInvitationsUseCase>();
 builder.Services.AddScoped<ICancelInvitationUseCase, CancelInvitationUseCase>();
+builder.Services.AddScoped<IAcceptInvitationUseCase, AcceptInvitationUseCase>();
 
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 builder.Services.AddScoped<ITableRepository, TableRepository>();
@@ -134,6 +137,8 @@ builder.Services.AddScoped<IUserBoardsRepository, UserBoardsRepository>();
 builder.Services.AddScoped<IUserTablesRepository, UserTablesRepository>();
 builder.Services.AddScoped<IUserTasksRepository, UserTasksRepository>();
 builder.Services.AddScoped<IInvitationRepository, InvitationRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IUserBoardRolesRepository, UserBoardRolesRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<BoardFiltersValidator>();
@@ -157,6 +162,7 @@ builder.Services.AddScoped<NewKanUserClaimValidator>();
 
 builder.Services.AddScoped<NewInvitationValidator>();
 builder.Services.AddScoped<CancelInvitationValidator>();
+builder.Services.AddScoped<AcceptInvitationValidator>();
 
 builder.Services.AddScoped<ICreateToken, TokenService>();
 

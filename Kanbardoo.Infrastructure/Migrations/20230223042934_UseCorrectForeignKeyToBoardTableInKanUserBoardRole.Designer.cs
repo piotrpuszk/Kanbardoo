@@ -3,6 +3,7 @@ using System;
 using Kanbardoo.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kanbardoo.Infrastructure.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20230223042934_UseCorrectForeignKeyToBoardTableInKanUserBoardRole")]
+    partial class UseCorrectForeignKeyToBoardTableInKanUserBoardRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.2");
@@ -153,23 +156,6 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            ID = 2,
-                            Name = "Owner"
-                        },
-                        new
-                        {
-                            ID = 3,
-                            Name = "Member"
-                        });
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanRoleClaim", b =>

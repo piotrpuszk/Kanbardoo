@@ -8,6 +8,6 @@ public class KanUserRoleProfile : Profile
 {
     public KanUserRoleProfile()
     {
-        CreateMap<KanUserRoleDTO, KanUserRole>();
+        CreateMap<KanUserRoleDTO, KanUserBoardRole>();
     }
 }

@@ -24,5 +24,7 @@ public static class ErrorMessage
 
     public const string UserClaimInvalid = "The user claims are invalid";
 
+    public const string UserRoleInvalid = "The user roles are invalid";
+
     public const string InvitationInvalid = "The invitation is invalid";
 }

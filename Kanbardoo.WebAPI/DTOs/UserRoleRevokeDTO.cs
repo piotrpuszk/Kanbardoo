@@ -2,12 +2,12 @@
 
 namespace Kanbardoo.WebAPI.DTOs;
 
-public class DeleteUserClaimDTO
+public class UserRoleRevokeDTO
 {
     [Required]
     [MaxLength(256)]
     public string UserName { get; set; } = string.Empty;
     [Required]
     [MaxLength(256)]
-    public string ClaimName { get; set; } = string.Empty;
+    public string RoleName { get; set; } = string.Empty;
 }

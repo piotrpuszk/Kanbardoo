@@ -7,3 +7,5 @@ public interface IAddClaimToUserUseCase
 {
     Task<Result> HandleAsync(KanUserClaimModel userClaimModel);
 }
+
+

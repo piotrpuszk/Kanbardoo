@@ -62,7 +62,7 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
     private async Task<Result> DeleteFromDatabase(int id)
     {
         await _unitOfWork.BoardRepository.DeleteAsync(id);
-        await _unitOfWork.UserBoardsRepository.DeleteAsync(new KanUserBoard { UserID = _userID, BoardID = id });
+        await _unitOfWork.UserBoardRolesRepository.DeleteAsync(_userID, id);
         await _unitOfWork.SaveChangesAsync();
 
         return Result.SuccessResult();
