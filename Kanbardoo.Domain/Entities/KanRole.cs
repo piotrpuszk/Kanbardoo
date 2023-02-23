@@ -7,5 +7,5 @@ public class KanRole : Entity
     [MaxLength(256)]
     public string Name { get; set; } = string.Empty;
     public ICollection<KanRoleClaim> Claims { get; set; } = new List<KanRoleClaim>();
-    public ICollection<KanUserRole> Users { get; set; } = new List<KanUserRole>();
+    public ICollection<KanUserBoardRole> Users { get; set; } = new List<KanUserBoardRole>();
 }

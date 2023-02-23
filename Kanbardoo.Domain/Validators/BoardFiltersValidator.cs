@@ -2,7 +2,6 @@
 using FluentValidation.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Filters;
-using Kanbardoo.Domain.Models;
 
 namespace Kanbardoo.Domain.Validators;
 public class BoardFiltersValidator : AbstractValidator<KanBoardFilters>

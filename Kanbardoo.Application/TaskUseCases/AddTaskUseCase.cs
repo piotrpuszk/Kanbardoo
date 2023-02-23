@@ -19,19 +19,19 @@ public class AddTaskUseCase : IAddTaskUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly NewTaskValidator _newTaskValidator;
-    private readonly ITableMembershipPolicy _tableMembershipPolicy;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
     private readonly int _userID;
 
     public AddTaskUseCase(ILogger logger,
                            IUnitOfWork unitOfWork,
                            NewTaskValidator newTaskValidator,
-                           ITableMembershipPolicy tableMembershipPolicy,
+                           IBoardMembershipPolicy boardMembershipPolicy,
                            IHttpContextAccessor contextAccessor)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _newTaskValidator = newTaskValidator;
-        _tableMembershipPolicy = tableMembershipPolicy;
+        _boardMembershipPolicy = boardMembershipPolicy;
         _userID = int.Parse(contextAccessor.HttpContext!.User.FindFirstValue(KanClaimName.ID)!);
     }
 
@@ -45,7 +45,8 @@ public class AddTaskUseCase : IAddTaskUseCase
             return Result.ErrorResult(ErrorMessage.GivenTaskInvalid);
         }
 
-        var authorizationResult = await _tableMembershipPolicy.AuthorizeAsync(newTask.TableID);
+        var boardID = await _unitOfWork.ResourceIdConverterRepository.FromTableIDToBoardID(newTask.TableID);
+        var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(boardID);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;

@@ -9,7 +9,7 @@ public class KanUser : Entity
     public DateTime CreationDate { get; set; }
     public byte[] PasswordHash { get; set; } = new byte[0];
     public byte[] PasswordSalt { get; set; } = new byte[0];
-    public ICollection<KanUserRole> Roles { get; set; } = new List<KanUserRole>();
+    public ICollection<KanUserBoardRole> Roles { get; set; } = new List<KanUserBoardRole>();
     public ICollection<KanUserClaim> Claims { get; set; } = new List<KanUserClaim>();
 
     public IEnumerable<(string Name, List<string> Value)> GetClaimList()

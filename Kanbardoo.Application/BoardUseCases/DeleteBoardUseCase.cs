@@ -17,19 +17,19 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly BoardIdToDeleteValidator _boardIdToDeleteValidator;
-    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
+    private readonly IBoardOwnershipPolicy _boardOwnershipPolicy;
     private readonly int _userID;
 
     public DeleteBoardUseCase(IUnitOfWork unitOfWork,
                               ILogger logger,
                               BoardIdToDeleteValidator boardIdToDeleteValidator,
-                              IBoardMembershipPolicy boardMembershipPolicy,
+                              IBoardOwnershipPolicy boardOwnershipPolicy,
                               IHttpContextAccessor contextAccessor)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _boardIdToDeleteValidator = boardIdToDeleteValidator;
-        _boardMembershipPolicy = boardMembershipPolicy;
+        _boardOwnershipPolicy = boardOwnershipPolicy;
         _userID = int.Parse(contextAccessor.HttpContext!.User.FindFirstValue(KanClaimName.ID)!);
     }
 
@@ -42,7 +42,7 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
             return Result.ErrorResult(ErrorMessage.BoardWithIDNotExist);
         }
 
-        var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(id);
+        var authorizationResult = await _boardOwnershipPolicy.AuthorizeAsync(id);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;
@@ -62,7 +62,7 @@ public class DeleteBoardUseCase : IDeleteBoardUseCase
     private async Task<Result> DeleteFromDatabase(int id)
     {
         await _unitOfWork.BoardRepository.DeleteAsync(id);
-        await _unitOfWork.UserBoardsRepository.DeleteAsync(new KanUserBoard { UserID = _userID, BoardID = id });
+        await _unitOfWork.UserBoardRolesRepository.DeleteAsync(_userID, id);
         await _unitOfWork.SaveChangesAsync();
 
         return Result.SuccessResult();

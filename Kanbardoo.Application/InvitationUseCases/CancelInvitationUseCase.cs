@@ -16,17 +16,17 @@ public class CancelInvitationUseCase : ICancelInvitationUseCase
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger _logger;
     private readonly CancelInvitationValidator _cancelInvitationValidator;
-    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
+    private readonly IBoardOwnershipPolicy _boardOwnershipPolicy;
 
     public CancelInvitationUseCase(IUnitOfWork unitOfWork,
                              ILogger logger,
                              CancelInvitationValidator cancelInvitationValidator,
-                             IBoardMembershipPolicy boardMembershipPolicy)
+                             IBoardOwnershipPolicy boardOwnershipPolicy)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _cancelInvitationValidator = cancelInvitationValidator;
-        _boardMembershipPolicy = boardMembershipPolicy;
+        _boardOwnershipPolicy = boardOwnershipPolicy;
     }
 
     public async Task<Result> HandleAsync(CancelInvitationModel cancelInvitationModel)
@@ -38,7 +38,7 @@ public class CancelInvitationUseCase : ICancelInvitationUseCase
             return Result.ErrorResult(ErrorMessage.InvitationInvalid);
         }
 
-        var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(cancelInvitationModel.BoardID);
+        var authorizationResult = await _boardOwnershipPolicy.AuthorizeAsync(cancelInvitationModel.BoardID);
         if (!authorizationResult.IsSuccess)
         {
             return Result.ErrorResult(ErrorMessage.Unauthorized);

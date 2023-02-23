@@ -1,5 +1,6 @@
 ﻿using Kanbardoo.Application.Authorization.Requirements;
 using Kanbardoo.Domain.Authorization;
+using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 using Newtonsoft.Json;
 using System.Security.Claims;
@@ -30,9 +31,9 @@ public class BoardMembershipRequirementHandler : AuthorizationRequirementHandler
                                         BoardMembershipRequirement requirement,
                                         int userID)
     {
-        var board = await _unitOfWork.UserBoardsRepository.GetAsync(userID, requirement.BoardID);
+        var userBoardRoles = await _unitOfWork.UserBoardRolesRepository.GetAsync(userID, requirement.BoardID);
 
-        if (board.Exists())
+        if (userBoardRoles.FirstOrDefault(e => e.RoleID == KanRoleID.Member) is not null)
         {
             context.Succeed(requirement);
         }

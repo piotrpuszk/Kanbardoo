@@ -28,7 +28,7 @@ public class GetInvitationsUseCase : IGetInvitationsUseCase
     {
         try
         {
-            var invitations = await _unitOfWork.InvitationRepository.GetAsync(_userID);
+            var invitations = await _unitOfWork.InvitationRepository.GetUserInvitationsAsync(_userID);
             return Result<IEnumerable<Invitation>>.SuccessResult(invitations);
         }
         catch (Exception ex)

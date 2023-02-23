@@ -15,17 +15,17 @@ public class UpdateBoardUseCase : IUpdateBoardUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly BoardToUpdateValidator _boardToUpdateValidator;
-    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
+    private readonly IBoardOwnershipPolicy _boardOwnershipPolicy;
 
     public UpdateBoardUseCase(IUnitOfWork unitOfWork,
                               ILogger logger,
                               BoardToUpdateValidator boardToUpdateValidator,
-                              IBoardMembershipPolicy boardMembershipPolicy)
+                              IBoardOwnershipPolicy boardOwnershipPolicy)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _boardToUpdateValidator = boardToUpdateValidator;
-        _boardMembershipPolicy = boardMembershipPolicy;
+        _boardOwnershipPolicy = boardOwnershipPolicy;
     }
 
     public async Task<Result> HandleAsync(KanBoard board)
@@ -37,7 +37,7 @@ public class UpdateBoardUseCase : IUpdateBoardUseCase
             return Result.ErrorResult(ErrorMessage.GivenBoardInvalid);
         }
 
-        var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(board.ID);
+        var authorizationResult = await _boardOwnershipPolicy.AuthorizeAsync(board.ID);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;

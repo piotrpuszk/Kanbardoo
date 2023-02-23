@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kanbardoo.Domain.Entities;
 
-public class KanUserRole : Entity
+public class KanUserBoardRole : Entity
 {
     [Required]
     public int UserID { get; set; }
@@ -16,4 +16,10 @@ public class KanUserRole : Entity
 
     [ForeignKey(nameof(RoleID))]
     public KanRole Role { get; set; } = new KanRole();
+
+    [Required]
+    public int BoardID { get; set; }
+
+    [ForeignKey(nameof(BoardID))]
+    public KanBoard Board { get; set; } = new KanBoard();
 }

@@ -153,6 +153,23 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Name = "Owner"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            Name = "Member"
+                        });
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanRoleClaim", b =>
@@ -333,6 +350,32 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.ToTable("UserBoards");
                 });
 
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserBoardRole", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BoardID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RoleID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("BoardID");
+
+                    b.HasIndex("RoleID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UserBoardsRoles");
+                });
+
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserClaim", b =>
                 {
                     b.Property<int>("ID")
@@ -357,27 +400,6 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("UsersClaims");
-                });
-
-            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserRole", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("RoleID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("UserID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("RoleID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("UsersRoles");
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserTable", b =>
@@ -536,6 +558,33 @@ namespace Kanbardoo.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserBoardRole", b =>
+                {
+                    b.HasOne("Kanbardoo.Domain.Entities.KanBoard", "Board")
+                        .WithMany("UserBoardRoles")
+                        .HasForeignKey("BoardID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kanbardoo.Domain.Entities.KanRole", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kanbardoo.Domain.Entities.KanUser", "User")
+                        .WithMany("Roles")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Board");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserClaim", b =>
                 {
                     b.HasOne("Kanbardoo.Domain.Entities.KanClaim", "Claim")
@@ -551,25 +600,6 @@ namespace Kanbardoo.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Claim");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserRole", b =>
-                {
-                    b.HasOne("Kanbardoo.Domain.Entities.KanRole", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kanbardoo.Domain.Entities.KanUser", "User")
-                        .WithMany("Roles")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
 
                     b.Navigation("User");
                 });
@@ -615,6 +645,8 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanBoard", b =>
                 {
                     b.Navigation("Tables");
+
+                    b.Navigation("UserBoardRoles");
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanClaim", b =>

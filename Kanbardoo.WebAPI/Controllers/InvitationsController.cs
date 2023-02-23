@@ -15,6 +15,7 @@ namespace Kanbardoo.WebAPI.Controllers;
 public class InvitationsController : ControllerBase
 {
     private readonly IInviteUserUseCase _inviteUserUseCase;
+    private readonly IAcceptInvitationUseCase _acceptInvitationUseCase;
     private readonly IGetInvitationsUseCase _getInvitationsUseCase;
     private readonly ICancelInvitationUseCase _cancelInvitationUseCase;
     private readonly IMapper _mapper;
@@ -24,16 +25,18 @@ public class InvitationsController : ControllerBase
                                  IGetInvitationsUseCase getInvitationsUseCase,
                                  IMapper mapper,
                                  ILogger logger,
-                                 ICancelInvitationUseCase cancelInvitationUseCase)
+                                 ICancelInvitationUseCase cancelInvitationUseCase,
+                                 IAcceptInvitationUseCase acceptInvitationUseCase)
     {
         _inviteUserUseCase = inviteUserUseCase;
         _mapper = mapper;
         _logger = logger;
         _getInvitationsUseCase = getInvitationsUseCase;
         _cancelInvitationUseCase = cancelInvitationUseCase;
+        _acceptInvitationUseCase = acceptInvitationUseCase;
     }
 
-    [HttpPost]
+    [HttpPost("invite")]
     public async Task<IActionResult> Invite([FromBody] NewInvitationDTO invitationDTO)
     {
         var invitation = _mapper.Map<NewInvitation>(invitationDTO);
@@ -41,8 +44,16 @@ public class InvitationsController : ControllerBase
         return result.GetActionResult();
     }
 
+    [HttpPost("accept")]
+    public async Task<IActionResult> AcceptInvitation([FromBody] AcceptInvitationDTO acceptInvitationDTO)
+    {
+        var acceptInvitation = _mapper.Map<AcceptInvitation>(acceptInvitationDTO);
+        var result = await _acceptInvitationUseCase.HandleAsync(acceptInvitation);
+        return result.GetActionResult();
+    }
+
     [HttpDelete]
-    public async Task<IActionResult> Invite([FromBody] CancelInvitationDTO invitationDTO)
+    public async Task<IActionResult> CancelInvitation([FromBody] CancelInvitationDTO invitationDTO)
     {
         var invitation = _mapper.Map<CancelInvitationModel>(invitationDTO);
         var result = await _cancelInvitationUseCase.HandleAsync(invitation);

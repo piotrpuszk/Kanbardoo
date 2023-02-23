@@ -27,7 +27,14 @@ public class InvitationRepository : IInvitationRepository
             .ExecuteDeleteAsync();
     }
 
-    public async Task<IEnumerable<Invitation>> GetAsync(int userID)
+    public async Task DeleteAsync(int id)
+    {
+        await _dbContext.Invitations
+            .Where(e => e.ID == id)
+            .ExecuteDeleteAsync();
+    }
+
+    public async Task<IEnumerable<Invitation>> GetUserInvitationsAsync(int userID)
     {
         return await _dbContext.Invitations
             .Where(e => e.UserID == userID)
@@ -37,5 +44,24 @@ public class InvitationRepository : IInvitationRepository
             .ThenInclude(e => e.Status)
             .Include(e => e.User)
             .ToListAsync();
+    }
+
+    public async Task<Invitation> GetAsync(int id)
+    {
+        var result = await _dbContext.Invitations
+            .Where(e => e.ID == id)
+            .Include(e => e.Board)
+            .ThenInclude(e => e.Owner)
+            .Include(e => e.Board)
+            .ThenInclude(e => e.Status)
+            .Include(e => e.User)
+            .FirstOrDefaultAsync();
+
+        if (result is null)
+        {
+            return new Invitation();
+        }
+
+        return result;
     }
 }

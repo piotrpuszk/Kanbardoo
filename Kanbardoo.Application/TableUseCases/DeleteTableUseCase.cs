@@ -18,19 +18,19 @@ public class DeleteTableUseCase : IDeleteTableUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly TableIDToDelete _tableIDToDelete;
-    private readonly ITableMembershipPolicy _tableMembershipPolicy;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
     private readonly int _userID;
 
     public DeleteTableUseCase(ILogger logger,
                            IUnitOfWork unitOfWork,
                            TableIDToDelete tableIDToDelete,
-                           ITableMembershipPolicy tableMembershipPolicy,
+                           IBoardMembershipPolicy boardMembershipPolicy,
                            IHttpContextAccessor contextAccessor)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _tableIDToDelete = tableIDToDelete;
-        _tableMembershipPolicy = tableMembershipPolicy;
+        _boardMembershipPolicy = boardMembershipPolicy;
         _userID = int.Parse(contextAccessor.HttpContext!.User.FindFirstValue(KanClaimName.ID)!);
     }
 
@@ -43,7 +43,8 @@ public class DeleteTableUseCase : IDeleteTableUseCase
             return Result.ErrorResult(ErrorMessage.TableIDInvalid);
         }
 
-        var authorizationResult = await _tableMembershipPolicy.AuthorizeAsync(id);
+        var boardID = await _unitOfWork.ResourceIdConverterRepository.FromTableIDToBoardID(id);
+        var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(boardID);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;

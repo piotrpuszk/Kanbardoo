@@ -9,18 +9,12 @@ public class TableToUpdateValidator : AbstractValidator<KanTable>
 {
 	public TableToUpdateValidator(IUnitOfWork unitOfWork)
 	{
-		RuleFor(e => e.BoardID).MustAsync(async (id, token) => 
-		{ 
-			var found = await unitOfWork.BoardRepository.GetAsync(id);
-
-			return found.Exists();
-		});
 		RuleFor(e => e.Name).Must(e => !string.IsNullOrWhiteSpace(e));
-		RuleFor(e => e.ID).MustAsync(async (id, token) => 
+		RuleFor(e => e).MustAsync(async (table, token) => 
 		{ 
-			var found = await unitOfWork.TableRepository.GetAsync(id);
+			var found = await unitOfWork.TableRepository.GetAsync(table.ID);
 
-			return found.Exists();
+			return found.Exists() && found.BoardID == table.BoardID;
 		});
 		RuleFor(e => e.CreationDate).Must(e => e != default);
 	}
