@@ -20,6 +20,7 @@ public interface IUnitOfWork
     public IInvitationRepository InvitationRepository { get; init; }
     public IRoleRepository RoleRepository { get; init; }
     public IUserBoardRolesRepository UserBoardRolesRepository { get; init; }
+    public IResourceIdConverterRepository ResourceIdConverterRepository { get; init; }
 
     public Task<int> SaveChangesAsync();
 }

@@ -19,19 +19,19 @@ public class DeleteTaskUseCase : IDeleteTaskUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly KanTaskIdToDeleteValidator _kanTaskIdToDeleteValidator;
-    private readonly ITaskMembershipPolicy _taskMembershipPolicy;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
     private readonly int _userID;
 
     public DeleteTaskUseCase(ILogger logger,
                            IUnitOfWork unitOfWork,
                            KanTaskIdToDeleteValidator kanTaskIdToDeleteValidator,
-                           ITaskMembershipPolicy taskMembershipPolicy,
+                           IBoardMembershipPolicy boardMembershipPolicy,
                            IHttpContextAccessor contextAccessor)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _kanTaskIdToDeleteValidator = kanTaskIdToDeleteValidator;
-        _taskMembershipPolicy = taskMembershipPolicy;
+        _boardMembershipPolicy = boardMembershipPolicy;
         _userID = int.Parse(contextAccessor.HttpContext!.User.FindFirstValue(KanClaimName.ID)!);
     }
 
@@ -44,7 +44,8 @@ public class DeleteTaskUseCase : IDeleteTaskUseCase
             return Result.ErrorResult(ErrorMessage.TaskWithIDNotExist);
         }
 
-        var authorizationResult = await _taskMembershipPolicy.AuthorizeAsync(id);
+        var boardID = await _unitOfWork.ResourceIdConverterRepository.FromTaskIDToBoardID(id);
+        var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(boardID);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;

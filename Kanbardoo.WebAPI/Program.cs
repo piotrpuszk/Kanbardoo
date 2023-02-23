@@ -139,6 +139,7 @@ builder.Services.AddScoped<IUserTasksRepository, UserTasksRepository>();
 builder.Services.AddScoped<IInvitationRepository, InvitationRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserBoardRolesRepository, UserBoardRolesRepository>();
+builder.Services.AddScoped<IResourceIdConverterRepository, ResourceIdConverterRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<BoardFiltersValidator>();

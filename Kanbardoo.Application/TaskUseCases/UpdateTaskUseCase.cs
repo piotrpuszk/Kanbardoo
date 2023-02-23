@@ -16,17 +16,17 @@ public class UpdateTaskUseCase : IUpdateTaskUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly KanTaskValidator _validator;
-    private readonly ITaskMembershipPolicy _taskMembershipPolicy;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
 
     public UpdateTaskUseCase(ILogger logger,
                            IUnitOfWork unitOfWork,
                            KanTaskValidator validator,
-                           ITaskMembershipPolicy taskMembershipPolicy)
+                           IBoardMembershipPolicy boardMembershipPolicy)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _validator = validator;
-        _taskMembershipPolicy = taskMembershipPolicy;
+        _boardMembershipPolicy = boardMembershipPolicy;
     }
 
     public async Task<Result> HandleAsync(KanTask task)
@@ -38,7 +38,8 @@ public class UpdateTaskUseCase : IUpdateTaskUseCase
             return Result.ErrorResult(ErrorMessage.GivenTaskInvalid);
         }
 
-        var authorizationResult = await _taskMembershipPolicy.AuthorizeAsync(task.ID);
+        var boardID = await _unitOfWork.ResourceIdConverterRepository.FromTableIDToBoardID(task.TableID);
+        var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(boardID);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;
