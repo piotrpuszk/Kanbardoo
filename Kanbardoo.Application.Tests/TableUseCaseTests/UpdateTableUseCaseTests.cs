@@ -16,7 +16,7 @@ internal class UpdateTableUseCaseTests
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
     private TableToUpdateValidator _tableToUpdateValidator;
-    private Mock<ITableMembershipPolicy> _tableMembershipPolicy;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
 
     [SetUp]
     public void Setup()
@@ -30,10 +30,10 @@ internal class UpdateTableUseCaseTests
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
         _tableToUpdateValidator = new TableToUpdateValidator(_unitOfWork.Object);
 
-        _tableMembershipPolicy = new Mock<ITableMembershipPolicy>();
-        _tableMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
-        _updateTableUseCase = new UpdateTableUseCase(_logger.Object, _unitOfWork.Object, _tableToUpdateValidator, _tableMembershipPolicy.Object);
+        _updateTableUseCase = new UpdateTableUseCase(_logger.Object, _unitOfWork.Object, _tableToUpdateValidator, _boardMembershipPolicy.Object);
     }
 
     [Test]

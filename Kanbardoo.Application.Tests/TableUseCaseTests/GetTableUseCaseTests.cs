@@ -14,11 +14,13 @@ internal class GetTableUseCaseTests
     private Mock<ITableRepository> _tableRepository;
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
-    private Mock<ITableMembershipPolicy> _tableMembershipPolicy;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
+    private Mock<IUserBoardRolesRepository> _userBoardRolesRepository;
 
     [SetUp]
     public void Setup()
     {
+        _userBoardRolesRepository = new Mock<IUserBoardRolesRepository>();
         _tableRepository = new Mock<ITableRepository>();
         _boardRepository = new Mock<IBoardRepository>();
         _unitOfWork = new Mock<IUnitOfWork>();
@@ -26,11 +28,12 @@ internal class GetTableUseCaseTests
 
         _unitOfWork.Setup(e => e.TableRepository).Returns(_tableRepository.Object);
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
+        _unitOfWork.Setup(e => e.UserBoardRolesRepository).Returns(_userBoardRolesRepository.Object);
 
-        _tableMembershipPolicy = new Mock<ITableMembershipPolicy>();
-        _tableMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
-        _getTableUseCase = new GetTableUseCase(_logger.Object, _unitOfWork.Object, _tableMembershipPolicy.Object);
+        _getTableUseCase = new GetTableUseCase(_logger.Object, _unitOfWork.Object, _boardMembershipPolicy.Object);
     }
 
     [Test]

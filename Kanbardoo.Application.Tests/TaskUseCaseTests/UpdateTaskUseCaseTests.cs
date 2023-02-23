@@ -19,11 +19,13 @@ internal class UpdateTaskUseCaseTests
     private Mock<ITaskStatusRepository> _taskStatusRepository;
     private Mock<ILogger> _logger;
     private KanTaskValidator _taskToUpdateValidator;
-    private Mock<ITaskMembershipPolicy> _taskMembershipPolicy;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
+    private Mock<IResourceIdConverterRepository> _resourceIdConverterRepository;
 
     [SetUp]
     public void Setup()
     {
+        _resourceIdConverterRepository = new Mock<IResourceIdConverterRepository>();
         _tableRepository = new Mock<ITableRepository>();
         _userRepository = new Mock<IUserRepository>();
         _boardRepository = new Mock<IBoardRepository>();
@@ -37,12 +39,13 @@ internal class UpdateTaskUseCaseTests
         _unitOfWork.Setup(e => e.UserRepository).Returns(_userRepository.Object);
         _unitOfWork.Setup(e => e.TaskStatusRepository).Returns(_taskStatusRepository.Object);
         _unitOfWork.Setup(e => e.TaskRepository).Returns(_taskRepository.Object);
+        _unitOfWork.Setup(e => e.ResourceIdConverterRepository).Returns(_resourceIdConverterRepository.Object);
         _taskToUpdateValidator = new KanTaskValidator(_unitOfWork.Object);
 
-        _taskMembershipPolicy = new Mock<ITaskMembershipPolicy>();
-        _taskMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
-        _updateTaskUseCase = new UpdateTaskUseCase(_logger.Object, _unitOfWork.Object, _taskToUpdateValidator, _taskMembershipPolicy.Object);
+        _updateTaskUseCase = new UpdateTaskUseCase(_logger.Object, _unitOfWork.Object, _taskToUpdateValidator, _boardMembershipPolicy.Object);
     }
 
     [Test]

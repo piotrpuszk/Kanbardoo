@@ -24,9 +24,11 @@ internal class DeleteTableUseCaseTests
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
     private TableIDToDelete _tableIDToDelete;
-    private Mock<ITableMembershipPolicy> _tableMembershipPolicy;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
     private Mock<IHttpContextAccessor> _contextAccessor;
     private Mock<IUserTablesRepository> _userTablesRepository;
+    private Mock<IUserBoardRolesRepository> _userBoardRolesRepository;
+    private Mock<IResourceIdConverterRepository> _resourceIdConverterRepository;
 
     [SetUp]
     public void Setup()
@@ -36,6 +38,8 @@ internal class DeleteTableUseCaseTests
         httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims: new[] { new Claim(KanClaimName.ID, 1.ToString()) }));
         _contextAccessor.Setup(e => e.HttpContext).Returns(httpContext);
 
+        _resourceIdConverterRepository = new Mock<IResourceIdConverterRepository>();
+        _userBoardRolesRepository = new Mock<IUserBoardRolesRepository>();
         _tableRepository = new Mock<ITableRepository>();
         _userTablesRepository = new Mock<IUserTablesRepository>();
         _boardRepository = new Mock<IBoardRepository>();
@@ -44,15 +48,17 @@ internal class DeleteTableUseCaseTests
 
         _unitOfWork.Setup(e => e.TableRepository).Returns(_tableRepository.Object);
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
+        _unitOfWork.Setup(e => e.UserBoardRolesRepository).Returns(_userBoardRolesRepository.Object);
+        _unitOfWork.Setup(e => e.ResourceIdConverterRepository).Returns(_resourceIdConverterRepository.Object);
         _tableIDToDelete = new TableIDToDelete(_unitOfWork.Object);
 
-        _tableMembershipPolicy = new Mock<ITableMembershipPolicy>();
-        _tableMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
         _deleteTableUseCase = new DeleteTableUseCase(_logger.Object,
                                                      _unitOfWork.Object,
                                                      _tableIDToDelete,
-                                                     _tableMembershipPolicy.Object,
+                                                     _boardMembershipPolicy.Object,
                                                      _contextAccessor.Object);
     }
 

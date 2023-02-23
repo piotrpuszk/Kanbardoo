@@ -23,9 +23,10 @@ internal class AddTaskUseCaseTests
     private Mock<ITaskStatusRepository> _taskStatusRepository;
     private Mock<ILogger> _logger;
     private NewTaskValidator _newTaskValidator;
-    private Mock<ITableMembershipPolicy> _tableMembershipPolicy;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
     private Mock<IHttpContextAccessor> _contextAccessor;
     private Mock<IUserTasksRepository> _userTasksRepository;
+    private Mock<IResourceIdConverterRepository> _resourceIdConverterRepository;
 
     [SetUp]
     public void Setup()
@@ -35,6 +36,7 @@ internal class AddTaskUseCaseTests
         httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims: new[] { new Claim(KanClaimName.ID, 1.ToString()) }));
         _contextAccessor.Setup(e => e.HttpContext).Returns(httpContext);
 
+        _resourceIdConverterRepository = new Mock<IResourceIdConverterRepository>();
         _tableRepository = new Mock<ITableRepository>();
         _userTasksRepository = new Mock<IUserTasksRepository>();
         _userRepository = new Mock<IUserRepository>();
@@ -49,17 +51,18 @@ internal class AddTaskUseCaseTests
         _unitOfWork.Setup(e => e.UserRepository).Returns(_userRepository.Object);
         _unitOfWork.Setup(e => e.TaskStatusRepository).Returns(_taskStatusRepository.Object);
         _unitOfWork.Setup(e => e.TaskRepository).Returns(_taskRepository.Object);
+        _unitOfWork.Setup(e => e.ResourceIdConverterRepository).Returns(_resourceIdConverterRepository.Object);
         _newTaskValidator = new NewTaskValidator(_unitOfWork.Object);
 
-        _tableMembershipPolicy = new Mock<ITableMembershipPolicy>();
-        _tableMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
         _userTasksRepository.Setup(e => e.AddAsync(It.IsAny<KanUserTask>())).Returns(Task.CompletedTask);
         _unitOfWork.Setup(e => e.UserTasksRepository).Returns(_userTasksRepository.Object);
 
         _addTaskUseCase = new AddTaskUseCase(_logger.Object,
                                              _unitOfWork.Object,
                                              _newTaskValidator,
-                                             _tableMembershipPolicy.Object, 
+                                             _boardMembershipPolicy.Object, 
                                              _contextAccessor.Object);
     }
 
