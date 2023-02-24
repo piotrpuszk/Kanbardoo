@@ -18,9 +18,10 @@ internal class DeleteBoardUseCaseTests
     private Mock<IBoardRepository> _boardRepository;
     private Mock<ILogger> _logger;
     private BoardIdToDeleteValidator _boardIdToDeleteValidator;
-    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
+    private Mock<IBoardOwnershipPolicy> _boardMembershipPolicy;
     private Mock<IHttpContextAccessor> _contextAccessor;
     private Mock<IUserBoardsRepository> _userBoardsRepository;
+    private Mock<IUserBoardRolesRepository> _userBoardRolesRepository;
 
     [SetUp]
     public void Setup()
@@ -30,15 +31,17 @@ internal class DeleteBoardUseCaseTests
         httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims: new[] { new Claim(KanClaimName.ID, 1.ToString()) }));
         _contextAccessor.Setup(e => e.HttpContext).Returns(httpContext);
 
+        _userBoardRolesRepository = new Mock<IUserBoardRolesRepository>();
         _boardRepository = new Mock<IBoardRepository>();
         _userBoardsRepository = new Mock<IUserBoardsRepository>();
         _logger = new Mock<ILogger>();
         _unitOfWork = new Mock<IUnitOfWork>();
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
         _unitOfWork.Setup(e => e.BoardRepository).Returns(_boardRepository.Object);
+        _unitOfWork.Setup(e => e.UserBoardRolesRepository).Returns(_userBoardRolesRepository.Object);
         _boardIdToDeleteValidator = new BoardIdToDeleteValidator(_unitOfWork.Object);
 
-        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy = new Mock<IBoardOwnershipPolicy>();
         _boardMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
         _deleteBoardUseCase = new DeleteBoardUseCase(_unitOfWork.Object,

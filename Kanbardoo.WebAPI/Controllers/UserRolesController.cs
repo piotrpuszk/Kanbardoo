@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using Kanbardoo.Application.Contracts.UserRolesContracts;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.WebAPI.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kanbardoo.WebAPI.Controllers;
+[Authorize(Policy = PolicyName.Admin)]
 [Route("api/[controller]")]
 [ApiController]
 public class UserRolesController : ControllerBase

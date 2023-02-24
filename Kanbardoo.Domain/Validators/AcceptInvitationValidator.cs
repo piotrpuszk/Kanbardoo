@@ -1,19 +1,31 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Kanbardoo.Domain.Validators;
 
 public class AcceptInvitationValidator : AbstractValidator<AcceptInvitation>
 {
-    public AcceptInvitationValidator(IUnitOfWork unitOfWork)
+    public AcceptInvitationValidator(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
     {
         RuleFor(e => e.ID).MustAsync(async (id, token) =>
         {
             var invitation = await unitOfWork.InvitationRepository.GetAsync(id);
 
             return invitation.Exists();
+        });
+
+        RuleFor(e => e.ID).MustAsync(async (id, token) =>
+        {
+            var invitation = await unitOfWork.InvitationRepository.GetAsync(id);
+
+            var userID = int.Parse(httpContextAccessor.HttpContext!.User.FindFirstValue(KanClaimName.ID)!);
+
+            return userID == invitation.UserID;
         });
     }
 

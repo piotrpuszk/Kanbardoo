@@ -50,9 +50,15 @@ public class TaskRepository : ITaskRepository
 
     public async Task UpdateAsync(KanTask task)
     {
-        task.Status = null!;
-        task.Assignee = null!;
-        task.Table = null!;
-        _dbContext.Tasks.Update(task);
+        var tracked = (await _dbContext.Tasks.FindAsync(task.ID))!;
+
+        tracked.StatusID = task.StatusID;
+        tracked.AssigneeID= task.AssigneeID;
+        tracked.Name= task.Name;
+        tracked.Description= task.Description;
+        tracked.DueDate = task.DueDate;
+        tracked.TableID = task.TableID;
+
+        _dbContext.Tasks.Update(tracked);
     }
 }

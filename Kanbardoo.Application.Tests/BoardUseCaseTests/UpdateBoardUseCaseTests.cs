@@ -17,7 +17,7 @@ internal class UpdateBoardUseCaseTests
     private Mock<ILogger> _logger;
     private NewKanBoard _newBoard;
     private BoardToUpdateValidator _boardToUpdateValidator;
-    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
+    private Mock<IBoardOwnershipPolicy> _boardOwnershipPolicy;
 
     [SetUp]
     public void Setup()
@@ -30,10 +30,10 @@ internal class UpdateBoardUseCaseTests
         _unitOfWork.Setup(e => e.SaveChangesAsync()).ReturnsAsync(0);
         _boardToUpdateValidator = new BoardToUpdateValidator(_unitOfWork.Object);
 
-        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
-        _boardMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _boardOwnershipPolicy = new Mock<IBoardOwnershipPolicy>();
+        _boardOwnershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
-        _updateBoardUseCase = new UpdateBoardUseCase(_unitOfWork.Object, _logger.Object, _boardToUpdateValidator, _boardMembershipPolicy.Object);
+        _updateBoardUseCase = new UpdateBoardUseCase(_unitOfWork.Object, _logger.Object, _boardToUpdateValidator, _boardOwnershipPolicy.Object);
 
         _newBoard = new NewKanBoard();
     }

@@ -18,7 +18,6 @@ public class BoardRepository : IBoardRepository
     {
         board.Owner = null!;
         board.Status = null!;
-        board.Tables = null!;
         await _dbContext.Boards.AddAsync(board);
     }
 
@@ -78,9 +77,15 @@ public class BoardRepository : IBoardRepository
 
     public async Task UpdateAsync(KanBoard board)
     {
-        board.Status = null;
-        board.Owner = null;
-        board.Tables = null!;
-        _dbContext.Boards.Update(board);
+        var tracked = (await _dbContext.Boards.FindAsync(board.ID))!;
+
+        tracked.FinishDate = board.FinishDate;
+        tracked.CreationDate = board.CreationDate;
+        tracked.StartDate = board.StartDate;
+        tracked.StatusID= board.StatusID;
+        tracked.BackgroundImageUrl = board.BackgroundImageUrl;
+        tracked.Name = board.Name;
+
+        _dbContext.Boards.Update(tracked);
     }
 }

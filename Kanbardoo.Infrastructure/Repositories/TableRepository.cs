@@ -18,8 +18,6 @@ public class TableRepository : ITableRepository
     public async Task AddAsync(KanTable table)
     {
         table.Board = null!;
-        table.Tasks = null!;
-
         await _dbContext.Tables.AddAsync(table);
     }
 
@@ -55,8 +53,12 @@ public class TableRepository : ITableRepository
 
     public async Task UpdateAsync(KanTable table)
     {
-        table.Board = null!;
-        table.Tasks= null!;
-        _dbContext.Tables.Update(table);
+        var tracked = (await _dbContext.Tables.FindAsync(table.ID))!;
+
+        tracked.CreationDate = table.CreationDate;
+        tracked.Priority = table.Priority;
+        tracked.Name = table.Name;
+
+        _dbContext.Tables.Update(tracked);
     }
 }

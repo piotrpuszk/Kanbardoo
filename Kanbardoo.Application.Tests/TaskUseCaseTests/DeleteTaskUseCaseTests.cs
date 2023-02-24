@@ -22,9 +22,10 @@ internal class DeleteTaskUseCaseTests
     private Mock<ITaskStatusRepository> _taskStatusRepository;
     private Mock<ILogger> _logger;
     private KanTaskIdToDeleteValidator _kanTaskIdToDeleteValidator;
-    private Mock<ITaskMembershipPolicy> _taskMembershipPolicy;
+    private Mock<IBoardMembershipPolicy> _boardMembershipPolicy;
     private Mock<IHttpContextAccessor> _contextAccessor;
     private Mock<IUserTasksRepository> _userTasksRepository;
+    private Mock<IResourceIdConverterRepository> _resourceIdConverterRepository;
 
     [SetUp]
     public void Setup()
@@ -34,6 +35,7 @@ internal class DeleteTaskUseCaseTests
         httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims: new[] { new Claim(KanClaimName.ID, 1.ToString()) }));
         _contextAccessor.Setup(e => e.HttpContext).Returns(httpContext);
 
+        _resourceIdConverterRepository = new Mock<IResourceIdConverterRepository>();
         _tableRepository = new Mock<ITableRepository>();
         _userTasksRepository = new Mock<IUserTasksRepository>();
         _userRepository = new Mock<IUserRepository>();
@@ -48,15 +50,16 @@ internal class DeleteTaskUseCaseTests
         _unitOfWork.Setup(e => e.UserRepository).Returns(_userRepository.Object);
         _unitOfWork.Setup(e => e.TaskStatusRepository).Returns(_taskStatusRepository.Object);
         _unitOfWork.Setup(e => e.TaskRepository).Returns(_taskRepository.Object);
+        _unitOfWork.Setup(e => e.ResourceIdConverterRepository).Returns(_resourceIdConverterRepository.Object);
         _kanTaskIdToDeleteValidator = new KanTaskIdToDeleteValidator(_unitOfWork.Object);
 
-        _taskMembershipPolicy = new Mock<ITaskMembershipPolicy>();
-        _taskMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
+        _boardMembershipPolicy = new Mock<IBoardMembershipPolicy>();
+        _boardMembershipPolicy.Setup(e => e.AuthorizeAsync(It.IsAny<int>())).ReturnsAsync(Result.SuccessResult());
 
         _deleteTaskUseCase = new DeleteTaskUseCase(_logger.Object,
                                                    _unitOfWork.Object,
                                                    _kanTaskIdToDeleteValidator,
-                                                   _taskMembershipPolicy.Object,
+                                                   _boardMembershipPolicy.Object,
                                                    _contextAccessor.Object);
     }
 
