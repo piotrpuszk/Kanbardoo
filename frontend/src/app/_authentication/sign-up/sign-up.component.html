@@ -1,0 +1,60 @@
+<div class="container w-25">
+  <form [formGroup]="form" (submit)="signUp()">
+    <div class="field">
+      <label class="label">Username</label>
+      <div class="control has-icons-left has-icons-right">
+        <input class="input" type="text" formControlName="username" />
+        <span class="icon is-small is-left">
+          <i class="fas fa-user"></i>
+        </span>
+        <span
+          *ngIf="isUserNameDirty() && isUserNameValid()"
+          class="icon is-small is-right"
+        >
+          <i class="fas fa-check"></i>
+        </span>
+      </div>
+      <p *ngIf="isUserNameTouched() && !isUserNameValid()" class="help is-danger">
+        This username is required
+      </p>
+    </div>
+
+    <div class="field">
+      <label class="label">Password</label>
+      <div class="control has-icons-right">
+        <input class="input" type="password" formControlName="password" />
+        <span
+          *ngIf="isPasswordDirty() && isPasswordValid()"
+          class="icon is-small is-right"
+        >
+          <i class="fas fa-check"></i>
+        </span>
+      </div>
+      <p *ngIf="isPasswordTouched() && !isPasswordValid()" class="help is-danger">
+        This password is required
+      </p>
+    </div>
+
+    <div class="field">
+      <label class="label">Repeat password</label>
+      <div class="control has-icons-right">
+        <input class="input" type="password" formControlName="repeatPassword" />
+        <span
+          *ngIf="isRepeatPasswordDirty() && isRepeatPasswordValid()"
+          class="icon is-small is-right"
+        >
+          <i class="fas fa-check"></i>
+        </span>
+      </div>
+      <p *ngIf="isRepeatPasswordTouched() && !isRepeatPasswordValid()" class="help is-danger">
+        It does not match the password
+      </p>
+    </div>
+
+    <div class="field is-grouped">
+      <div class="control">
+        <button class="button is-success">Sign up</button>
+      </div>
+    </div>
+  </form>
+</div>
