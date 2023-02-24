@@ -1,7 +1,10 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Kanbardoo.Domain.Validators;
 
@@ -12,8 +15,10 @@ public class CancelInvitationValidator : AbstractValidator<CancelInvitationModel
         RuleFor(e => e.UserName).MustAsync(async (username, token) =>
         {
             var found = await unitOfWork.UserRepository.GetAsync(username);
-            return found.Exists();
+
+            return found.Exists() && found.UserName == username;
         });
+
         RuleFor(e => e.BoardID).MustAsync(async (id, token) =>
         {
             var found = await unitOfWork.BoardRepository.GetAsync(id);
