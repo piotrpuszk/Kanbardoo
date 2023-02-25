@@ -1,5 +1,6 @@
 ﻿using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Filters;
+using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -38,10 +39,29 @@ public class BoardRepository : IBoardRepository
 
     public async Task<IEnumerable<KanBoard>> GetAsync(KanBoardFilters boardFilters)
     {
-        var query = _dbContext.Boards
-            .Include(e => e.Owner)
-            .Include(e => e.Status)
-            .AsQueryable();
+        IQueryable<KanBoard> query;
+        switch (boardFilters.RoleID)
+        {
+            case KanRoleID.Member:
+                query = _dbContext.Boards
+                    .Where(e => e.OwnerID != boardFilters.OwnerID)
+                    .Where(e => _dbContext.UserBoardsRoles
+                                                .Where(e => e.UserID == boardFilters.OwnerID).Select(e => e.BoardID)
+                                                .Contains(e.ID))
+                    .Include(e => e.Owner)
+                    .Include(e => e.Status)
+                    .AsQueryable();
+                break;
+            default:
+                query = _dbContext.Boards
+                    .Where(e => e.OwnerID == boardFilters.OwnerID)
+                    .Include(e => e.Owner)
+                    .Include(e => e.Status)
+                    .AsQueryable();
+                break;
+        }
+
+
 
         var boardName = boardFilters.BoardName;
         if (!string.IsNullOrWhiteSpace(boardName))
@@ -82,7 +102,7 @@ public class BoardRepository : IBoardRepository
         tracked.FinishDate = board.FinishDate;
         tracked.CreationDate = board.CreationDate;
         tracked.StartDate = board.StartDate;
-        tracked.StatusID= board.StatusID;
+        tracked.StatusID = board.StatusID;
         tracked.BackgroundImageUrl = board.BackgroundImageUrl;
         tracked.Name = board.Name;
 

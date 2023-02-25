@@ -2,6 +2,7 @@
 using FluentValidation.Results;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Filters;
+using Kanbardoo.Domain.Models;
 
 namespace Kanbardoo.Domain.Validators;
 public class BoardFiltersValidator : AbstractValidator<KanBoardFilters>
@@ -9,6 +10,10 @@ public class BoardFiltersValidator : AbstractValidator<KanBoardFilters>
 	public BoardFiltersValidator()
 	{
 		RuleFor(e => e.OrderByClauses).ForEach(e => e.Must(e => Entity.ColumnExists<KanBoard>(e.ColumnName)));
+        RuleFor(e => e.RoleID).Must(e => 
+        {
+            return e == KanRoleID.Owner || e == KanRoleID.Member;
+        });
 	}
 
     public override ValidationResult Validate(ValidationContext<KanBoardFilters> context)

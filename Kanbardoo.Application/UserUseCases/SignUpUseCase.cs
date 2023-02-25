@@ -40,7 +40,7 @@ public class SignUpUseCase : ISignUpUseCase
 
         var user = new KanUser()
         {
-            UserName = signUp.Name,
+            UserName = signUp.UserName,
             PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(signUp.Password)),
             PasswordSalt = hmac.Key,
             CreationDate= DateTime.UtcNow,

@@ -10,6 +10,7 @@ using Kanbardoo.WebAPI.DTOs;
 using Kanbardoo.WebAPI.FilterDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.WebAPI.Controllers;
@@ -52,6 +53,7 @@ public sealed class BoardsController : ControllerBase
     public async Task<IActionResult> Get(KanBoardFiltersDTO boardFiltersDTO)
     {
         var boardFilters = _mapper.Map<KanBoardFilters>(boardFiltersDTO);
+        boardFilters.OwnerID = int.Parse(HttpContext.User.FindFirstValue(KanClaimName.ID)!);
         var result = await _getBoardUseCase.HandleAsync(boardFilters);
 
         if (!result.IsSuccess)

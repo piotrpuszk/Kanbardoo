@@ -1,0 +1,31 @@
+<nav *ngIf="(usersService.loggedUser$ | async) as loggedUser" class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarBasicExample" class="navbar-menu">
+    <div *ngIf="loggedUser.id !== 0" class="navbar-start">
+      <a class="navbar-item" routerLinkActive="is-active" routerLink="dashboard">Dashboard</a>
+      <a class="navbar-item" routerLinkActive="is-active" routerLink="new-board">New board</a>
+    </div>
+
+    <div class="navbar-end">
+      <div *ngIf="loggedUser.id === 0" class="navbar-item">
+        <div class="buttons">
+          <a class="button is-primary" href="sign-up">
+            <strong>Sign up</strong>
+          </a>
+          <a class="button is-light" href="sign-in"> Sign in </a>
+        </div>
+      </div>
+      <div *ngIf="loggedUser.id !== 0" class="navbar-item level-item">
+        <span class="mr-2">{{loggedUser.userName}}</span>
+        <a class="button is-light" (click)="signOut()">Sign out</a>
+      </div>
+    </div>
+  </div>
+</nav>

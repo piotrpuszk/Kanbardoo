@@ -6,7 +6,7 @@ public class SignUpDTO
 {
     [Required]
     [MaxLength(256)]
-    public string Name { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
     [Required]
     [MaxLength(256)]
     public string Password { get; set; } = string.Empty;
