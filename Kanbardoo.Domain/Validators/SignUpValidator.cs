@@ -13,7 +13,7 @@ public class SignUpValidator : AbstractValidator<SignUp>
 {
 	public SignUpValidator()
 	{
-		RuleFor(e => e.Name).Must(e => !string.IsNullOrWhiteSpace(e));
+		RuleFor(e => e.UserName).Must(e => !string.IsNullOrWhiteSpace(e));
 		RuleFor(e => e.Password).Must(e => !string.IsNullOrWhiteSpace(e));
 	}
 

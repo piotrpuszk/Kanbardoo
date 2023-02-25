@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { UsersService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.scss'],
 })
-export class SignUpComponent implements OnInit {
+export class SignUpComponent implements OnInit, OnDestroy {
   public form!: FormGroup;
   private sub = new Subscription();
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private formBuilder: FormBuilder, private usersService: UsersService) {}
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
@@ -45,8 +46,19 @@ export class SignUpComponent implements OnInit {
     }));
   }
 
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
+
   public signUp() {
     this.form.markAllAsTouched();
+
+    if(!this.form.valid) return;
+
+    this.usersService.signUp({ 
+      userName: this.form.controls['username'].value,
+      password: this.form.controls['password'].value
+    });
   }
 
   public isUserNameTouched() {

@@ -50,7 +50,8 @@ public class UsersController : ControllerBase
         }
 
         var jwtToken = _createToken.Create(result.Content!);
-        var resultWithToken = Result<string>.SuccessResult(jwtToken);
-        return resultWithToken.GetActionResult();
+        var userDTO = _mapper.Map<KanUserDTO>(result.Content!);
+        var userWithTokenResult = Result<object>.SuccessResult(new { Token = jwtToken, LoggedUser = userDTO });
+        return userWithTokenResult.GetActionResult();
     }
 }

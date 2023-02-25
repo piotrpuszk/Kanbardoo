@@ -1,0 +1,25 @@
+<div class="container w-25">
+  <form [formGroup]="form" (submit)="create()">
+    <div class="field">
+      <label class="label">Board name</label>
+      <div class="control has-icons-right">
+        <input class="input" type="text" formControlName="boardName" />
+        <span *ngIf="isBoardNameDirty() && isBoardNameValid()" class="icon is-small is-right">
+          <i class="fas fa-check"></i>
+        </span>
+      </div>
+      <p *ngIf="isBoardNameTouched() && !isBoardNameValid()" class="help is-danger">
+        This board name is required
+      </p>
+    </div>
+
+    <div class="field is-grouped">
+      <div *ngIf="!pending" class="control">
+        <button class="button is-success">Create</button>
+      </div>
+      <div *ngIf="pending" class="control">
+        <button class="button is-success">Creating...<i class="fa fa-spinner fa-spin ml-1"></i></button>
+      </div>
+    </div>
+  </form>
+</div>

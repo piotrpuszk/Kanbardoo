@@ -38,7 +38,7 @@ public class SignInUseCase : ISignInUseCase
             return Result<KanUser>.ErrorResult(ErrorMessage.SignInDataInvalid);
         }
 
-        var user = await _unitOfWork.UserRepository.GetAsync(signIn.Name);
+        var user = await _unitOfWork.UserRepository.GetAsync(signIn.UserName);
 
         using var hmac = new HMACSHA512(user.PasswordSalt);
 
