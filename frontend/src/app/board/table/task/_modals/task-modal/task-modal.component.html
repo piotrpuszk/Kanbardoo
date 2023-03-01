@@ -1,0 +1,67 @@
+<app-modal [title]="title" [successButtonName]="successButtonName" #taskModal>
+  <form *ngIf="task && form" [formGroup]="form">
+
+    <div class="field">
+      <label class="label">Task name</label>
+      <div class="control has-icons-right">
+        <input class="input" type="text" formControlName="name" />
+        <span *ngIf="isDirty('name') && isValid('name')" class="icon is-small is-right">
+          <i class="fas fa-check"></i>
+        </span>
+      </div>
+      <p *ngIf="isTouched('name') && !isValid('name')" class="help is-danger">
+        This task name is required
+      </p>
+    </div>
+
+    <div class="field">
+      <label class="label">Status</label>
+      <div class="control">
+        <div class="select">
+          <select formControlName="status">
+            <option *ngFor="let status of taskStatuses" [ngValue]="status.id">{{status.name}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Description</label>
+      <div class="control has-icons-right">
+        <textarea class="textarea" formControlName="description"></textarea>
+        <span *ngIf="isDirty('description') && isValid('description')" class="icon is-small is-right">
+          <i class="fas fa-check"></i>
+        </span>
+      </div>
+      <p *ngIf="isTouched('description') && !isValid('description')" class="help is-danger">
+        This task description is invalid
+      </p>
+    </div>
+
+    <div class="field">
+      <label class="label">Due date</label>
+      <div class="control">
+        <input type="text" class="form-control" formControlName="dueDate" bsDatepicker>
+      </div>
+      <p *ngIf="isTouched('dueDate') && !isValid('dueDate')" class="help is-danger">
+        This task due date is invalid
+      </p>
+    </div>
+
+    <div class="field">
+      <label class="label">Assignee</label>
+      <div class="control">
+        <input class="form-control" [typeahead]="users" formControlName="assignee"
+          [typeaheadItemTemplate]="assigneeTemplate" [isAnimated]="true" container="body"
+          typeaheadOptionField="userName">
+      </div>
+      <p *ngIf="isTouched('dueDate') && !isValid('dueDate')" class="help is-danger">
+        This task due date is invalid
+      </p>
+    </div>
+  </form>
+</app-modal>
+
+<ng-template #assigneeTemplate let-model="item">
+  <span>{{model.userName}}</span>
+</ng-template>

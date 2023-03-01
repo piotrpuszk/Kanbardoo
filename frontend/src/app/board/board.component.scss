@@ -1,0 +1,29 @@
+.flex-container {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+.flex-item {
+  flex: 0 0 20vw;
+  margin: 10px;
+}
+
+.new-table-container {
+  border: rgb(222, 222, 222) 2px dashed;
+  width: 20vw;
+}
+
+.new-table {
+  font-size: 1.5rem;
+  color: rgb(181, 212, 181);
+}
+
+.table-content {
+  min-height: 72vh;
+  border-top: rgb(222, 222, 222) 2px dashed;
+}
+
+.disabled {
+  opacity: 0.5;
+}

@@ -56,16 +56,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private getOwnershipBoards() {
     this.enablePending(this.ownershipBoardsKey);
-    this.boardsService.getBoards(this.ownershipFilters).subscribe((boards) => {
-      this.ownershipBoards = boards;
+    this.boardsService.getBoards(this.ownershipFilters).subscribe(result => {
+      this.ownershipBoards = result.content;
       this.disablePending(this.ownershipBoardsKey);
     });
   }
 
   private getMembershipBoards() {
     this.enablePending(this.membershipBoardsKey);
-    this.boardsService.getBoards(this.membershipFilters).subscribe((boards) => {
-      this.membershipBoards = boards;
+    this.boardsService.getBoards(this.membershipFilters).subscribe(result => {
+      this.membershipBoards = result.content;
       this.disablePending(this.membershipBoardsKey);
     });
   }

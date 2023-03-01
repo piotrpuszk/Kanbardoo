@@ -29,8 +29,11 @@
       </div>
   
       <div class="field is-grouped">
-        <div class="control">
+        <div *ngIf="!pending" class="control">
           <button class="button is-success">Sign in</button>
+        </div>
+        <div *ngIf="pending" class="control">
+          <button class="button is-success">Signing in... <i class="fa fa-spinner fa-spin ml-1"></i></button>
         </div>
       </div>
     </form>

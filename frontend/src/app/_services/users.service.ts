@@ -42,15 +42,15 @@ export class UsersService {
   }
 
   public signIn(signIn: SignIn) {
-    this.http
+    return this.http
       .post(this.usersUrl + 'sign-in', signIn)
-      .subscribe((response: any) => {
+      .pipe(map((response: any) => {
         const content = response.content;
         this.token = content.token;
         localStorage.setItem(this.tokenKey, content.token);
         localStorage.setItem(this.userKey, JSON.stringify(content.loggedUser));
         this.loggedUser.next(content.loggedUser);
-      });
+      }));
   }
 
   public signOut() {

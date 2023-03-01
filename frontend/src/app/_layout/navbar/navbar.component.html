@@ -11,6 +11,8 @@
     <div *ngIf="loggedUser.id !== 0" class="navbar-start">
       <a class="navbar-item" routerLinkActive="is-active" routerLink="dashboard">Dashboard</a>
       <a class="navbar-item" routerLinkActive="is-active" routerLink="new-board">New board</a>
+      <a *ngIf="isBoardView()" class="navbar-item" (click)="openBoardSettings()">Board settings</a>
+      <a *ngIf="isBoardView()" class="navbar-item" (click)="invite()">Invite</a>
     </div>
 
     <div class="navbar-end">

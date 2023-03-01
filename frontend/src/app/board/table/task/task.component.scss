@@ -1,0 +1,20 @@
+.task {
+  height: 12vh;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.line-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.assignee {
+  font-size: 1.25rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}

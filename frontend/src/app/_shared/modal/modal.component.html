@@ -1,0 +1,18 @@
+<div class="modal" [ngClass]="{'is-active': isOpen}">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">{{title}}</p>
+      <button class="delete" aria-label="close" (click)="close()"></button>
+    </header>
+    <section class="modal-card-body">
+      <ng-content></ng-content>
+    </section>
+    <footer class="modal-card-foot">
+      <button *ngIf="!isPending()" class="button is-success" (click)="success($event)">{{successButtonName}}</button>
+      <button *ngIf="isPending()" class="button is-success" (click)="success($event)">{{successButtonName}} <i
+          class="fa fa-spinner fa-spin ml-1"></i></button>
+      <button class="button" (click)="cancel($event)">{{cancelButtonName}}</button>
+    </footer>
+  </div>
+</div>

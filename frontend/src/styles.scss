@@ -4,3 +4,26 @@
 
 /* Importing Datepicker SCSS file. */
 @import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";
+
+
+.clickable {
+  cursor: pointer;
+}
+
+.bs-datepicker-body table td {
+  text-align: center !important;
+}
+
+.bs-datepicker-body table th {
+  text-align: center !important;
+}
+
+.dropdown-item {
+  color: #4a4a4a !important;
+  background-color: transparent !important;
+}
+
+.dropdown-item:hover {
+  color: #0a0a0a !important;
+  background-color: #f5f5f5 !important;
+}

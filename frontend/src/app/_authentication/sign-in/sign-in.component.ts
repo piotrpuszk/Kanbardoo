@@ -9,9 +9,9 @@ import { UsersService } from 'src/app/_services/users.service';
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss'],
 })
-export class SignInComponent implements OnInit, OnDestroy {
+export class SignInComponent implements OnInit {
   public form!: FormGroup;
-  private sub = new Subscription();
+  public pending = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -19,13 +19,7 @@ export class SignInComponent implements OnInit, OnDestroy {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    this.sub.add(this.usersService.loggedUser$.subscribe(e => {
-      if(e.id !== 0) {
-        this.router.navigate(["/dashboard"]);
-      }
-    }));
-
+  ngOnInit() {
     this.form = this.formBuilder.group({
       username: [
         '',
@@ -42,12 +36,8 @@ export class SignInComponent implements OnInit, OnDestroy {
           Validators.minLength(8),
           Validators.maxLength(1024),
         ],
-      ]
+      ],
     });
-  }
-
-  ngOnDestroy() {
-    this.sub.unsubscribe();
   }
 
   public signIn() {
@@ -55,10 +45,16 @@ export class SignInComponent implements OnInit, OnDestroy {
 
     if (!this.form.valid) return;
 
-    this.usersService.signIn({
-      userName: this.form.controls['username'].value,
-      password: this.form.controls['password'].value,
-    });
+    this.pending = true;
+    this.usersService
+      .signIn({
+        userName: this.form.controls['username'].value,
+        password: this.form.controls['password'].value,
+      })
+      .subscribe(e => {
+        this.pending = false;
+        this.router.navigate(['/dashboard']);
+      }, error => this.pending = false);
   }
 
   public isUserNameTouched() {

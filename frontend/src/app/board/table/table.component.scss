@@ -1,0 +1,22 @@
+.table-container {
+  box-shadow: 1px 1px 2px 2px lightgray;
+}
+
+.table-header {
+  font-size: 1.5rem;
+  border-bottom: rgb(239, 239, 239) 2px solid;
+}
+
+.table-content {
+  min-height: 60vh;
+}
+
+.disabled {
+  opacity: 0.5;
+}
+
+.new-task {
+  border: rgb(222, 222, 222) 2px dashed;
+  font-size: 1.25rem;
+  color: rgb(181, 212, 181);
+}

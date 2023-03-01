@@ -1,0 +1,14 @@
+<div class="table-container mb-0">
+  <div class="table-header text-center mb-0">
+    <span>{{table.name}}</span>
+  </div>
+  <div class="table-content">
+    <div class="m-2 p-2 text-center new-task clickable" (click)="newTaskModalRef.open()">
+      <span>new task</span>
+      <i class="fa fa-plus ml-2"></i>
+    </div>
+    <app-task *ngFor="let task of table.tasks" [task]="task"></app-task>
+  </div>  
+</div>
+
+<app-new-task-modal [table]="table" #newTaskModalRef></app-new-task-modal>
