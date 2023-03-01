@@ -121,6 +121,7 @@ builder.Services.AddScoped<IGetTaskStatusesUseCase, GetTaskStatusesUseCase>();
 
 builder.Services.AddScoped<ISignUpUseCase, SignUpUseCase>();
 builder.Services.AddScoped<ISignInUseCase, SignInUseCase>();
+builder.Services.AddScoped<IGetUsersUseCase, GetUsersUseCase>();
 
 builder.Services.AddScoped<IAddClaimToUserUseCase, AddClaimToUserUseCase>();
 builder.Services.AddScoped<IRevokeClaimFromUserUseCase, RevokeClaimFromUserUseCase>();

@@ -1,10 +1,11 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { SignIn } from '../_authentication/sign-in/models/sign-in';
 import { SingUp } from '../_authentication/sign-up/models/sign-up';
 import { KanUser } from '../_models/kan-user';
+import { Result } from '../_models/result';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +35,13 @@ export class UsersService {
   );
 
   constructor(private http: HttpClient) {}
+
+    public getUsers(query: string) {
+      var params = new HttpParams();
+      params = params.append('query', query);
+      const options = {...this.getOptions(), params};
+      return this.http.get<Result<KanUser[]>>(this.usersUrl, options);
+    }
 
   public signUp(signUp: SingUp) {
     this.http

@@ -29,7 +29,7 @@ export class NavbarComponent {
     this.boardControllerService.openBoardSettings();
   }
 
-  public invite() {
-
+  public openInvite() {
+    this.boardControllerService.openInvite();
   }
 }

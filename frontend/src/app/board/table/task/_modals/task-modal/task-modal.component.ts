@@ -97,7 +97,32 @@ export class TaskModalComponent implements OnInit, AfterViewInit {
 
     if (!this.form.valid) return;
 
-    this.successButtonName = this.successButtonNamePending;
+    this.startPending();
+
+    var assignee = this.task.assignee;
+    if(!!this.users && this.users.length > 0) {
+      assignee = this.users.find(e => e.userName === this.form.controls['assignee'].value)!;
+    }
+
+    const task = {
+      id: this.task.id,
+      name: this.form.controls['name'].value,
+      description: this.form.controls['description'].value,
+      dueDate: this.form.controls['dueDate'].value,
+      status: this.taskStatuses.find(e => e.id === this.form.controls['status'].value)!,
+      assignee: assignee,
+      tableID: this.task.tableID
+    };
+
+    this.tasksService.update(task).subscribe(e => {
+      this.task.name = task.name;
+      this.task.description = task.description;
+      this.task.dueDate = task.dueDate;
+      this.task.status = task.status;
+      this.task.assignee = task.assignee;
+      this.stopPending();
+      this.close();
+    });
   }
 
   private initForm() {
@@ -115,6 +140,16 @@ export class TaskModalComponent implements OnInit, AfterViewInit {
       status: [this.task.status.id],
       assignee: [this.task.assignee.userName],
     });
+  }
+
+  private startPending() {
+    this.successButtonName = this.successButtonNamePending;
+    this.modal.startPending();
+  }
+
+  private stopPending() {
+    this.successButtonName = this.successButtonNameNotPending;
+    this.modal.stopPending();
   }
 }
 

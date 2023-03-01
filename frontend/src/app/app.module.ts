@@ -24,6 +24,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { FormsModule } from '@angular/forms';
 import { TaskModalComponent } from './board/table/task/_modals/task-modal/task-modal.component';
+import { InviteModalComponent } from './board/_modals/invite-modal/invite-modal.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { TaskModalComponent } from './board/table/task/_modals/task-modal/task-m
     BoardSettingsModalComponent,
     TaskComponent,
     NewTaskModalComponent,
-    TaskModalComponent
+    TaskModalComponent,
+    InviteModalComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

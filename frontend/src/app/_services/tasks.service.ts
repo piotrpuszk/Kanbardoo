@@ -23,4 +23,8 @@ export class TasksService {
   public add(newTask: NewKanTask) {
     return this.http.post(this.baseUrl, newTask, this.usersService.getOptions());
   }
+
+  public update(task: KanTask) {
+    return this.http.put(this.baseUrl, task, this.usersService.getOptions());
+  }
 }

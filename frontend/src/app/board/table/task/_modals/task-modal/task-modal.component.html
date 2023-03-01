@@ -55,8 +55,8 @@
           [typeaheadItemTemplate]="assigneeTemplate" [isAnimated]="true" container="body"
           typeaheadOptionField="userName">
       </div>
-      <p *ngIf="isTouched('dueDate') && !isValid('dueDate')" class="help is-danger">
-        This task due date is invalid
+      <p *ngIf="isTouched('assignee') && !isValid('assignee')" class="help is-danger">
+        This task assignee is invalid
       </p>
     </div>
   </form>

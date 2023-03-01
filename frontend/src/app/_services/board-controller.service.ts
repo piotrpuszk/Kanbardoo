@@ -31,6 +31,6 @@ export class BoardControllerService {
   }
 
   public openInvite() {
-    this.onOpenInvite.next(undefined);
+    this.onOpenInvite.emit();
   }
 }

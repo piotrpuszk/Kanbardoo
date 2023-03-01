@@ -15,6 +15,7 @@ import { ModalComponent } from '../_shared/modal/modal.component';
 })
 export class BoardComponent implements OnInit, OnDestroy {
   @ViewChild('boardSettings') boardSettings!: ModalComponent;
+  @ViewChild('inviteModalRef') inviteModal!: ModalComponent;
   private sub = new Subscription();
 
   public board?: KanBoard;
@@ -45,6 +46,12 @@ export class BoardComponent implements OnInit, OnDestroy {
       this.getBoard(id);
     });
 
+    this.setupNewTableForm();
+
+    this.subscribeToEvents();
+  }
+
+  private setupNewTableForm() {
     this.newTable.form = this.formBuilder.group({
       name: [
         '',
@@ -55,8 +62,6 @@ export class BoardComponent implements OnInit, OnDestroy {
         ],
       ],
     });
-
-    this.subscribeToEvents();
   }
 
   ngOnDestroy() {
@@ -72,7 +77,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
     this.sub.add(
       this.boardControllerService.onOpenInvite$.subscribe((e) => {
-        //to do
+        this.inviteModal.open();
       })
     );
   }
@@ -83,6 +88,12 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   public stopAddingTable() {
     this.newTable.inProgress = false;
+  }
+
+  public cancelAddingTable() {
+    this.stopAddingTable();
+    this.newTable.pending = false;
+    this.setupNewTableForm();
   }
 
   public addTable() {

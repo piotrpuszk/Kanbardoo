@@ -1,0 +1,20 @@
+<app-modal [title]="title" [successButtonName]="successButtonName" #inviteModal>
+  <form *ngIf="form" [formGroup]="form">
+
+    <div class="field">
+      <label class="label">Assignee</label>
+      <div class="control">
+        <input class="form-control" [(ngModel)]="search" [typeahead]="users$" [typeaheadAsync]="true"
+          formControlName="user" [typeaheadItemTemplate]="assigneeTemplate" [isAnimated]="true" container="body"
+          typeaheadOptionField="userName">
+      </div>
+      <p *ngIf="isTouched('user') && !isValid('user')" class="help is-danger">
+        This user is invalid
+      </p>
+    </div>
+  </form>
+</app-modal>
+
+<ng-template #assigneeTemplate let-model="item">
+  <span>{{model.userName}}</span>
+</ng-template>
