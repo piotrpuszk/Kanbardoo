@@ -11,6 +11,11 @@ public class NewTaskValidator : AbstractValidator<NewKanTask>
 	{
 		RuleFor(e => e.AssigneeID).MustAsync(async (id, token) => 
 		{
+			if (id == default)
+			{
+				return true;
+			}
+
 			var found = await unitOfWork.UserRepository.GetAsync(id);
 
 			return found.Exists();

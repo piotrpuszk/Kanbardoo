@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Kanbardoo.Application.Contracts;
 using Kanbardoo.Application.Contracts.UserContracts;
+using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.WebAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.WebAPI.Controllers;
@@ -13,6 +15,7 @@ public class UsersController : ControllerBase
 {
     private readonly ISignUpUseCase _signUpUseCase;
     private readonly ISignInUseCase _signInUseCase;
+    private readonly IGetUsersUseCase _getUsersUseCase;
     private readonly ILogger _logger;
     private readonly IMapper _mapper;
     private readonly ICreateToken _createToken;
@@ -21,13 +24,15 @@ public class UsersController : ControllerBase
                            ILogger logger,
                            IMapper mapper,
                            ISignInUseCase signInUseCase,
-                           ICreateToken createToken)
+                           ICreateToken createToken,
+                           IGetUsersUseCase getUsersUseCase)
     {
         _signUpUseCase = signUpUseCase;
         _logger = logger;
         _mapper = mapper;
         _signInUseCase = signInUseCase;
         _createToken = createToken;
+        _getUsersUseCase = getUsersUseCase;
     }
 
     [HttpPost("sign-up")]
@@ -53,5 +58,20 @@ public class UsersController : ControllerBase
         var userDTO = _mapper.Map<KanUserDTO>(result.Content!);
         var userWithTokenResult = Result<object>.SuccessResult(new { Token = jwtToken, LoggedUser = userDTO });
         return userWithTokenResult.GetActionResult();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Get([MinLength(3)][MaxLength(24)]string query)
+    {
+        var result = await _getUsersUseCase.HandleAsync(query);
+
+        if (!result.IsSuccess)
+        {
+            return result.GetActionResult();
+        }
+
+        var users = _mapper.Map<IEnumerable<KanUserDTO>>(result.Content!);
+
+        return Result<IEnumerable<KanUserDTO>>.SuccessResult(users).GetActionResult();
     }
 }

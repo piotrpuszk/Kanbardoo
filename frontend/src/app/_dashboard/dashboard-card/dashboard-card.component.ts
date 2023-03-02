@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { KanBoard } from 'src/app/_models/kan-board';
 
 @Component({
@@ -8,4 +9,10 @@ import { KanBoard } from 'src/app/_models/kan-board';
 })
 export class DashboardCardComponent {
   @Input() public board!: KanBoard;
+
+  constructor(private router: Router) {}
+
+  navigateToBoard() {
+    this.router.navigate([`/boards/${this.board.id}`]);
+  }
 }

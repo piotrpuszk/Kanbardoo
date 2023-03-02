@@ -11,9 +11,14 @@
     <div *ngIf="loggedUser.id !== 0" class="navbar-start">
       <a class="navbar-item" routerLinkActive="is-active" routerLink="dashboard">Dashboard</a>
       <a class="navbar-item" routerLinkActive="is-active" routerLink="new-board">New board</a>
+      <a *ngIf="isBoardView()" class="navbar-item" (click)="openBoardSettings()">Board settings</a>
+      <a *ngIf="isBoardView()" class="navbar-item" (click)="openInvite()">Invite</a>
     </div>
 
     <div class="navbar-end">
+      <div class="navbar-item">
+      <a (click)="invitationsModalRef.open()">Invitations</a>
+      </div>
       <div *ngIf="loggedUser.id === 0" class="navbar-item">
         <div class="buttons">
           <a class="button is-primary" href="sign-up">
@@ -29,3 +34,5 @@
     </div>
   </div>
 </nav>
+
+<app-invitations-modal #invitationsModalRef></app-invitations-modal>

@@ -8,4 +8,5 @@ export interface KanTask {
     dueDate: Date;
     status: KanTaskStatus;
     assignee: KanUser;
+    tableID: string;
 }

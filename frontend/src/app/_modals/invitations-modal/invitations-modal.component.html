@@ -1,0 +1,26 @@
+<app-modal title="Invitations" [footerEnabled]="false" [style]="{'width': '735px'}" #invitationsModal>
+  <div class="m-5">
+    <div class="columns table-header">
+      <div class="column">
+        <span>Sender</span>
+      </div>
+      <div class="column">
+        <span>Board name</span>
+      </div>
+      <div class="column">
+      </div>
+    </div>
+    <div class="columns invitation" *ngFor="let invitation of invitations">
+      <div class="column">
+        <span>{{invitation.user.userName}}</span>
+      </div>
+      <div class="column">
+        <span>{{invitation.board.name}}</span>
+      </div>
+      <div class="column">
+        <button class="button" (click)="accept(invitation)">Accept</button>
+        <button class="button" (click)="decline(invitation)">Decline</button>
+      </div>
+    </div>
+  </div>
+</app-modal>

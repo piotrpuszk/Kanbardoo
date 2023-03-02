@@ -15,4 +15,6 @@ public sealed class KanTaskDTO
     [Required]
     public KanTaskStatusDTO Status { get; set; } = new KanTaskStatusDTO();
     public KanUserDTO Assignee { get; set; } = new KanUserDTO();
+    [Required]
+    public int TableID { get; set; }
 }

@@ -48,4 +48,10 @@ public class UserRepository : IUserRepository
         user.Claims = null!;
         await _dbContext.Users.AddAsync(user);
     }
+
+    public async Task<IEnumerable<KanUser>> GetUsersAsync(string query)
+    {
+        query = query.ToLower();
+        return await _dbContext.Users.Where(e => e.UserName.ToLower().Contains(query)).ToListAsync();
+    }
 }

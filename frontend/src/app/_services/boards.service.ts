@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment.development';
 import { NewBoard } from '../new-board/_models/new-board';
 import { BoardFilters } from '../_models/board-filters';
 import { KanBoard } from '../_models/kan-board';
+import { Result } from '../_models/result';
 import { UsersService } from './users.service';
 
 @Injectable({
@@ -16,13 +17,18 @@ export class BoardsService {
   constructor(private http: HttpClient, private usersService: UsersService) {}
 
   public getBoards(boardFilters: BoardFilters) {
-    return this.http
-      .post<KanBoard[]>(
-        this.boardsUrl,
-        boardFilters,
-        this.usersService.getOptions()
-      )
-      .pipe(map((e: any) => e.content));
+    return this.http.post<Result<KanBoard[]>>(
+      this.boardsUrl,
+      boardFilters,
+      this.usersService.getOptions()
+    );
+  }
+
+  public getBoard(id: number) {
+    return this.http.get<Result<KanBoard>>(
+      this.boardsUrl + id,
+      this.usersService.getOptions()
+    );
   }
 
   public create(newBoard: NewBoard) {
@@ -31,5 +37,9 @@ export class BoardsService {
       newBoard,
       this.usersService.getOptions()
     );
+  }
+
+  public update(board: KanBoard) {
+    return this.http.put(this.boardsUrl, board, this.usersService.getOptions());
   }
 }

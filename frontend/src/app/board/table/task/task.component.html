@@ -1,0 +1,13 @@
+<div class="task notification is-success m-2 p-2 d-flex justify-content-between flex-column clickable"
+  (click)="taskModalRef.open()">
+  <div class="flex-1">
+    <span class="line-clamp">
+      {{task.name}}
+    </span>
+  </div>
+  <div class="assignee flex-1">
+    {{task.assignee.userName}}
+  </div>
+</div>
+
+<app-task-modal [task]="task" #taskModalRef></app-task-modal>

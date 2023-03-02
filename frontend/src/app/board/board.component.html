@@ -1,0 +1,37 @@
+<section *ngIf="board" class="section">
+  <div class="flex-item new-table text-center new-table-container">
+    <div *ngIf="!newTable.inProgress" class="clickable" (click)="startAddingTable()">
+      <span>new table</span>
+      <i class="fa fa-plus ml-2"></i>
+    </div>
+    <form [formGroup]="newTable.form!" *ngIf="newTable.inProgress" class="clickable field has-addons mb-0"
+      (click)="startAddingTable()">
+      <div class="control w-100">
+        <input class="input" type="text" placeholder="Name" formControlName="name">
+      </div>
+      <div class="control" [ngClass]="{ 'disabled': !newTable.form!.valid }">
+        <div class="button is-success" (click)="!newTable.pending && addTable()">
+          <i *ngIf="!newTable.pending" class="fa fa-plus"></i>
+          <i *ngIf="newTable.pending" class="fa fa-spinner fa-spin"></i>
+        </div>
+      </div>
+      <div class="control" [ngClass]="{ 'disabled': newTable.pending }">
+        <div class="button is-secondary" (click)="!newTable.pending && cancelAddingTable()">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="flex-container">
+    <app-table class="flex-item" *ngFor="let table of board.tables" [table]="table"></app-table>
+  </div>
+</section>
+
+<div *ngIf="pending" class="d-flex justify-content-center align-items-center">
+  <div style="font-size: 3rem;">
+    <i class="fa fa-spinner fa-spin"></i>
+  </div>
+</div>
+
+<app-board-settings-modal #boardSettings [board]="board!"></app-board-settings-modal>
+<app-invite-modal #inviteModalRef [board]="board!"></app-invite-modal>

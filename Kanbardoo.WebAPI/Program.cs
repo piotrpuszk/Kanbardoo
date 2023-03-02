@@ -7,10 +7,12 @@ using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Contracts.InvitationContrats;
 using Kanbardoo.Application.Contracts.TableContracts;
 using Kanbardoo.Application.Contracts.TaskContracts;
+using Kanbardoo.Application.Contracts.TaskStatusContracts;
 using Kanbardoo.Application.Contracts.UserClaimsContracts;
 using Kanbardoo.Application.Contracts.UserContracts;
 using Kanbardoo.Application.InvitationUseCases;
 using Kanbardoo.Application.TableUseCases;
+using Kanbardoo.Application.TaskStatusUseCases;
 using Kanbardoo.Application.TaskUseCases;
 using Kanbardoo.Application.UserClaimsUseCases;
 using Kanbardoo.Application.UserContracts;
@@ -115,8 +117,11 @@ builder.Services.AddScoped<IGetTaskUseCase, GetTaskUseCase>();
 builder.Services.AddScoped<IDeleteTaskUseCase, DeleteTaskUseCase>();
 builder.Services.AddScoped<IUpdateTaskUseCase, UpdateTaskUseCase>();
 
+builder.Services.AddScoped<IGetTaskStatusesUseCase, GetTaskStatusesUseCase>();
+
 builder.Services.AddScoped<ISignUpUseCase, SignUpUseCase>();
 builder.Services.AddScoped<ISignInUseCase, SignInUseCase>();
+builder.Services.AddScoped<IGetUsersUseCase, GetUsersUseCase>();
 
 builder.Services.AddScoped<IAddClaimToUserUseCase, AddClaimToUserUseCase>();
 builder.Services.AddScoped<IRevokeClaimFromUserUseCase, RevokeClaimFromUserUseCase>();

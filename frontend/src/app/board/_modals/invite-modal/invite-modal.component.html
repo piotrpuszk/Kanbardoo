@@ -1,0 +1,23 @@
+<app-modal [title]="title" [successButtonName]="successButtonName" #inviteModal>
+  <form *ngIf="form" [formGroup]="form">
+
+    <div class="field">
+      <label class="label">User</label>
+      <div class="control position-relative">
+        <input class="form-control" [(ngModel)]="search" [typeaheadMinLength]="3" [typeahead]="users$"
+          [typeaheadAsync]="true" formControlName="user" [typeaheadItemTemplate]="assigneeTemplate" [isAnimated]="true"
+          container="body" typeaheadOptionField="userName">
+        <div *ngIf="isSearching" class="position-absolute typhead-spinner">
+          <i class="fa fa-spinner fa-spin"></i>
+        </div>
+      </div>
+      <p *ngIf="isTouched('user') && !isValid('user')" class="help is-danger">
+        This user is invalid
+      </p>
+    </div>
+  </form>
+</app-modal>
+
+<ng-template #assigneeTemplate let-model="item">
+  <span>{{model.userName}}</span>
+</ng-template>

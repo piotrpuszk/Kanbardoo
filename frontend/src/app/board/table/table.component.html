@@ -1,0 +1,30 @@
+<div class="table-container mb-0">
+  <div *ngIf="!tableNameEdit.enabled" class="table-header text-center mb-0 clickable" (dblclick)="startTableNameEdit()">
+    <span>{{table.name}}</span>
+  </div>
+  <form *ngIf="tableNameEdit.enabled" [formGroup]="tableNameEdit.form!"  class="field has-addons mb-0">
+      <div class="control w-100">
+        <input class="input" type="text" placeholder="Name" formControlName="name">
+      </div>
+      <div class="control" [ngClass]="{ 'disabled': !tableNameEdit.form!.valid }">
+        <div class="button is-success" (click)="!tableNameEdit.pending && submitNewTableName()">
+          <i *ngIf="!tableNameEdit.pending" class="fa fa-plus"></i>
+          <i *ngIf="tableNameEdit.pending" class="fa fa-spinner fa-spin"></i>
+        </div>
+      </div>
+      <div class="control" [ngClass]="{ 'disabled': tableNameEdit.pending }">
+        <div class="button is-secondary" (click)="!tableNameEdit.pending && stopTableNameEdit()">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </div>
+    </form>
+  <div class="table-content">
+    <div class="m-2 p-2 text-center new-task clickable" (click)="newTaskModalRef.open()">
+      <span>new task</span>
+      <i class="fa fa-plus ml-2"></i>
+    </div>
+    <app-task *ngFor="let task of table.tasks" [task]="task"></app-task>
+  </div>  
+</div>
+
+<app-new-task-modal [table]="table" #newTaskModalRef></app-new-task-modal>
