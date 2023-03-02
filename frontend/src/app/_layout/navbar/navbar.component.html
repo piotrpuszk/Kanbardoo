@@ -16,6 +16,9 @@
     </div>
 
     <div class="navbar-end">
+      <div class="navbar-item">
+      <a (click)="invitationsModalRef.open()">Invitations</a>
+      </div>
       <div *ngIf="loggedUser.id === 0" class="navbar-item">
         <div class="buttons">
           <a class="button is-primary" href="sign-up">
@@ -31,3 +34,5 @@
     </div>
   </div>
 </nav>
+
+<app-invitations-modal #invitationsModalRef></app-invitations-modal>

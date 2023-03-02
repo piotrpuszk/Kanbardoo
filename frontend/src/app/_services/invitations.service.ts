@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import { AcceptInvitation } from '../_models/accept-invitation';
 import { CancelInvitation } from '../_models/cancel-invitation';
+import { Invitation } from '../_models/invitation';
 import { NewInvitation } from '../_models/new-invitation';
+import { Result } from '../_models/result';
 import { UsersService } from './users.service';
 
 @Injectable({
@@ -15,7 +17,7 @@ export class InvitationsService {
   constructor(private usersService: UsersService, private http: HttpClient) { }
 
   public get() {
-    return this.http.get(this.baseUrl, this.usersService.getOptions());
+    return this.http.get<Result<Invitation[]>>(this.baseUrl, this.usersService.getOptions());
   }
 
   public invite(newInvitation: NewInvitation) {

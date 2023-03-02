@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { map, Observable, Observer, of, Subscription, switchMap, take } from 'rxjs';
+import { map, Observable, Observer, of, Subscription, switchMap, take, tap } from 'rxjs';
 import { DueDateValidator } from 'src/app/_forms/due-date-validator';
 import { KanBoard } from 'src/app/_models/kan-board';
 import { KanTable } from 'src/app/_models/kan-table';
@@ -35,6 +35,7 @@ export class InviteModalComponent implements OnInit, AfterViewInit {
   public cancelButtonName = 'Cancel';
   public users$?: Observable<KanUser[]>;
   public search?: string;
+  public isSearching = false;
 
   private sub = new Subscription();
 
@@ -49,11 +50,14 @@ export class InviteModalComponent implements OnInit, AfterViewInit {
       observer.next(this.search);
     }).pipe(
       switchMap((query: string) => {
-        if(query && query.length >= 3) {
+        if(!!query) {
+          this.isSearching = true;
           return this.usersService.getUsers(query).pipe(map(data => data && data.content || []))
         }
-        return of([]);
-      })
+          this.isSearching = false;
+          return of([]);
+      }),
+      tap(e => this.isSearching = false)
     );
   }
 

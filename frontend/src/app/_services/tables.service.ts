@@ -22,4 +22,8 @@ export class TablesService {
   public get(id: number) {
     return this.http.get<Result<KanTable>>(this.baseUrl + "/" + id, this.usersService.getOptions());
   }
+
+  public update(table: KanTable) {
+    return this.http.put(this.baseUrl, table, this.usersService.getOptions());
+  }
 }

@@ -1,6 +1,21 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Subscription, take } from 'rxjs';
+import {
+  map,
+  Observable,
+  Observer,
+  of,
+  Subscription,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs';
 import { DueDateValidator } from 'src/app/_forms/due-date-validator';
 import { KanTable } from 'src/app/_models/kan-table';
 import { KanTask } from 'src/app/_models/kan-task';
@@ -15,7 +30,7 @@ import { ModalComponent } from 'src/app/_shared/modal/modal.component';
 @Component({
   selector: 'app-task-modal',
   templateUrl: './task-modal.component.html',
-  styleUrls: ['./task-modal.component.scss']
+  styleUrls: ['./task-modal.component.scss'],
 })
 export class TaskModalComponent implements OnInit, AfterViewInit {
   @ViewChild('taskModal') modal!: ModalComponent;
@@ -27,9 +42,12 @@ export class TaskModalComponent implements OnInit, AfterViewInit {
   public successButtonNamePending = 'Saving changes...';
   public cancelButtonName = 'Cancel';
   public taskStatuses: KanTaskStatus[] = [];
-  public users: KanUser[] = [];
+  public users$?: Observable<KanUser[]>;
   public selected: any;
+  public search?: string;
+  public isSearching = false;
 
+  private usersSnapshot?: KanUser[] = [];
   private sub = new Subscription();
 
   constructor(
@@ -40,16 +58,29 @@ export class TaskModalComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
+    this.users$ = new Observable((observer: Observer<string | undefined>) => {
+      observer.next(this.search);
+    }).pipe(
+      switchMap((query: string) => {
+        if (!!query) {
+          this.isSearching = true;
+          return this.usersService.getUsers(query).pipe(map((e) => e.content));
+        }
+        this.isSearching = false;
+        return of([]);
+      }),
+      tap((users) => {
+        this.isSearching = false;
+        this.usersSnapshot = users;
+      })
+    );
+
     this.tasksService
       .getTaskStatuses()
       .pipe(take(1))
       .subscribe((e) => {
         this.taskStatuses = e.content;
       });
-    
-    this.usersService.loggedUser$.pipe(take(1)).subscribe(user => {
-      this.users.push({...user});
-    });
   }
 
   ngAfterViewInit() {
@@ -100,8 +131,10 @@ export class TaskModalComponent implements OnInit, AfterViewInit {
     this.startPending();
 
     var assignee = this.task.assignee;
-    if(!!this.users && this.users.length > 0) {
-      assignee = this.users.find(e => e.userName === this.form.controls['assignee'].value)!;
+    if (!!this.usersSnapshot && this.usersSnapshot.length > 0) {
+      assignee = this.usersSnapshot.find(
+        (e) => e.userName === this.form.controls['assignee'].value
+      )!;
     }
 
     const task = {
@@ -109,12 +142,14 @@ export class TaskModalComponent implements OnInit, AfterViewInit {
       name: this.form.controls['name'].value,
       description: this.form.controls['description'].value,
       dueDate: this.form.controls['dueDate'].value,
-      status: this.taskStatuses.find(e => e.id === this.form.controls['status'].value)!,
+      status: this.taskStatuses.find(
+        (e) => e.id === this.form.controls['status'].value
+      )!,
       assignee: assignee,
-      tableID: this.task.tableID
+      tableID: this.task.tableID,
     };
 
-    this.tasksService.update(task).subscribe(e => {
+    this.tasksService.update(task).subscribe((e) => {
       this.task.name = task.name;
       this.task.description = task.description;
       this.task.dueDate = task.dueDate;
@@ -126,6 +161,7 @@ export class TaskModalComponent implements OnInit, AfterViewInit {
   }
 
   private initForm() {
+    this.search = this.task.assignee.userName;
     this.form = this.formBuilder.group({
       name: [
         this.task.name,
@@ -152,4 +188,3 @@ export class TaskModalComponent implements OnInit, AfterViewInit {
     this.modal.stopPending();
   }
 }
-

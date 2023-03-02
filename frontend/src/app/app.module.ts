@@ -25,6 +25,7 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { FormsModule } from '@angular/forms';
 import { TaskModalComponent } from './board/table/task/_modals/task-modal/task-modal.component';
 import { InviteModalComponent } from './board/_modals/invite-modal/invite-modal.component';
+import { InvitationsModalComponent } from './_modals/invitations-modal/invitations-modal.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { InviteModalComponent } from './board/_modals/invite-modal/invite-modal.
     TaskComponent,
     NewTaskModalComponent,
     TaskModalComponent,
-    InviteModalComponent
+    InviteModalComponent,
+    InvitationsModalComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

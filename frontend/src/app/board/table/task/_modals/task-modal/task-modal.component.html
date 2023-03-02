@@ -50,10 +50,13 @@
 
     <div class="field">
       <label class="label">Assignee</label>
-      <div class="control">
-        <input class="form-control" [typeahead]="users" formControlName="assignee"
-          [typeaheadItemTemplate]="assigneeTemplate" [isAnimated]="true" container="body"
-          typeaheadOptionField="userName">
+      <div class="control position-relative">
+        <input class="form-control" [(ngModel)]="search" [typeahead]="users$" [typeaheadMinLength]="3"
+          [typeaheadAsync]="true" formControlName="assignee" [typeaheadItemTemplate]="assigneeTemplate"
+          [isAnimated]="true" container="body" typeaheadOptionField="userName">
+        <div *ngIf="isSearching" class="position-absolute typhead-spinner">
+          <i class="fa fa-spinner fa-spin"></i>
+        </div>
       </div>
       <p *ngIf="isTouched('assignee') && !isValid('assignee')" class="help is-danger">
         This task assignee is invalid

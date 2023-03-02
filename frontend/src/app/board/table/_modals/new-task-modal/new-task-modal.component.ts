@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription, take } from 'rxjs';
+import { map, Observable, ObservableLike, Observer, of, Subscription, switchMap, take, tap } from 'rxjs';
 import { DueDateValidator } from 'src/app/_forms/due-date-validator';
 import { KanBoard } from 'src/app/_models/kan-board';
 import { KanTable } from 'src/app/_models/kan-table';
@@ -34,12 +34,16 @@ export class NewTaskModalComponent implements OnInit, AfterViewInit {
   public successButtonNamePending = 'Creating...';
   public cancelButtonName = 'Cancel';
   public taskStatuses: KanTaskStatus[] = [];
-  public users: KanUser[] = [];
+  public users$?: Observable<KanUser[]>; 
   public selected: any;
+  public search?: string;
+  public isSearching = false;
 
   private newTask!: NewKanTask;
+  private usersSnapshot?: KanUser[] = [];
 
   private sub = new Subscription();
+
 
   constructor(
     private formBuilder: FormBuilder,
@@ -49,6 +53,23 @@ export class NewTaskModalComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
+    this.users$ = new Observable((observer: Observer<string | undefined>) => {
+      observer.next(this.search);
+    }).pipe(
+      switchMap((query: string) => {
+        if(!!query) {
+          this.isSearching = true;
+          return this.usersService.getUsers(query).pipe(map(result => result.content));
+        }
+        this.isSearching = false;
+        return of([]);
+      }),
+      tap(users => {
+        this.isSearching = false;
+        this.usersSnapshot = users;
+      })
+    );
+
     this.tasksService
       .getTaskStatuses()
       .pipe(take(1))
@@ -57,7 +78,7 @@ export class NewTaskModalComponent implements OnInit, AfterViewInit {
       });
     
     this.usersService.loggedUser$.pipe(take(1)).subscribe(user => {
-      this.users.push({...user});
+      // this.users.push({...user});
     });
   }
 
@@ -120,7 +141,7 @@ export class NewTaskModalComponent implements OnInit, AfterViewInit {
     this.newTask.status = this.taskStatuses.find(
       (e) => e.name === this.form.controls['status'].value
     )!;
-    this.newTask.assignee = this.users.find(e => e.userName === this.form.controls['assignee'].value)!;
+    this.newTask.assignee = this.usersSnapshot!.find(e => e.userName === this.form.controls['assignee'].value)!;
     this.newTask.description = this.form.controls['description'].value;
     this.newTask.dueDate = this.form.controls['dueDate'].value;
     this.newTask.name = this.form.controls['name'].value;

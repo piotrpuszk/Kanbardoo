@@ -9,6 +9,9 @@ export class ModalComponent implements OnInit {
   @Input() public title = 'Title';
   @Input() public successButtonName = 'Save changes';
   @Input() public cancelButtonName = 'Cancel';
+  @Input() public headerEnabled = true;
+  @Input() public footerEnabled = true;
+  @Input() public style = {'width': '640px'};
   public isOpen = false;
 
   private onSuccess = new EventEmitter();
