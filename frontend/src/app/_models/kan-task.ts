@@ -9,4 +9,5 @@ export interface KanTask {
     status: KanTaskStatus;
     assignee: KanUser;
     tableID: string;
+    priority: number;
 }
