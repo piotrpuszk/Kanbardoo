@@ -1,0 +1,12 @@
+<app-modal #membersModal [footerEnabled]="false" title="Members">
+  <div *ngIf="!pending" class="m-5">
+    <div class="member columns m-1" *ngFor="let member of members">
+      <div class="column m-1">
+        {{member.userName}}
+      </div>
+      <div class="column">
+        {{member.roleName}}
+      </div>
+    </div>
+  </div>
+</app-modal>

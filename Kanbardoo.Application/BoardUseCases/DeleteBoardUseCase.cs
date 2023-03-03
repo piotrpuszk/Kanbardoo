@@ -3,13 +3,12 @@ using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Authorization;
-using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Security.Claims;
-using ILogger = Serilog.ILogger;  
+using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.BoardUseCases;
 public class DeleteBoardUseCase : IDeleteBoardUseCase

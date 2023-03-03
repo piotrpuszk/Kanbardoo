@@ -1,4 +1,5 @@
-<nav *ngIf="(usersService.loggedUser$ | async) as loggedUser" class="navbar" role="navigation" aria-label="main navigation">
+<nav *ngIf="(usersService.loggedUser$ | async) as loggedUser" class="navbar" role="navigation"
+  aria-label="main navigation">
   <div class="navbar-brand">
     <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
       <span aria-hidden="true"></span>
@@ -12,6 +13,11 @@
       <a class="navbar-item" routerLinkActive="is-active" routerLink="dashboard">Dashboard</a>
       <a class="navbar-item" routerLinkActive="is-active" routerLink="new-board">New board</a>
       <a *ngIf="isBoardView()" class="navbar-item" (click)="openBoardSettings()">Board settings</a>
+      <a *ngIf="isBoardView()" class="navbar-item" (click)="membersModalRef.open()">
+        <i class="fas fa-user mr-1"></i>
+        Members (<span *ngIf="!membersLoading && !boardLoading">{{allMembers.length}}</span>
+        <span *ngIf="membersLoading || boardLoading" class="fa fa-spinner fa-spin mt-1"></span>)
+      </a>
       <a *ngIf="isBoardView()" class="navbar-item" (click)="openInvite()">Invite</a>
     </div>
 
@@ -36,3 +42,4 @@
 </nav>
 
 <app-invitations-modal #invitationsModalRef></app-invitations-modal>
+<app-members-modal [members]="allMembers" #membersModalRef></app-members-modal>

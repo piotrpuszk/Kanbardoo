@@ -1,5 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, skip, Subject } from 'rxjs';
+import { getDefaultBoard, KanBoard } from '../_models/kan-board';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +10,14 @@ export class BoardControllerService {
   private readonly onOpenBoardSettings = new EventEmitter();
   private readonly onOpenInvite = new EventEmitter();
   private readonly onAcceptInvitation = new EventEmitter();
+  private readonly onBoardLoaded = new BehaviorSubject<KanBoard>(getDefaultBoard());
+  private readonly onBoardLoading = new BehaviorSubject<boolean>(false);
 
   public readonly onOpenBoardSettings$ = this.onOpenBoardSettings.asObservable();
   public readonly onOpenInvite$ = this.onOpenInvite.asObservable();
   public readonly onAcceptInvitation$ = this.onAcceptInvitation.asObservable();
+  public readonly onBoardLoaded$ = this.onBoardLoaded.pipe(skip(1));
+  public readonly onBoardLoading$ = this.onBoardLoading.pipe(skip(1));
 
   constructor() { }
 
@@ -39,4 +44,12 @@ export class BoardControllerService {
   public acceptInvitation() {
     this.onAcceptInvitation.emit();
   }
-}
+
+  public boardLoaded(board: KanBoard) {
+    this.onBoardLoaded.next(board);  
+  }
+
+  public boardLoading(loading: boolean) {
+    this.onBoardLoading.next(loading);  
+  }
+} 

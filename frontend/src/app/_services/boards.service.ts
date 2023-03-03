@@ -5,6 +5,8 @@ import { environment } from 'src/environments/environment.development';
 import { NewBoard } from '../new-board/_models/new-board';
 import { BoardFilters } from '../_models/board-filters';
 import { KanBoard } from '../_models/kan-board';
+import { KanBoardUser } from '../_models/kan-board-user';
+import { KanUser } from '../_models/kan-user';
 import { Result } from '../_models/result';
 import { UsersService } from './users.service';
 
@@ -41,5 +43,9 @@ export class BoardsService {
 
   public update(board: KanBoard) {
     return this.http.put(this.boardsUrl, board, this.usersService.getOptions());
+  }
+
+  public getBoardMembers(boardID: number) {
+    return this.http.get<Result<KanBoardUser[]>>(`${this.boardsUrl}${boardID}/members`, this.usersService.getOptions());
   }
 }

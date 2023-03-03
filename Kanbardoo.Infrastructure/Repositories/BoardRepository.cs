@@ -108,4 +108,14 @@ public class BoardRepository : IBoardRepository
 
         _dbContext.Boards.Update(tracked);
     }
+
+    public async Task<IEnumerable<KanUser>> GetBoardMembers(int boardID)
+    {
+        var users = await _dbContext.UserBoardsRoles
+            .Where(e => e.BoardID == boardID && e.RoleID == KanRoleID.Member)
+            .Select(e => e.User)
+            .ToListAsync();
+
+        return users;
+    }
 }
