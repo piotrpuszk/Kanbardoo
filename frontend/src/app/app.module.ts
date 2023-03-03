@@ -26,6 +26,7 @@ import { FormsModule } from '@angular/forms';
 import { TaskModalComponent } from './board/table/task/_modals/task-modal/task-modal.component';
 import { InviteModalComponent } from './board/_modals/invite-modal/invite-modal.component';
 import { InvitationsModalComponent } from './_modals/invitations-modal/invitations-modal.component';
+import { UnauthorizedInterceptor } from './_interceptors/unauthorized.interceptor';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,11 @@ import { InvitationsModalComponent } from './_modals/invitations-modal/invitatio
     {
       provide: HTTP_INTERCEPTORS,
       useClass: DelayInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: UnauthorizedInterceptor,
       multi: true
     }
   ],

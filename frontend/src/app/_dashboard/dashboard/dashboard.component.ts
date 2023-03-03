@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 import { KanRoleID } from 'src/app/constants';
 import { BoardFilters } from 'src/app/_models/board-filters';
 import { KanBoard } from 'src/app/_models/kan-board';
+import { BoardControllerService } from 'src/app/_services/board-controller.service';
 import { BoardsService } from 'src/app/_services/boards.service';
 
 @Component({
@@ -31,14 +32,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private subs: { [key: string]: Subscription } = {};
   private pedings: { [key: string]: boolean } = {};
  
+  private sub = new Subscription();
 
-  constructor(private boardsService: BoardsService) {}
+  constructor(private boardsService: BoardsService, private boardController: BoardControllerService) {}
 
   ngOnInit() {
     this.subs[this.ownershipBoardsKey] = undefined!;
     this.subs[this.membershipBoardsKey] = undefined!;
     this.getOwnershipBoards();
     this.getMembershipBoards();
+
+    this.sub.add(this.boardController.onAcceptInvitation$.subscribe(e => {
+      this.getMembershipBoards();
+    }));
   }
 
   ngOnDestroy() {
@@ -56,7 +62,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private getOwnershipBoards() {
     this.enablePending(this.ownershipBoardsKey);
-    this.boardsService.getBoards(this.ownershipFilters).subscribe(result => {
+    this.boardsService.getBoards(this.ownershipFilters).pipe(take(1)).subscribe(result => {
       this.ownershipBoards = result.content;
       this.disablePending(this.ownershipBoardsKey);
     });
@@ -64,7 +70,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private getMembershipBoards() {
     this.enablePending(this.membershipBoardsKey);
-    this.boardsService.getBoards(this.membershipFilters).subscribe(result => {
+    this.boardsService.getBoards(this.membershipFilters).pipe(take(1)).subscribe(result => {
       this.membershipBoards = result.content;
       this.disablePending(this.membershipBoardsKey);
     });

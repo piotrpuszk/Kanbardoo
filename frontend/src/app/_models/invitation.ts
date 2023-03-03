@@ -5,4 +5,5 @@ export interface Invitation {
   id: number;
   user: KanUser;
   board: KanBoard;
+  sender: KanUser;
 }

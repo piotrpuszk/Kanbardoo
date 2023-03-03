@@ -18,6 +18,7 @@ public class InvitationsController : ControllerBase
     private readonly IAcceptInvitationUseCase _acceptInvitationUseCase;
     private readonly IGetInvitationsUseCase _getInvitationsUseCase;
     private readonly ICancelInvitationUseCase _cancelInvitationUseCase;
+    private readonly IDeclineInvitationUseCase _declineInvitationUseCase;
     private readonly IMapper _mapper;
     private readonly ILogger _logger;
 
@@ -26,7 +27,8 @@ public class InvitationsController : ControllerBase
                                  IMapper mapper,
                                  ILogger logger,
                                  ICancelInvitationUseCase cancelInvitationUseCase,
-                                 IAcceptInvitationUseCase acceptInvitationUseCase)
+                                 IAcceptInvitationUseCase acceptInvitationUseCase,
+                                 IDeclineInvitationUseCase declineInvitationUseCase)
     {
         _inviteUserUseCase = inviteUserUseCase;
         _mapper = mapper;
@@ -34,6 +36,7 @@ public class InvitationsController : ControllerBase
         _getInvitationsUseCase = getInvitationsUseCase;
         _cancelInvitationUseCase = cancelInvitationUseCase;
         _acceptInvitationUseCase = acceptInvitationUseCase;
+        _declineInvitationUseCase = declineInvitationUseCase;
     }
 
     [HttpPost("invite")]
@@ -75,5 +78,13 @@ public class InvitationsController : ControllerBase
         return Result<IEnumerable<InvitationDTO>>
                 .SuccessResult(invitationDTOs)
                 .GetActionResult();
+    }
+
+    [HttpPost("decline")]
+    public async Task<IActionResult> Decline([FromBody] DeclineInvitationDTO declineInvitationDTO)
+    {
+        var declineInvitation = _mapper.Map<DeclineInvitation>(declineInvitationDTO);
+        var result = await _declineInvitationUseCase.HandleAsync(declineInvitation);
+        return result.GetActionResult();
     }
 }
