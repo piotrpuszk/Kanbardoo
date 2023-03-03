@@ -1,31 +1,12 @@
 <section class="section">
-    <h1 class="title">Your own boards</h1>
     <div class="flex tile is-ancestor fade-in">
         <app-dashboard-card *ngFor="let board of ownershipBoards" class="tile is-parent is-3"
             [board]="board"></app-dashboard-card>
-    </div>
-    <div *ngIf="isPending(ownershipBoardsKey)" class="d-flex justify-content-center align-items-center">
-        <div>
-            <span class="fa-solid fa-spinner fa-spin" style="font-size: 3rem;"></span>
-        </div>
-    </div>
-</section>
-
-<section class="section">
-    <h1 class="title">Boards where you are a member</h1>
-    <div class="flex tile is-ancestor">
         <app-dashboard-card *ngFor="let board of membershipBoards" class="tile is-parent is-3"
             [board]="board"></app-dashboard-card>
     </div>
-    <div *ngIf="!isPending(membershipBoardsKey) && membershipBoards.length === 0">
-        <div class="d-flex justify-content-center">
-            <div class="btn btn-outline-success" style="font-size: 1.5rem;">
-                    Join!
-            </div>
-            <p class="title">
-        </div>
-    </div>
-    <div *ngIf="isPending(membershipBoardsKey)" class="d-flex justify-content-center">
+    <div *ngIf="isPending(ownershipBoardsKey) || isPending(membershipBoardsKey)"
+        class="d-flex justify-content-center align-items-center">
         <div>
             <span class="fa-solid fa-spinner fa-spin" style="font-size: 3rem;"></span>
         </div>

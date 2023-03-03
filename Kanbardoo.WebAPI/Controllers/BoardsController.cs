@@ -24,6 +24,7 @@ public sealed class BoardsController : ControllerBase
     private readonly IGetBoardUseCase _getBoardUseCase;
     private readonly IUpdateBoardUseCase _updateBoardUseCase;
     private readonly IDeleteBoardUseCase _deleteBoardUseCase;
+    private readonly IGetBoardMembersUseCase _getBoardMembersUseCase;
     private readonly IMapper _mapper;
 
     public BoardsController(ILogger logger,
@@ -31,7 +32,8 @@ public sealed class BoardsController : ControllerBase
                            IGetBoardUseCase getBoardUseCase,
                            IUpdateBoardUseCase updateBoardUseCase,
                            IMapper mapper,
-                           IDeleteBoardUseCase deleteBoardUseCase)
+                           IDeleteBoardUseCase deleteBoardUseCase,
+                           IGetBoardMembersUseCase getBoardMembersUseCase)
     {
         _logger = logger;
         _addBoardUseCase = addBoardUseCase;
@@ -39,6 +41,7 @@ public sealed class BoardsController : ControllerBase
         _updateBoardUseCase = updateBoardUseCase;
         _mapper = mapper;
         _deleteBoardUseCase = deleteBoardUseCase;
+        _getBoardMembersUseCase = getBoardMembersUseCase;
     }
 
     [HttpPost("add")]
@@ -92,5 +95,20 @@ public sealed class BoardsController : ControllerBase
     {
         var result = await _deleteBoardUseCase.HandleAsync(id);
         return result.GetActionResult();
+    }
+
+    [HttpGet("{id}/members")]
+    public async Task<IActionResult> GetMembers(int id)
+    {
+        var result = await _getBoardMembersUseCase.HandleAsync(id);
+
+        if (!result.IsSuccess)
+        {
+            return result.GetActionResult();
+        }
+
+        var userDTOs = _mapper.Map<IEnumerable<KanBoardUserDTO>>(result.Content);
+
+        return Result<IEnumerable<KanBoardUserDTO>>.SuccessResult(userDTOs).GetActionResult();
     }
 }

@@ -10,4 +10,5 @@ public interface IBoardRepository
     Task UpdateAsync(KanBoard board);
     Task AddAsync(KanBoard board);
     Task DeleteAsync(int id);
+    Task<IEnumerable<KanUser>> GetBoardMembers(int boardID);
 }

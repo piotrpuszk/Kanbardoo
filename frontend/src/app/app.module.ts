@@ -27,6 +27,7 @@ import { TaskModalComponent } from './board/table/task/_modals/task-modal/task-m
 import { InviteModalComponent } from './board/_modals/invite-modal/invite-modal.component';
 import { InvitationsModalComponent } from './_modals/invitations-modal/invitations-modal.component';
 import { UnauthorizedInterceptor } from './_interceptors/unauthorized.interceptor';
+import { MembersModalComponent } from './_modals/members-modal/members-modal.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { UnauthorizedInterceptor } from './_interceptors/unauthorized.intercepto
     NewTaskModalComponent,
     TaskModalComponent,
     InviteModalComponent,
-    InvitationsModalComponent
+    InvitationsModalComponent,
+    MembersModalComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

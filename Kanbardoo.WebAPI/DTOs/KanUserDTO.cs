@@ -2,7 +2,7 @@
 
 namespace Kanbardoo.WebAPI.DTOs;
 
-public sealed class KanUserDTO
+public class KanUserDTO
 {
     [Required]
     public int ID { get; set; }

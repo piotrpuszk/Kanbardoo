@@ -113,6 +113,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   private getBoard(id: number) {
+    this.boardControllerService.boardLoading(true);
     this.boardsService
       .getBoard(id)
       .pipe(take(1))
@@ -121,6 +122,8 @@ export class BoardComponent implements OnInit, OnDestroy {
         this.pending = false;
         this.stopAddingTable();
         this.newTableStopPending();
+        this.boardControllerService.boardLoaded({ ...result.content });
+        this.boardControllerService.boardLoading(false);
       });
   }
 
