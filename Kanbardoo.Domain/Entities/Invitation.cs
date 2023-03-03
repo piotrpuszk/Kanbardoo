@@ -12,5 +12,7 @@ public class Invitation : Entity
     public int BoardID { get; set; }
     [ForeignKey(nameof(BoardID))]
     public KanBoard Board { get; set; } = new KanBoard();
-
+    public int SenderID { get; set; }
+    [ForeignKey(nameof(SenderID))]
+    public KanUser Sender { get; set; }
 }

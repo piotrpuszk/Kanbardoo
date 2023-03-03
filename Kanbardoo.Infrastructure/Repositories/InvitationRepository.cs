@@ -17,6 +17,7 @@ public class InvitationRepository : IInvitationRepository
     {
         invitation.Board = null!;
         invitation.User= null!;
+        invitation.Sender = null!;
         await _dbContext.Invitations.AddAsync(invitation);
     }
 
@@ -43,6 +44,7 @@ public class InvitationRepository : IInvitationRepository
             .Include(e => e.Board)
             .ThenInclude(e => e.Status)
             .Include(e => e.User)
+            .Include(e => e.Sender)
             .ToListAsync();
     }
 
@@ -55,6 +57,7 @@ public class InvitationRepository : IInvitationRepository
             .Include(e => e.Board)
             .ThenInclude(e => e.Status)
             .Include(e => e.User)
+            .Include(e => e.Sender)
             .FirstOrDefaultAsync();
 
         if (result is null)

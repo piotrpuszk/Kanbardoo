@@ -130,6 +130,7 @@ builder.Services.AddScoped<IInviteUserUseCase, InviteUserUseCase>();
 builder.Services.AddScoped<IGetInvitationsUseCase, GetInvitationsUseCase>();
 builder.Services.AddScoped<ICancelInvitationUseCase, CancelInvitationUseCase>();
 builder.Services.AddScoped<IAcceptInvitationUseCase, AcceptInvitationUseCase>();
+builder.Services.AddScoped<IDeclineInvitationUseCase, DeclineInvitationUseCase>();
 
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 builder.Services.AddScoped<ITableRepository, TableRepository>();
@@ -169,6 +170,7 @@ builder.Services.AddScoped<NewKanUserClaimValidator>();
 builder.Services.AddScoped<NewInvitationValidator>();
 builder.Services.AddScoped<CancelInvitationValidator>();
 builder.Services.AddScoped<AcceptInvitationValidator>();
+builder.Services.AddScoped<DeclineInvitationValidator>();
 
 builder.Services.AddScoped<ICreateToken, TokenService>();
 

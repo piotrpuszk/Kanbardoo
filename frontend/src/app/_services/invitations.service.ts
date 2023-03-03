@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import { AcceptInvitation } from '../_models/accept-invitation';
 import { CancelInvitation } from '../_models/cancel-invitation';
+import { DeclineInvitation } from '../_models/decline-invitation';
 import { Invitation } from '../_models/invitation';
 import { NewInvitation } from '../_models/new-invitation';
 import { Result } from '../_models/result';
@@ -32,4 +33,8 @@ export class InvitationsService {
   public accept(acceptInvitation: AcceptInvitation) {
     return this.http.post(this.baseUrl + '/accept', acceptInvitation, this.usersService.getOptions());
   }
+
+  public decline(declineInvitation: DeclineInvitation) {
+    return this.http.post(this.baseUrl + '/decline', declineInvitation, this.usersService.getOptions());
+  } 
 }

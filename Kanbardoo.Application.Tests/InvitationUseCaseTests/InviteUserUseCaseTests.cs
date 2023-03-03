@@ -86,7 +86,7 @@ internal class InviteUserUseCaseTests
 
         NewInvitationValidator validator = new(_unitOfWork.Object);
 
-        _inviteUserUseCase = new InviteUserUseCase(_unitOfWork.Object, _logger.Object, validator, _boardOwnershipPolicy.Object);
+        _inviteUserUseCase = new InviteUserUseCase(_unitOfWork.Object, _logger.Object, validator, _boardOwnershipPolicy.Object, _contextAccessor.Object);
     }
 
     [Test]

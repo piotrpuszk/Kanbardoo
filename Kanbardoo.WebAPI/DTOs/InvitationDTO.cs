@@ -12,5 +12,7 @@ public class InvitationDTO
     public KanUserDTO User { get; set; } = new KanUserDTO();
 
     [Required]
-    public KanBoardDTO Board { get; set; } = new KanBoardDTO(); 
+    public KanBoardDTO Board { get; set; } = new KanBoardDTO();
+    [Required]
+    public KanUserDTO Sender { get; set; } = new KanUserDTO();
 }

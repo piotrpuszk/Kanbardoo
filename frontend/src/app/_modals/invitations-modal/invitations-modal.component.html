@@ -1,5 +1,5 @@
 <app-modal title="Invitations" [footerEnabled]="false" [style]="{'width': '735px'}" #invitationsModal>
-  <div class="m-5">
+  <div *ngIf="!pending && !!invitations && invitations.length > 0" class="m-5">
     <div class="columns table-header">
       <div class="column">
         <span>Sender</span>
@@ -12,15 +12,29 @@
     </div>
     <div class="columns invitation" *ngFor="let invitation of invitations">
       <div class="column">
-        <span>{{invitation.user.userName}}</span>
+        <span>{{invitation.sender.userName}}</span>
       </div>
       <div class="column">
         <span>{{invitation.board.name}}</span>
       </div>
-      <div class="column">
+      <div *ngIf="!handleInvitationPending" class="column">
         <button class="button" (click)="accept(invitation)">Accept</button>
         <button class="button" (click)="decline(invitation)">Decline</button>
       </div>
+      <div *ngIf="handleInvitationPending" class="column">
+        <i class="fa fa-spinner fa-spin"></i>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!pending && (!invitations || invitations?.length === 0)"
+  class="d-flex justify-content-center align-items-center m-5">
+    <div class="notification">
+      There are no pending invitations      
+    </div>
+  </div>
+  <div *ngIf="pending" class="d-flex justify-content-center align-items-center m-5">
+    <div>
+      <i class="fa fa-spin fa-spinner fa-2x"></i>
     </div>
   </div>
 </app-modal>
