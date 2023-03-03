@@ -147,6 +147,7 @@ export class TaskModalComponent implements OnInit, AfterViewInit {
       )!,
       assignee: assignee,
       tableID: this.task.tableID,
+      priority: this.task.priority,
     };
 
     this.tasksService.update(task).subscribe((e) => {

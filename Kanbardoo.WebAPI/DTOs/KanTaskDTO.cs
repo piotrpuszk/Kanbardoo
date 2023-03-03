@@ -17,4 +17,5 @@ public sealed class KanTaskDTO
     public KanUserDTO Assignee { get; set; } = new KanUserDTO();
     [Required]
     public int TableID { get; set; }
+    public int Priority { get; set; }
 }

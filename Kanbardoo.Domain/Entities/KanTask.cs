@@ -22,4 +22,5 @@ public class KanTask : Entity
     public int TableID { get; set; }
     [ForeignKey(nameof(TableID))]
     public KanTable Table { get; set; } = new KanTable();
+    public int Priority { get; set; }
 }
