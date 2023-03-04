@@ -1,16 +1,19 @@
 ﻿using AutoMapper;
 using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Application.Results;
+using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Filters;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.WebAPI.Controllers;
 using Kanbardoo.WebAPI.DTOs;
 using Kanbardoo.WebAPI.FilterDTOs;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Serilog;
 using System.Net;
+using System.Security.Claims;
 
 namespace Kanbardoo.WebAPI.Tests;
 internal class BoardsControllerTests
@@ -20,6 +23,8 @@ internal class BoardsControllerTests
     private Mock<IUpdateBoardUseCase> _updateBoardUseCase;
     private Mock<IDeleteBoardUseCase> _deleteBoardUseCase;
     private Mock<IGetBoardUseCase> _getBoardUseCase;
+    private Mock<IGetBoardMembersUseCase> _getBoardMembersUseCase;
+    private Mock<IHttpContextAccessor> _httpContextAccessor;
     private Mock<IMapper> _mapper;
     private BoardsController _boardsController;
 
@@ -31,6 +36,8 @@ internal class BoardsControllerTests
         _updateBoardUseCase = new Mock<IUpdateBoardUseCase>();
         _deleteBoardUseCase = new Mock<IDeleteBoardUseCase>();
         _getBoardUseCase = new Mock<IGetBoardUseCase>();
+        _getBoardMembersUseCase = new Mock<IGetBoardMembersUseCase>();
+        _httpContextAccessor = new Mock<IHttpContextAccessor>();
         _mapper = new Mock<IMapper>();
 
         _boardsController = new BoardsController(
@@ -39,7 +46,9 @@ internal class BoardsControllerTests
             _getBoardUseCase.Object,
             _updateBoardUseCase.Object,
             _mapper.Object,
-            _deleteBoardUseCase.Object
+            _deleteBoardUseCase.Object,
+            _getBoardMembersUseCase.Object,
+            _httpContextAccessor.Object
             );
     }
 
@@ -156,6 +165,10 @@ internal class BoardsControllerTests
         };
         _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<KanBoardFilters>())).ReturnsAsync(Result<IEnumerable<KanBoard>>.SuccessResult(boards));
         _mapper.Setup(e => e.Map<IEnumerable<KanBoardDTO>>(boards)).Returns(boardsDTO);
+        var httpContext = new DefaultHttpContext();
+        httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims: new List<Claim> { new Claim(KanClaimName.ID, "1") }));
+        _httpContextAccessor.Setup(e => e.HttpContext).Returns(httpContext);
+        _mapper.Setup(e => e.Map<KanBoardFilters>(It.IsAny<KanBoardFiltersDTO>())).Returns(() => new KanBoardFilters());
 
         var result = await _boardsController.Get(boardFiltersDTO) as OkObjectResult;
 
@@ -177,6 +190,10 @@ internal class BoardsControllerTests
 
         _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<KanBoardFilters>())).ReturnsAsync(Result<IEnumerable<KanBoard>>.ErrorResult(""));
         _mapper.Setup(e => e.Map<KanBoardFilters>(boardFiltersDTO)).Returns(() => null!);
+
+        var httpContext = new DefaultHttpContext();
+        httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims: new List<Claim> { new Claim(KanClaimName.ID, "1") }));
+        _httpContextAccessor.Setup(e => e.HttpContext).Returns(httpContext);
 
         var result = await _boardsController.Get(boardFiltersDTO) as BadRequestObjectResult;
 
@@ -326,9 +343,14 @@ internal class BoardsControllerTests
     {
         //Arrange
         _getBoardUseCase.Setup(e => e.HandleAsync(It.IsAny<KanBoardFilters>())).ReturnsAsync(Result<IEnumerable<KanBoard>>.ErrorResult("", HttpStatusCode.InternalServerError));
+        _mapper.Setup(e => e.Map<KanBoardFilters>(It.IsAny<KanBoardFiltersDTO>())).Returns(() => new KanBoardFilters());
+        var httpContext = new DefaultHttpContext();
+        httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims: new List<Claim> { new Claim(KanClaimName.ID, "1") }));
+        _httpContextAccessor.Setup(e => e.HttpContext).Returns(httpContext);
+
 
         //Act
-        var result = await _boardsController.Get(It.IsAny<KanBoardFiltersDTO>()) as ObjectResult;
+        var result = await _boardsController.Get(new KanBoardFiltersDTO()) as ObjectResult;
 
         //Assert
         Assert.IsNotNull(result);
