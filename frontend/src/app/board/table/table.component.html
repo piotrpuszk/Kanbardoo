@@ -17,6 +17,12 @@
         <i class="fa-solid fa-xmark"></i>
       </div>
     </div>
+    <div class="control" [ngClass]="{ 'disabled': tableNameEdit.pending }">
+      <div class="button is-danger" (click)="!tableNameEdit.pending && deleteTable()">
+        <i *ngIf="!tableNameEdit.pending" class="fa-solid fa-trash"></i>
+        <i *ngIf="tableNameEdit.pending" class="fa fa-spinner fa-spin"></i>
+      </div>
+    </div>
   </form>
   <div class="table-content">
     <div class="m-2 p-2 text-center new-task clickable" (click)="newTaskModalRef.open()">
@@ -27,7 +33,7 @@
       <app-task *ngFor="let task of table.tasks" [task]="task"></app-task>
       <app-task *ngIf="table.tasks.length === 0" [task]="getDefaultTask()"></app-task>
     </div>
-    
+
   </div>
 </div>
 

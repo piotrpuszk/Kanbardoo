@@ -4,6 +4,7 @@ import { DragulaService } from 'ng2-dragula';
 import { delay, of, Subscription, take } from 'rxjs';
 import { KanTable } from 'src/app/_models/kan-table';
 import { getDefaultTask, KanTask } from 'src/app/_models/kan-task';
+import { BoardControllerService } from 'src/app/_services/board-controller.service';
 import { TablesService } from 'src/app/_services/tables.service';
 
 @Component({
@@ -17,10 +18,12 @@ export class TableComponent {
     enabled: boolean;
     pending: boolean;
     form?: FormGroup;
+    dragAndDropMode: boolean;
   } = {
     enabled: false,
     pending: false,
     form: undefined,
+    dragAndDropMode: false,
   };
   public tasks: KanTask[] = [];
   public getDefaultTask = getDefaultTask;
@@ -28,7 +31,8 @@ export class TableComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private tablesService: TablesService
+    private tablesService: TablesService,
+    private boardController: BoardControllerService
   ) {
   }
 
@@ -59,6 +63,15 @@ export class TableComponent {
 
     this.tablesService.update(this.table).subscribe((e) => {
       this.stopTableNameEdit();
+    });
+  }
+
+  public deleteTable() {
+    this.tableNameEdit.pending = true;
+
+    this.tablesService.delete(this.table.id).pipe(take(1)).subscribe(e => {
+      this.stopTableNameEdit();
+      this.boardController.tableDeleted(this.table.id);
     });
   }
 }
