@@ -13,4 +13,5 @@ public sealed class KanTableDTO
     [Required]
     public DateTime CreationDate { get; set; }
     public ICollection<KanTaskDTO> Tasks { get; set; } = new List<KanTaskDTO>();
+    public int Priority { get; set; }
 }

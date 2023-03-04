@@ -12,12 +12,14 @@ export class BoardControllerService {
   private readonly onAcceptInvitation = new EventEmitter();
   private readonly onBoardLoaded = new BehaviorSubject<KanBoard>(getDefaultBoard());
   private readonly onBoardLoading = new BehaviorSubject<boolean>(false);
+  private readonly onTableDeleted = new BehaviorSubject<number>(0);
 
   public readonly onOpenBoardSettings$ = this.onOpenBoardSettings.asObservable();
   public readonly onOpenInvite$ = this.onOpenInvite.asObservable();
   public readonly onAcceptInvitation$ = this.onAcceptInvitation.asObservable();
   public readonly onBoardLoaded$ = this.onBoardLoaded.pipe(skip(1));
   public readonly onBoardLoading$ = this.onBoardLoading.pipe(skip(1));
+  public readonly onTableDeleted$ = this.onTableDeleted.pipe(skip(1));
 
   constructor() { }
 
@@ -51,5 +53,9 @@ export class BoardControllerService {
 
   public boardLoading(loading: boolean) {
     this.onBoardLoading.next(loading);  
+  }
+
+  public tableDeleted(tableID: number) {
+    this.onTableDeleted.next(tableID);
   }
 } 

@@ -26,4 +26,10 @@ export class TablesService {
   public update(table: KanTable) {
     return this.http.put(this.baseUrl, table, this.usersService.getOptions());
   }
+
+  public delete(id: number) {
+    var params = new HttpParams();
+    params = params.append('id', id);
+    return this.http.delete(this.baseUrl, {params, ...this.usersService.getOptions()});
+  }
 }

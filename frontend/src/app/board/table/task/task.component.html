@@ -1,4 +1,4 @@
-<div *ngIf="task.id !== 0" class="task notification is-success m-2 p-2 d-flex justify-content-between flex-column clickable"
+<div *ngIf="!!task && task.id !== 0" class="task notification is-success m-2 p-2 d-flex justify-content-between flex-column clickable"
   (click)="!isDragging() && taskModalRef.open()">
   <div class="flex-1">
     <span class="line-clamp">
@@ -10,7 +10,7 @@
   </div>
 </div>
 
-<div *ngIf="task.id === 0" class="task">
+<div *ngIf="!!task && task.id === 0" class="task">
 </div>
 
 <app-task-modal [task]="task" #taskModalRef></app-task-modal>
