@@ -6,4 +6,5 @@ export interface KanTable {
     name: number;
     creationDate: Date;
     tasks: KanTask[];
+    priority: number;
 }

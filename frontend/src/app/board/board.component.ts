@@ -30,6 +30,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     form: undefined,
     pending: false,
   };
+  private dragAndDropMode = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -44,7 +45,9 @@ export class BoardComponent implements OnInit, OnDestroy {
         of(1)
           .pipe(take(1), delay(100))
           .subscribe((e) => {
-            for (const table of this.board!.tables) {
+            for (let j = 0; j < this.board!.tables.length; j++) {
+              const table = this.board!.tables[j];
+              table.priority = j;
               for (let i = 0; i < table.tasks.length; i++) {
                 const element = table.tasks[i];
                 element.priority = i;
@@ -102,6 +105,12 @@ export class BoardComponent implements OnInit, OnDestroy {
         this.inviteModal.open();
       })
     );
+
+    this.sub.add(
+      this.boardControllerService.onTableDeleted$.subscribe((tableID) => {
+        this.board!.tables = this.board?.tables.filter(e => e.id !== tableID)!;
+      })
+    );
   }
 
   public startAddingTable() {
@@ -110,12 +119,12 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   public stopAddingTable() {
     this.newTable.inProgress = false;
+    this.setupNewTableForm();
   }
 
   public cancelAddingTable() {
     this.stopAddingTable();
-    this.newTable.pending = false;
-    this.setupNewTableForm();
+    this.newTableStopPending();
   }
 
   public addTable() {
@@ -132,6 +141,18 @@ export class BoardComponent implements OnInit, OnDestroy {
       .subscribe((e) => {
         this.getBoard(this.board!.id);
       });
+  }
+
+  public startDragAndDropTables() {
+    this.dragAndDropMode = true;
+  }
+
+  public stopDragAndDropTables() {
+    this.dragAndDropMode = false;
+  }
+
+  public isDragAndDropTablesEnabled() {
+    return this.dragAndDropMode;
   }
 
   private getBoard(id: number) {
