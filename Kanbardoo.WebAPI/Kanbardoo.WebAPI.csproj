@@ -28,4 +28,8 @@
     <ProjectReference Include="..\Kanbardoo.Infrastructure\Kanbardoo.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

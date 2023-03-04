@@ -206,6 +206,22 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.UseDefaultFiles();
+
+app.UseStaticFiles();
+
 app.MapControllers();
+
+app.MapFallbackToController("Index", "Fallback");
+
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+
+try
+{
+    var context = services.GetRequiredService<DBContext>();
+    await context.Database.MigrateAsync();
+}
+catch { }
 
 app.Run();

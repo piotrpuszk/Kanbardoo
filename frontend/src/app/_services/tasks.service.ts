@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment';
 import { KanTask } from '../_models/kan-task';
 import { KanTaskStatus } from '../_models/kan-task-status';
 import { NewKanTask } from '../_models/new-kan-task';

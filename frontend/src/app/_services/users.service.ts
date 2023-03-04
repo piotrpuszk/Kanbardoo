@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, tap } from 'rxjs';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment';
 import { SignIn } from '../_authentication/sign-in/models/sign-in';
 import { SingUp } from '../_authentication/sign-up/models/sign-up';
 import { KanUser } from '../_models/kan-user';

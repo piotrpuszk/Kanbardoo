@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment';
 import { AcceptInvitation } from '../_models/accept-invitation';
 import { CancelInvitation } from '../_models/cancel-invitation';
 import { DeclineInvitation } from '../_models/decline-invitation';

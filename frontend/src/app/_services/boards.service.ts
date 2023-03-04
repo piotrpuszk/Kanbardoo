@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment';
 import { NewBoard } from '../new-board/_models/new-board';
 import { BoardFilters } from '../_models/board-filters';
 import { KanBoard } from '../_models/kan-board';
