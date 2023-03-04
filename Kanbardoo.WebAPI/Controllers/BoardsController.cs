@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Kanbardoo.Application.Authorization;
 using Kanbardoo.Application.Authorization.Requirements;
+using Kanbardoo.Application.Constants;
 using Kanbardoo.Application.Contracts.BoardContracts;
+using Kanbardoo.Application.Results;
 using Kanbardoo.Domain.Authorization;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Filters;
@@ -26,6 +28,7 @@ public sealed class BoardsController : ControllerBase
     private readonly IDeleteBoardUseCase _deleteBoardUseCase;
     private readonly IGetBoardMembersUseCase _getBoardMembersUseCase;
     private readonly IMapper _mapper;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public BoardsController(ILogger logger,
                            IAddBoardUseCase addBoardUseCase,
@@ -33,7 +36,8 @@ public sealed class BoardsController : ControllerBase
                            IUpdateBoardUseCase updateBoardUseCase,
                            IMapper mapper,
                            IDeleteBoardUseCase deleteBoardUseCase,
-                           IGetBoardMembersUseCase getBoardMembersUseCase)
+                           IGetBoardMembersUseCase getBoardMembersUseCase,
+                           IHttpContextAccessor httpContextAccessor)
     {
         _logger = logger;
         _addBoardUseCase = addBoardUseCase;
@@ -42,6 +46,7 @@ public sealed class BoardsController : ControllerBase
         _mapper = mapper;
         _deleteBoardUseCase = deleteBoardUseCase;
         _getBoardMembersUseCase = getBoardMembersUseCase;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     [HttpPost("add")]
@@ -55,8 +60,12 @@ public sealed class BoardsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Get(KanBoardFiltersDTO boardFiltersDTO)
     {
+        if (boardFiltersDTO is null)
+        {
+            return Result<IEnumerable<KanBoardDTO>>.ErrorResult(ErrorMessage.BoardFiltersInvalid).GetActionResult();
+        }
         var boardFilters = _mapper.Map<KanBoardFilters>(boardFiltersDTO);
-        boardFilters.OwnerID = int.Parse(HttpContext.User.FindFirstValue(KanClaimName.ID)!);
+        boardFilters.OwnerID = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(KanClaimName.ID)!);
         var result = await _getBoardUseCase.HandleAsync(boardFilters);
 
         if (!result.IsSuccess)
