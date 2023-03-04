@@ -6,8 +6,6 @@
 */KanbardooDB.*
 */logging.txt
 
-**/wwwroot/**
-
 # User-specific files
 *.rsuser
 *.suo
