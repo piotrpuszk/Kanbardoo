@@ -37,7 +37,7 @@ public class TableRepository : ITableRepository
     public async Task<KanTable> GetAsync(int id)
     {
         var found = await _dbContext.Tables
-            .Include(e => e.Tasks)
+            .Include(e => e.Tasks.OrderBy(task => task.Priority))
             .ThenInclude(e => e.Status)
             .Include(e => e.Tasks)
             .ThenInclude(e => e.Assignee)
@@ -53,11 +53,19 @@ public class TableRepository : ITableRepository
 
     public async Task UpdateAsync(KanTable table)
     {
+        foreach (var task in table.Tasks)
+        {
+            task.Assignee = null!;
+            task.Status = null!;
+        }
+
+        _dbContext.ChangeTracker.Clear();
         var tracked = (await _dbContext.Tables.FindAsync(table.ID))!;
 
         tracked.CreationDate = table.CreationDate;
         tracked.Priority = table.Priority;
         tracked.Name = table.Name;
+        tracked.Tasks = table.Tasks;
 
         _dbContext.Tables.Update(tracked);
     }

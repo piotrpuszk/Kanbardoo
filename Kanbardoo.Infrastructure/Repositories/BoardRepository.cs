@@ -80,7 +80,7 @@ public class BoardRepository : IBoardRepository
             .Include(e => e.Owner)
             .Include(e => e.Status)
             .Include(e => e.Tables.OrderBy(e => e.Priority))
-            .ThenInclude(e => e.Tasks)
+            .ThenInclude(e => e.Tasks.OrderBy(e => e.Priority))
             .ThenInclude(e => e.Status)
             .Include(e => e.Tables)
             .ThenInclude(e => e.Tasks)
@@ -97,6 +97,16 @@ public class BoardRepository : IBoardRepository
 
     public async Task UpdateAsync(KanBoard board)
     {
+        foreach (var table in board.Tables)
+        {
+            table.Board = null!;
+            foreach (var task in table.Tasks)
+            {
+                task.Status = null!;
+                task.Assignee = null!;
+            }
+        }
+        _dbContext.ChangeTracker.Clear();
         var tracked = (await _dbContext.Boards.FindAsync(board.ID))!;
 
         tracked.FinishDate = board.FinishDate;
@@ -105,6 +115,7 @@ public class BoardRepository : IBoardRepository
         tracked.StatusID = board.StatusID;
         tracked.BackgroundImageUrl = board.BackgroundImageUrl;
         tracked.Name = board.Name;
+        tracked.Tables = board.Tables;
 
         _dbContext.Boards.Update(tracked);
     }

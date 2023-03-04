@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription, take } from 'rxjs';
+import { DragulaService } from 'ng2-dragula';
+import { delay, of, Subscription, take } from 'rxjs';
 import { KanBoard } from '../_models/kan-board';
 import { BoardControllerService } from '../_services/board-controller.service';
 import { BoardsService } from '../_services/boards.service';
@@ -35,8 +36,29 @@ export class BoardComponent implements OnInit, OnDestroy {
     private boardsService: BoardsService,
     private formBuilder: FormBuilder,
     private tablesService: TablesService,
-    private boardControllerService: BoardControllerService
-  ) {}
+    private boardControllerService: BoardControllerService,
+    private dragula: DragulaService
+  ) {
+    this.sub.add(
+      this.dragula.dragend().subscribe((e) => {
+        of(1)
+          .pipe(take(1), delay(100))
+          .subscribe((e) => {
+            for (const table of this.board!.tables) {
+              for (let i = 0; i < table.tasks.length; i++) {
+                const element = table.tasks[i];
+                element.priority = i;
+                element.tableID = table.id;
+              }
+            }
+            this.boardsService
+                .update(this.board!)
+                .pipe(take(1))
+                .subscribe((e) => {});
+          });
+      })
+    );
+  }
 
   ngOnInit() {
     this.boardControllerService.setBoardComponentActive();

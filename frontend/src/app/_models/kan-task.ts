@@ -8,6 +8,19 @@ export interface KanTask {
     dueDate: Date;
     status: KanTaskStatus;
     assignee: KanUser;
-    tableID: string;
+    tableID: number;
     priority: number;
+}
+
+export function getDefaultTask() {
+    return {
+        id: 0,
+        name: '',
+        description: '',
+        dueDate: new Date(),
+        status: { id: 0, name: '' },
+        assignee: { id: 0, userName: '', creationDate: new Date() },
+        tableID: 0,
+        priority: 0
+    };
 }
