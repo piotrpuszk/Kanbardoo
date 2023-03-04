@@ -1,6 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DragulaService } from 'ng2-dragula';
+import { delay, of, Subscription, take } from 'rxjs';
 import { KanTable } from 'src/app/_models/kan-table';
+import { getDefaultTask, KanTask } from 'src/app/_models/kan-task';
 import { TablesService } from 'src/app/_services/tables.service';
 
 @Component({
@@ -10,13 +13,23 @@ import { TablesService } from 'src/app/_services/tables.service';
 })
 export class TableComponent {
   @Input() table!: KanTable;
-  public tableNameEdit: {enabled: boolean, pending: boolean, form?: FormGroup} = {
+  public tableNameEdit: {
+    enabled: boolean;
+    pending: boolean;
+    form?: FormGroup;
+  } = {
     enabled: false,
     pending: false,
     form: undefined,
   };
+  public tasks: KanTask[] = [];
+  public getDefaultTask = getDefaultTask;
+  private subs = new Subscription();
 
-  constructor(private formBuilder: FormBuilder, private tablesService: TablesService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private tablesService: TablesService
+  ) {
   }
 
   public startTableNameEdit() {
@@ -44,7 +57,7 @@ export class TableComponent {
     this.table.name = this.tableNameEdit.form?.controls['name'].value;
     this.tableNameEdit.pending = true;
 
-    this.tablesService.update(this.table).subscribe(e => {
+    this.tablesService.update(this.table).subscribe((e) => {
       this.stopTableNameEdit();
     });
   }

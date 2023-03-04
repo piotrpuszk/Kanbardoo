@@ -28,6 +28,7 @@ import { InviteModalComponent } from './board/_modals/invite-modal/invite-modal.
 import { InvitationsModalComponent } from './_modals/invitations-modal/invitations-modal.component';
 import { UnauthorizedInterceptor } from './_interceptors/unauthorized.interceptor';
 import { MembersModalComponent } from './_modals/members-modal/members-modal.component';
+import { DragulaModule } from 'ng2-dragula';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { MembersModalComponent } from './_modals/members-modal/members-modal.com
     TypeaheadModule.forRoot(),
     TooltipModule.forRoot(),
     BsDatepickerModule.forRoot(),
+    DragulaModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
