@@ -69,7 +69,7 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Host.UseSerilog((context, config) =>
     config
-    .WriteTo.File("logging.txt")
+    .WriteTo.Console()
 );
 
 builder.Services.AddControllers();
