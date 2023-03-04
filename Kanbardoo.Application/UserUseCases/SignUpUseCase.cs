@@ -28,7 +28,7 @@ public class SignUpUseCase : ISignUpUseCase
 
     public async Task<Result> HandleAsync(SignUp signUp)
     {
-        var validationResult = _signUpValidator.Validate(signUp);
+        var validationResult = await _signUpValidator.ValidateAsync(signUp);
         if (!validationResult.IsValid)
         {
             if (signUp is not null) _logger.Error($"The sign up data are invalid {JsonConvert.SerializeObject(signUp)}");
