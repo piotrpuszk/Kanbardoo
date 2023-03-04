@@ -2,6 +2,7 @@
 using FluentValidation.Results;
 using Kanbardoo.Domain.Filters;
 using Kanbardoo.Domain.Models;
+using Kanbardoo.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,16 @@ using System.Threading.Tasks;
 namespace Kanbardoo.Domain.Validators;
 public class SignUpValidator : AbstractValidator<SignUp>
 {
-	public SignUpValidator()
+	public SignUpValidator(IUnitOfWork unitOfWork)
 	{
 		RuleFor(e => e.UserName).Must(e => !string.IsNullOrWhiteSpace(e));
 		RuleFor(e => e.Password).Must(e => !string.IsNullOrWhiteSpace(e));
+        RuleFor(e => e.UserName).MustAsync(async (username, token) => 
+        {
+            var foundUser = await unitOfWork.UserRepository.GetAsync(username);
+
+            return !foundUser.Exists();
+        });
 	}
 
     public override ValidationResult Validate(ValidationContext<SignUp> context)
