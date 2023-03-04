@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { Subscription, take } from 'rxjs';
 import { UsersService } from 'src/app/_services/users.service';
 
 @Component({
@@ -11,8 +12,11 @@ import { UsersService } from 'src/app/_services/users.service';
 export class SignUpComponent implements OnInit, OnDestroy {
   public form!: FormGroup;
   private sub = new Subscription();
+  public pending = false;
 
-  constructor(private formBuilder: FormBuilder, private usersService: UsersService) {}
+  constructor(private formBuilder: FormBuilder, 
+    private usersService: UsersService,
+    private router: Router) {}
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
@@ -55,9 +59,13 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
     if(!this.form.valid) return;
 
+    this.pending = true;
     this.usersService.signUp({ 
       userName: this.form.controls['username'].value,
       password: this.form.controls['password'].value
+    }).pipe(take(1)).subscribe(e => {
+      this.router.navigate(['/sign-in']);
+      this.pending = false;
     });
   }
 

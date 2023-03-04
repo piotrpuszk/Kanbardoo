@@ -44,9 +44,8 @@ export class UsersService {
     }
 
   public signUp(signUp: SingUp) {
-    this.http
-      .post(this.usersUrl + 'sign-up', signUp)
-      .subscribe((e) => console.log('ok'));
+    return this.http
+      .post(this.usersUrl + 'sign-up', signUp);
   }
 
   public signIn(signIn: SignIn) {
