@@ -25,6 +25,7 @@ internal class BoardsControllerTests
     private Mock<IGetBoardUseCase> _getBoardUseCase;
     private Mock<IGetBoardMembersUseCase> _getBoardMembersUseCase;
     private Mock<IHttpContextAccessor> _httpContextAccessor;
+    private Mock<IUpdatePriorityUseCase> _updatePriorityUseCase;
     private Mock<IMapper> _mapper;
     private BoardsController _boardsController;
 
@@ -37,6 +38,7 @@ internal class BoardsControllerTests
         _deleteBoardUseCase = new Mock<IDeleteBoardUseCase>();
         _getBoardUseCase = new Mock<IGetBoardUseCase>();
         _getBoardMembersUseCase = new Mock<IGetBoardMembersUseCase>();
+        _updatePriorityUseCase = new Mock<IUpdatePriorityUseCase>();
         _httpContextAccessor = new Mock<IHttpContextAccessor>();
         _mapper = new Mock<IMapper>();
 
@@ -48,7 +50,8 @@ internal class BoardsControllerTests
             _mapper.Object,
             _deleteBoardUseCase.Object,
             _getBoardMembersUseCase.Object,
-            _httpContextAccessor.Object
+            _httpContextAccessor.Object,
+            _updatePriorityUseCase.Object
             );
     }
 
