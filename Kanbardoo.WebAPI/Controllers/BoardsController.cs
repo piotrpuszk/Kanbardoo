@@ -25,6 +25,7 @@ public sealed class BoardsController : ControllerBase
     private readonly IAddBoardUseCase _addBoardUseCase;
     private readonly IGetBoardUseCase _getBoardUseCase;
     private readonly IUpdateBoardUseCase _updateBoardUseCase;
+    private readonly IUpdatePriorityUseCase _updatePriority;
     private readonly IDeleteBoardUseCase _deleteBoardUseCase;
     private readonly IGetBoardMembersUseCase _getBoardMembersUseCase;
     private readonly IMapper _mapper;
@@ -37,7 +38,8 @@ public sealed class BoardsController : ControllerBase
                            IMapper mapper,
                            IDeleteBoardUseCase deleteBoardUseCase,
                            IGetBoardMembersUseCase getBoardMembersUseCase,
-                           IHttpContextAccessor httpContextAccessor)
+                           IHttpContextAccessor httpContextAccessor,
+                           IUpdatePriorityUseCase updatePriority)
     {
         _logger = logger;
         _addBoardUseCase = addBoardUseCase;
@@ -47,6 +49,7 @@ public sealed class BoardsController : ControllerBase
         _deleteBoardUseCase = deleteBoardUseCase;
         _getBoardMembersUseCase = getBoardMembersUseCase;
         _httpContextAccessor = httpContextAccessor;
+        _updatePriority = updatePriority;
     }
 
     [HttpPost("add")]
@@ -119,5 +122,15 @@ public sealed class BoardsController : ControllerBase
         var userDTOs = _mapper.Map<IEnumerable<KanBoardUserDTO>>(result.Content);
 
         return Result<IEnumerable<KanBoardUserDTO>>.SuccessResult(userDTOs).GetActionResult();
+    }
+
+    [HttpPut("update-priority")]
+    public async Task<IActionResult> UpdatePriority(KanBoardDTO boardDTO)
+    {
+        var board = _mapper.Map<KanBoard>(boardDTO);
+
+        var result = await _updatePriority.HandleAsync(board);
+
+        return result.GetActionResult();
     }
 }

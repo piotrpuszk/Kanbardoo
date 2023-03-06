@@ -58,6 +58,7 @@ public class TableRepository : ITableRepository
         {
             task.Assignee = null!;
             task.Status = null!;
+            task.Table = null!;
         }
 
         _dbContext.ChangeTracker.Clear();
@@ -67,6 +68,11 @@ public class TableRepository : ITableRepository
         tracked.Priority = table.Priority;
         tracked.Name = table.Name;
         tracked.Tasks = table.Tasks;
+
+        foreach (var task in tracked.Tasks)
+        {
+            _dbContext.Entry(task).State = EntityState.Modified;
+        }
 
         _dbContext.Tables.Update(tracked);
     }

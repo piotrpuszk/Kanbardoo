@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
+import { DragulaService } from 'ng2-dragula';
 import { BehaviorSubject, skip, Subject } from 'rxjs';
 import { getDefaultBoard, KanBoard } from '../_models/kan-board';
 
@@ -21,7 +22,7 @@ export class BoardControllerService {
   public readonly onBoardLoading$ = this.onBoardLoading.pipe(skip(1));
   public readonly onTableDeleted$ = this.onTableDeleted.pipe(skip(1));
 
-  constructor() { }
+  constructor(private dragulaService: DragulaService) { }
 
   public setBoardComponentActive() {
     this._isBoardComponentActive = true;
@@ -57,5 +58,15 @@ export class BoardControllerService {
 
   public tableDeleted(tableID: number) {
     this.onTableDeleted.next(tableID);
+  }
+
+  public onTaskModificationStart() {
+    var group = this.dragulaService.find('TASKS');
+    group.options.moves = (el, container, handle, sibling) => false;
+  }
+
+  public onTaskModificationEnd() {
+    var group = this.dragulaService.find('TASKS');
+    group.options.moves = (el, container, handle, sibling) => true;
   }
 } 

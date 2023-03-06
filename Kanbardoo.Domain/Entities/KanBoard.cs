@@ -24,12 +24,14 @@ public class KanBoard : Entity
 
     public static KanBoard CreateFromNewBoard(NewKanBoard newBoard, int ownerID)
     {
-        return new()
+        KanBoard board = new()
         {
             Name = newBoard.Name,
             CreationDate = DateTime.UtcNow,
             StatusID = KanBoardStatusId.Active,
             OwnerID = ownerID,
         };
+        board.GeneratePrimaryKey();
+        return board;
     }
 }

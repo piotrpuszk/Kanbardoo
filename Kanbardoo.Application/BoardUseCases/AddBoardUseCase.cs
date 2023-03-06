@@ -58,10 +58,12 @@ public sealed class AddBoardUseCase : IAddBoardUseCase
         {
             UserID = _userID,
             RoleID = KanRoleID.Owner,
+            BoardID = board.ID,
             Board = null!,
             User = null!,
             Role = null!,
         };
+        role.GeneratePrimaryKey();
         board.UserBoardRoles.Add(role);
 
         await _unitOfWork.BoardRepository.AddAsync(board);

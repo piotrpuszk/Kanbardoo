@@ -45,6 +45,10 @@ export class BoardsService {
     return this.http.put(this.boardsUrl, board, this.usersService.getOptions());
   }
 
+  public updatePriority(board: KanBoard) {
+    return this.http.put(this.boardsUrl + "update-priority", board, this.usersService.getOptions());
+  }
+
   public getBoardMembers(boardID: number) {
     return this.http.get<Result<KanBoardUser[]>>(`${this.boardsUrl}${boardID}/members`, this.usersService.getOptions());
   }
