@@ -46,6 +46,7 @@ public class UserRepository : IUserRepository
     {
         user.Roles = null!;
         user.Claims = null!;
+        user.GeneratePrimaryKey();
         await _dbContext.Users.AddAsync(user);
     }
 

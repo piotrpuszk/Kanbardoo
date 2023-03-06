@@ -18,6 +18,7 @@ public class TableRepository : ITableRepository
     public async Task AddAsync(KanTable table)
     {
         table.Board = null!;
+        table.GeneratePrimaryKey();
         await _dbContext.Tables.AddAsync(table);
     }
 

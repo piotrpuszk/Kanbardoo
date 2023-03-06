@@ -17,6 +17,7 @@ public class UserTablesRepository : IUserTablesRepository
     {
         userTable.Table = null!;
         userTable.User= null!;
+        userTable.GeneratePrimaryKey();
         await _dbContext.UserTables.AddAsync(userTable);
     }
 

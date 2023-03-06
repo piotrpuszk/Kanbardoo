@@ -25,13 +25,10 @@ public class KanAuthorizationPolicy
 
     public async Task<Result> Authorize()
     {
-        var tasks = new List<Task>();
         foreach (var pair in _handlers)
         {
-            tasks.Add(pair.handler.HandleAsync(_context, pair.requirement));
+            await pair.handler.HandleAsync(_context, pair.requirement);
         }
-
-        await Task.WhenAll(tasks);
 
         if (_context.HasSucceeded())
         {

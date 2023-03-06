@@ -177,7 +177,10 @@ builder.Services.AddScoped<ICreateToken, TokenService>();
 
 builder.Services.AddDbContext<DBContext>(options =>
 {
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), options => 
+    {
+        options.SetPostgresVersion(new Version(@"9.2.8"));
+    });
 });
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 

@@ -16,6 +16,7 @@ public class UserClaimsRepository : IUserClaimsRepository
     {
         userClaim.Claim = null!;
         userClaim.User = null!;
+        userClaim.GeneratePrimaryKey();
         await _dbContext.UsersClaims.AddAsync(userClaim);
     }
 
