@@ -17,6 +17,7 @@ public class UserBoardRolesRepository : IUserBoardRolesRepository
     {
         userBoardRole.Role = null!;
         userBoardRole.User = null!;
+        userBoardRole.GeneratePrimaryKey();
         await _dbContext.UserBoardsRoles
             .AddAsync(userBoardRole);
     }

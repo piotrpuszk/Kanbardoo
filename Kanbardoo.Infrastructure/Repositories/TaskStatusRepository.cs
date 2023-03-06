@@ -14,6 +14,7 @@ public class TaskStatusRepository : ITaskStatusRepository
 
     public async Task AddAsync(KanTaskStatus taskStatus)
     {
+        taskStatus.GeneratePrimaryKey();
         await _dbContext.TaskStatuses.AddAsync(taskStatus);
     }
 

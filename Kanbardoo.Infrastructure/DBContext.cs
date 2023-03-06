@@ -1,6 +1,9 @@
 ﻿using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Npgsql;
+using System.Data.Common;
 
 namespace Kanbardoo.Infrastructure;
 public class DBContext : DbContext
@@ -143,6 +146,8 @@ public class DBContext : DbContext
             }
         );
 
+        var creationDate = new DateTime(2023, 1, 1);
+        creationDate = creationDate.ToUniversalTime();
         modelBuilder.Entity<KanUser>()
             .HasData
             (
@@ -152,7 +157,7 @@ public class DBContext : DbContext
                     {
                         ID = 46920,
                         UserName = "piotrpuszk",
-                        CreationDate = new DateTime(2023, 2, 1),
+                        CreationDate = creationDate,
                     }
                 }
             );

@@ -16,6 +16,7 @@ public class UserTasksRepository : IUserTasksRepository
     {
         userTask.Task = null!;
         userTask.User = null!;
+        userTask.GeneratePrimaryKey();
         await _dbContext.UserTasks.AddAsync(userTask);
     }
 

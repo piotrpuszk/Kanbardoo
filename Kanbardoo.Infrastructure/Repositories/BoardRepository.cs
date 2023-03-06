@@ -19,6 +19,7 @@ public class BoardRepository : IBoardRepository
     {
         board.Owner = null!;
         board.Status = null!;
+        board.GeneratePrimaryKey();
         await _dbContext.Boards.AddAsync(board);
     }
 
