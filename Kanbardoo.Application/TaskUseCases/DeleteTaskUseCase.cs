@@ -54,7 +54,6 @@ public class DeleteTaskUseCase : IDeleteTaskUseCase
         try
         {
             await _unitOfWork.TaskRepository.DeleteAsync(id);
-            await _unitOfWork.UserTasksRepository.DeleteAsync(new KanUserTask { UserID = _userID, TaskID = id});
             await _unitOfWork.SaveChangesAsync();
 
             return Result.SuccessResult();

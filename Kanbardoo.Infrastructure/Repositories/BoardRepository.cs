@@ -4,6 +4,8 @@ using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Kanbardoo.Infrastructure.Repositories;
@@ -20,7 +22,6 @@ public class BoardRepository : IBoardRepository
     {
         board.Owner = null!;
         board.Status = null!;
-        board.GeneratePrimaryKey();
         await _dbContext.Boards.AddAsync(board);
     }
 
@@ -108,6 +109,7 @@ public class BoardRepository : IBoardRepository
                 task.Assignee = null!;
             }
         }
+
         _dbContext.ChangeTracker.Clear();
         var tracked = (await _dbContext.Boards.FindAsync(board.ID))!;
 
@@ -128,6 +130,30 @@ public class BoardRepository : IBoardRepository
         }
 
         _dbContext.Boards.Update(tracked);
+    }
+
+    public async Task UpdatePriorityAsync(KanBoard board)
+    {
+        var boardDB = await GetAsync(board.ID);
+        foreach (var table in board.Tables)
+        {
+            var tableDB = boardDB.Tables.First(e => e.ID == table.ID);
+            tableDB.Priority = table.Priority;
+            foreach (var task in table.Tasks)
+            {
+                var taskDB = tableDB.Tasks.FirstOrDefault(e => e.ID == task.ID);
+                if (taskDB is null)
+                {
+                    var trackedTask = boardDB.Tables.SelectMany(e => e.Tasks).Where(e => e.ID == task.ID).First();
+                    boardDB.Tables.First(e => e.ID == trackedTask.TableID).Tasks.Remove(trackedTask);
+                    tableDB.Tasks.Add(trackedTask);
+                }
+                else
+                {
+                    taskDB.Priority = task.Priority;
+                }
+            }
+        }
     }
 
     public async Task<IEnumerable<KanUser>> GetBoardMembers(int boardID)

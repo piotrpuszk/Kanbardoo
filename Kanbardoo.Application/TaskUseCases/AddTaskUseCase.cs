@@ -67,9 +67,6 @@ public class AddTaskUseCase : IAddTaskUseCase
             await _unitOfWork.TaskRepository.AddAsync(task);
             await _unitOfWork.SaveChangesAsync();
 
-            await _unitOfWork.UserTasksRepository.AddAsync(new KanUserTask { UserID = _userID, TaskID = task.ID });
-            await _unitOfWork.SaveChangesAsync();
-
             return Result.SuccessResult();
         }
         catch (Exception ex)

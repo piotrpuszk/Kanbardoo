@@ -64,9 +64,6 @@ public class AddTableUseCase : IAddTableUseCase
             await _unitOfWork.TableRepository.AddAsync(table);
             await _unitOfWork.SaveChangesAsync();
 
-            await _unitOfWork.UserTablesRepository.AddAsync(new KanUserTable { UserID = _userID, TableID = table.ID });
-            await _unitOfWork.SaveChangesAsync();
-
             return Result.SuccessResult();
         }
         catch(Exception ex)

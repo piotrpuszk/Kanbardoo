@@ -53,7 +53,6 @@ public class DeleteTableUseCase : IDeleteTableUseCase
         try
         {
             await _unitOfWork.TableRepository.DeleteAsync(id);
-            await _unitOfWork.UserTablesRepository.DeleteAsync(new KanUserTable { UserID = _userID, TableID = id });
             await _unitOfWork.SaveChangesAsync();
 
             return Result.SuccessResult();

@@ -107,6 +107,7 @@ builder.Services.AddScoped<IGetBoardUseCase, GetBoardUseCase>();
 builder.Services.AddScoped<IDeleteBoardUseCase, DeleteBoardUseCase>();
 builder.Services.AddScoped<IUpdateBoardUseCase, UpdateBoardUseCase>();
 builder.Services.AddScoped<IGetBoardMembersUseCase, GetBoardMembersUseCase>();
+builder.Services.AddScoped<IUpdatePriorityUseCase, UpdatePriorityUseCase>();
 
 builder.Services.AddScoped<IAddTableUseCase, AddTableUseCase>();
 builder.Services.AddScoped<IGetTableUseCase, GetTableUseCase>();

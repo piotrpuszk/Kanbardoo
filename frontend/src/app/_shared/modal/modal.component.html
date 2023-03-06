@@ -1,4 +1,4 @@
-<div class="modal" [ngClass]="{'is-active': isOpen}">
+<div *ngIf="isOpen" class="modal is-active">
   <div class="modal-background"></div>
   <div class="modal-card" [ngStyle]="style">
     <header *ngIf="headerEnabled" class="modal-card-head">

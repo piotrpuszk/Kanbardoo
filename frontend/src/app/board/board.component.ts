@@ -54,8 +54,9 @@ export class BoardComponent implements OnInit, OnDestroy {
                 element.tableID = table.id;
               }
             }
+
             this.boardsService
-                .update(this.board!)
+                .updatePriority(this.board!)
                 .pipe(take(1))
                 .subscribe((e) => {});
           });

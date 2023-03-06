@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import {
+  delay,
   map,
   Observable,
   Observer,
@@ -22,6 +23,7 @@ import { KanTask } from 'src/app/_models/kan-task';
 import { KanTaskStatus } from 'src/app/_models/kan-task-status';
 import { KanUser } from 'src/app/_models/kan-user';
 import { NewKanTask } from 'src/app/_models/new-kan-task';
+import { BoardControllerService } from 'src/app/_services/board-controller.service';
 import { TablesService } from 'src/app/_services/tables.service';
 import { TasksService } from 'src/app/_services/tasks.service';
 import { UsersService } from 'src/app/_services/users.service';
@@ -54,7 +56,7 @@ export class TaskModalComponent implements OnInit, AfterViewInit {
     private formBuilder: FormBuilder,
     private tasksService: TasksService,
     private usersService: UsersService,
-    private tablesService: TablesService
+    private boardController: BoardControllerService
   ) {}
 
   ngOnInit() {
@@ -105,9 +107,11 @@ export class TaskModalComponent implements OnInit, AfterViewInit {
     this.successButtonName = this.successButtonNameNotPending;
     this.initForm();
     this.modal.open();
+    this.boardController.onTaskModificationStart();
   }
 
   public close() {
+    this.boardController.onTaskModificationEnd();
     this.modal.close();
   }
 
