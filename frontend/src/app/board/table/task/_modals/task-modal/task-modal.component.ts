@@ -74,13 +74,6 @@ export class TaskModalComponent implements OnInit, AfterViewInit {
         this.usersSnapshot = users;
       })
     );
-
-    this.tasksService
-      .getTaskStatuses()
-      .pipe(take(1))
-      .subscribe((e) => {
-        this.taskStatuses = e.content;
-      });
   }
 
   ngAfterViewInit() {
@@ -102,6 +95,13 @@ export class TaskModalComponent implements OnInit, AfterViewInit {
   }
 
   public open() {
+    this.tasksService
+      .getTaskStatuses()
+      .pipe(take(1))
+      .subscribe((e) => {
+        this.taskStatuses = e.content;
+      });
+
     this.successButtonName = this.successButtonNameNotPending;
     this.initForm();
     this.modal.open();

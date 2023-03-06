@@ -5,7 +5,7 @@ using System.Reflection;
 namespace Kanbardoo.Domain.Entities;
 public class Entity
 {
-    private static int workaround = 1;
+    private static int workaround = 100;
     [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
     public int ID { get; set; }
 

@@ -4,6 +4,7 @@ using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Kanbardoo.Infrastructure.Repositories;
 public class BoardRepository : IBoardRepository
@@ -117,6 +118,14 @@ public class BoardRepository : IBoardRepository
         tracked.BackgroundImageUrl = board.BackgroundImageUrl;
         tracked.Name = board.Name;
         tracked.Tables = board.Tables;
+        foreach (var table in tracked.Tables)
+        {
+            _dbContext.Entry(table).State = EntityState.Modified;
+        }
+        foreach (var task in tracked.Tables.SelectMany(e => e.Tasks))
+        {
+            _dbContext.Entry(task).State = EntityState.Modified;
+        }
 
         _dbContext.Boards.Update(tracked);
     }
