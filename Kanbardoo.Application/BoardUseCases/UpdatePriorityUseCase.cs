@@ -16,17 +16,17 @@ public class UpdatePriorityUseCase : IUpdatePriorityUseCase
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly BoardToUpdateValidator _boardToUpdateValidator;
-    private readonly IBoardOwnershipPolicy _boardOwnershipPolicy;
+    private readonly IBoardMembershipPolicy _boardMembershipPolicy;
 
     public UpdatePriorityUseCase(IUnitOfWork unitOfWork,
                               ILogger logger,
                               BoardToUpdateValidator boardToUpdateValidator,
-                              IBoardOwnershipPolicy boardOwnershipPolicy)
+                              IBoardMembershipPolicy boardMembershipPolicy)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _boardToUpdateValidator = boardToUpdateValidator;
-        _boardOwnershipPolicy = boardOwnershipPolicy;
+        _boardMembershipPolicy = boardMembershipPolicy;
     }
 
     public async Task<Result> HandleAsync(KanBoard board)
@@ -38,7 +38,7 @@ public class UpdatePriorityUseCase : IUpdatePriorityUseCase
             return Result.ErrorResult(ErrorMessage.GivenBoardInvalid);
         }
 
-        var authorizationResult = await _boardOwnershipPolicy.AuthorizeAsync(board.ID);
+        var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(board.ID);
         if (!authorizationResult.IsSuccess)
         {
             return authorizationResult;
