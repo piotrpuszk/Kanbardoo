@@ -6,7 +6,8 @@ namespace Kanbardoo.Domain.Entities;
 public class Entity
 {
     private static int workaround = 100;
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Column(TypeName = "serial")]
     public int ID { get; set; }
 
     public bool Exists()
@@ -16,7 +17,7 @@ public class Entity
 
     public void GeneratePrimaryKey()
     {
-        ID = Interlocked.Increment(ref workaround);
+        //ID = Interlocked.Increment(ref workaround);
     }
 
     public static bool ColumnExists<T>(string columnName) where T : Entity

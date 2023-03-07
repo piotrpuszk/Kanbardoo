@@ -25,16 +25,19 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.Invitation", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<int>("BoardID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<int>("SenderID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<int>("UserID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.HasKey("ID");
 
@@ -50,7 +53,10 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanBoard", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<string>("BackgroundImageUrl")
                         .IsRequired()
@@ -69,13 +75,13 @@ namespace Kanbardoo.Infrastructure.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.Property<int>("OwnerID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("StatusID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.HasKey("ID");
 
@@ -89,7 +95,10 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanBoardStatus", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -116,7 +125,10 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanClaim", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -148,7 +160,10 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanRole", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -180,13 +195,16 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanRoleClaim", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<int>("ClaimID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<int>("RoleID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.HasKey("ID");
 
@@ -200,10 +218,13 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTable", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<int>("BoardID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("timestamp with time zone");
@@ -226,10 +247,13 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTask", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<int>("AssigneeID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -248,10 +272,10 @@ namespace Kanbardoo.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("StatusID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<int>("TableID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.HasKey("ID");
 
@@ -267,7 +291,10 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTaskStatus", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -299,7 +326,10 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUser", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("timestamp with time zone");
@@ -335,13 +365,16 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserBoard", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<int>("BoardID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<int>("UserID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.HasKey("ID");
 
@@ -355,16 +388,19 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserBoardRole", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<int>("BoardID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<int>("RoleID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<int>("UserID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.HasKey("ID");
 
@@ -380,13 +416,16 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserClaim", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<int>("ClaimID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<int>("UserID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<string>("Value")
                         .IsRequired()
@@ -405,13 +444,16 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserTable", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<int>("TableID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<int>("UserID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.HasKey("ID");
 
@@ -425,13 +467,16 @@ namespace Kanbardoo.Infrastructure.Migrations
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserTask", b =>
                 {
                     b.Property<int>("ID")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("serial");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("ID"));
 
                     b.Property<int>("TaskID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.Property<int>("UserID")
-                        .HasColumnType("integer");
+                        .HasColumnType("serial");
 
                     b.HasKey("ID");
 
