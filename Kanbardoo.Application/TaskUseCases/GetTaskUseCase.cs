@@ -50,7 +50,7 @@ public class GetTaskUseCase : IGetTaskUseCase
         var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(boardID);
         if (!authorizationResult.IsSuccess)
         {
-            return Result<KanTask>.ErrorResult(authorizationResult.Errors!);
+            return Result<KanTask>.ErrorResult(authorizationResult.Errors!, HttpStatusCode.Forbidden);
         }
 
         return Result<KanTask>.SuccessResult(task);

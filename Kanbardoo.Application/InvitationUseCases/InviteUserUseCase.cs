@@ -10,6 +10,7 @@ using Kanbardoo.Domain.Validators;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Serilog;
+using System.Net;
 using System.Security.Claims;
 
 namespace Kanbardoo.Application.InvitationUseCases;
@@ -46,7 +47,7 @@ public class InviteUserUseCase : IInviteUserUseCase
         var authorizationResult = await _boardOwnershipPolicy.AuthorizeAsync(newInvitation.BoardID);
         if (!authorizationResult.IsSuccess)
         {
-            return Result.ErrorResult(ErrorMessage.Unauthorized);
+            return authorizationResult;
         }
 
         var user = await _unitOfWork.UserRepository.GetAsync(newInvitation.UserName);

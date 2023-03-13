@@ -81,7 +81,7 @@ public class GetBoardUseCase : IGetBoardUseCase
         var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(id);
         if (!authorizationResult.IsSuccess)
         {
-            return Result<KanBoard>.ErrorResult(authorizationResult.Errors!);
+            return Result<KanBoard>.ErrorResult(authorizationResult.Errors!, HttpStatusCode.Forbidden);
         }
 
         return Result<KanBoard>.SuccessResult(board);

@@ -26,9 +26,10 @@ import { FormsModule } from '@angular/forms';
 import { TaskModalComponent } from './board/table/task/_modals/task-modal/task-modal.component';
 import { InviteModalComponent } from './board/_modals/invite-modal/invite-modal.component';
 import { InvitationsModalComponent } from './_modals/invitations-modal/invitations-modal.component';
-import { UnauthorizedInterceptor } from './_interceptors/unauthorized.interceptor';
 import { MembersModalComponent } from './_modals/members-modal/members-modal.component';
 import { DragulaModule } from 'ng2-dragula';
+import { ToastrModule } from 'ngx-toastr';
+import { ErrorHandlingInterceptor } from './_interceptors/error-handling.interceptor';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,9 @@ import { DragulaModule } from 'ng2-dragula';
     TooltipModule.forRoot(),
     BsDatepickerModule.forRoot(),
     DragulaModule.forRoot(),
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-center'
+    }),
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
@@ -70,7 +74,7 @@ import { DragulaModule } from 'ng2-dragula';
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: UnauthorizedInterceptor,
+      useClass: ErrorHandlingInterceptor,
       multi: true
     }
   ],

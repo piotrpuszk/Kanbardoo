@@ -36,7 +36,7 @@ public class KanAuthorizationPolicy
         }
         else
         {
-            return Result.ErrorResult(ErrorMessage.Unauthorized, HttpStatusCode.Unauthorized);
+            return Result.ErrorResult(ErrorMessage.Unauthorized, HttpStatusCode.Forbidden);
         }
     }
 }

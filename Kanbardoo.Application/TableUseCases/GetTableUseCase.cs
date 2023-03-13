@@ -59,7 +59,7 @@ public class GetTableUseCase : IGetTableUseCase
         var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(table.BoardID);
         if (!authorizationResult.IsSuccess)
         {
-            return Result<KanTable>.ErrorResult(authorizationResult.Errors!);
+            return Result<KanTable>.ErrorResult(authorizationResult.Errors!, HttpStatusCode.Forbidden);
         }
 
         return Result<KanTable>.SuccessResult(table);

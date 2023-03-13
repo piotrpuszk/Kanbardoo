@@ -8,6 +8,7 @@ using Kanbardoo.Domain.Repositories;
 using Kanbardoo.Domain.Validators;
 using Newtonsoft.Json;
 using Serilog;
+using System.Net;
 
 namespace Kanbardoo.Application.InvitationUseCases;
 
@@ -41,7 +42,7 @@ public class CancelInvitationUseCase : ICancelInvitationUseCase
         var authorizationResult = await _boardOwnershipPolicy.AuthorizeAsync(cancelInvitationModel.BoardID);
         if (!authorizationResult.IsSuccess)
         {
-            return Result.ErrorResult(ErrorMessage.Unauthorized);
+            return authorizationResult;
         }
 
         var user = await _unitOfWork.UserRepository.GetAsync(cancelInvitationModel.UserName);

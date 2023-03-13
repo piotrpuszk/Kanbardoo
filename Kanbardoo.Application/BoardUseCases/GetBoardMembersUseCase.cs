@@ -3,6 +3,7 @@ using Kanbardoo.Application.Contracts.BoardContracts;
 using Kanbardoo.Domain.Entities;
 using Kanbardoo.Domain.Models;
 using Kanbardoo.Domain.Repositories;
+using System.Net;
 using ILogger = Serilog.ILogger;
 
 namespace Kanbardoo.Application.BoardUseCases;
@@ -27,7 +28,7 @@ public class GetBoardMembersUseCase : IGetBoardMembersUseCase
         var authorizationResult = await _boardMembershipPolicy.AuthorizeAsync(boardID);
         if (!authorizationResult.IsSuccess)
         {
-            return Result<IEnumerable<KanBoardUser>>.ErrorResult(authorizationResult.Errors!);
+            return Result<IEnumerable<KanBoardUser>>.ErrorResult(authorizationResult.Errors!, HttpStatusCode.Forbidden);
         }
 
         var users = await _unitOfWork.BoardRepository.GetBoardMembers(boardID);
