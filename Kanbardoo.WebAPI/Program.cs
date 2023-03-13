@@ -22,6 +22,7 @@ using Kanbardoo.Domain.Validators;
 using Kanbardoo.Infrastructure;
 using Kanbardoo.Infrastructure.Repositories;
 using Kanbardoo.Infrastructure.Services;
+using Kanbardoo.WebAPI.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -185,6 +186,8 @@ builder.Services.AddDbContext<DBContext>(options =>
 });
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
+builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -213,6 +216,8 @@ app.UseAuthorization();
 app.UseDefaultFiles();
 
 app.UseStaticFiles();
+
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.MapControllers();
 
