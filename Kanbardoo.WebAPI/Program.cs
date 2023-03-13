@@ -176,13 +176,20 @@ builder.Services.AddScoped<DeclineInvitationValidator>();
 
 builder.Services.AddScoped<ICreateToken, TokenService>();
 
-builder.Services.AddDbContext<DBContext>(options =>
+if(builder.Environment.EnvironmentName != "DevelopmentCloud")
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), options => 
+    builder.Services.AddDbContext<DBContext>(options =>
     {
-        options.SetPostgresVersion(new Version(@"9.2.8"));
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
     });
-});
+}
+else
+{
+    builder.Services.AddDbContext<DBContext>(options =>
+    {
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    });
+}
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();
