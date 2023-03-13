@@ -31,7 +31,6 @@ public class KanBoard : Entity
             StatusID = KanBoardStatusId.Active,
             OwnerID = ownerID,
         };
-        board.GeneratePrimaryKey();
         return board;
     }
 }

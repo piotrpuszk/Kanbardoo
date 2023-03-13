@@ -17,7 +17,6 @@ public class TaskRepository : ITaskRepository
         task.Status = null!;
         task.Assignee = null!;
         task.Table = null!;
-        task.GeneratePrimaryKey();
         await _dbContext.Tasks.AddAsync(task);
     }
 

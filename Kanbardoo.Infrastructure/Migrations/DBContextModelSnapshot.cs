@@ -47,7 +47,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Invitations");
+                    b.ToTable("Invitations", (string)null);
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanBoard", b =>
@@ -89,7 +89,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("StatusID");
 
-                    b.ToTable("Boards");
+                    b.ToTable("Boards", (string)null);
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanBoardStatus", b =>
@@ -107,7 +107,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("BoardStatuses");
+                    b.ToTable("BoardStatuses", (string)null);
 
                     b.HasData(
                         new
@@ -137,7 +137,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Claims");
+                    b.ToTable("Claims", (string)null);
 
                     b.HasData(
                         new
@@ -172,7 +172,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -212,7 +212,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("RoleID");
 
-                    b.ToTable("RolesClaims");
+                    b.ToTable("RolesClaims", (string)null);
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTable", b =>
@@ -241,7 +241,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("BoardID");
 
-                    b.ToTable("Tables");
+                    b.ToTable("Tables", (string)null);
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTask", b =>
@@ -285,7 +285,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("TableID");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanTaskStatus", b =>
@@ -303,7 +303,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("TaskStatuses");
+                    b.ToTable("TaskStatuses", (string)null);
 
                     b.HasData(
                         new
@@ -349,7 +349,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -382,7 +382,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("UserBoards");
+                    b.ToTable("UserBoards", (string)null);
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserBoardRole", b =>
@@ -410,7 +410,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("UserBoardsRoles");
+                    b.ToTable("UserBoardsRoles", (string)null);
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserClaim", b =>
@@ -438,7 +438,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("UsersClaims");
+                    b.ToTable("UsersClaims", (string)null);
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserTable", b =>
@@ -461,7 +461,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("UserTables");
+                    b.ToTable("UserTables", (string)null);
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.KanUserTask", b =>
@@ -484,7 +484,7 @@ namespace Kanbardoo.Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("UserTasks");
+                    b.ToTable("UserTasks", (string)null);
                 });
 
             modelBuilder.Entity("Kanbardoo.Domain.Entities.Invitation", b =>

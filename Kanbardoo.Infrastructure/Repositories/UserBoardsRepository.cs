@@ -17,7 +17,6 @@ public class UserBoardsRepository : IUserBoardsRepository
     {
         userBoard.User = null!;
         userBoard.Board = null!;
-        userBoard.GeneratePrimaryKey();
         await _dbContext.UserBoards.AddAsync(userBoard);
     }
 

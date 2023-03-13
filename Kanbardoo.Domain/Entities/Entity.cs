@@ -5,7 +5,6 @@ using System.Reflection;
 namespace Kanbardoo.Domain.Entities;
 public class Entity
 {
-    private static int workaround = 100;
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column(TypeName = "serial")]
     public int ID { get; set; }
@@ -13,11 +12,6 @@ public class Entity
     public bool Exists()
     {
         return ID != default;
-    }
-
-    public void GeneratePrimaryKey()
-    {
-        //ID = Interlocked.Increment(ref workaround);
     }
 
     public static bool ColumnExists<T>(string columnName) where T : Entity

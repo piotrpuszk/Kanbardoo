@@ -18,7 +18,6 @@ public class InvitationRepository : IInvitationRepository
         invitation.Board = null!;
         invitation.User= null!;
         invitation.Sender = null!;
-        invitation.GeneratePrimaryKey();
         await _dbContext.Invitations.AddAsync(invitation);
     }
 
