@@ -26,6 +26,10 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
 
   private handleErrors(error: HttpErrorResponse) {
     if(error.status === 401) {
+      return this.handleUnauthenticated(error);
+    }
+
+    if(error.status === 403) {
       return this.handleUnauthorized(error);
     }
 
@@ -37,13 +41,19 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
     return throwError(() => error);
   }
 
+  private handleUnauthenticated(error: HttpErrorResponse) {
+    this.usersService.signOut();
+    this.router.navigate(['/sign-in']);
+    return throwError(() => error);
+  }
+
   private handleUnauthorized(error: HttpErrorResponse) {
     if (!error.error) {
       this.usersService.signOut();
       this.router.navigate(['/sign-in']);
     }
     else {
-      this.toast.error("Unauthorized access");
+      this.toast.error("Unauthorized");
       this.router.navigate(['/dashboard']);
     }
     return throwError(() => error);
